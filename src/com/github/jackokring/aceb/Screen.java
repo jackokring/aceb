@@ -9,8 +9,6 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
-import java.awt.*;
-import uk.co.peopleandroid.aceb.*;
 
 public class Screen extends Component implements Keys {
 

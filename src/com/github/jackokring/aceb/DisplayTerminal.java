@@ -5,12 +5,12 @@ package com.github.jackokring.aceb;
  * and open the template in the editor.
  */
 
+
 /**
  *
  * @author jacko
  */
 
- import uk.co.peopleandroid.aceb.*;
 
  public class DisplayTerminal extends Screen {
 

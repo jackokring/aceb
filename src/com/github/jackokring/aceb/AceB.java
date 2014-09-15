@@ -2,7 +2,6 @@ package com.github.jackokring.aceb;
 
 
 import java.io.*;
-import uk.co.peopleandroid.desktop.*;
 
 public class AceB implements Runnable {
 

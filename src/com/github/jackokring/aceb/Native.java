@@ -1,7 +1,6 @@
 package com.github.jackokring.aceb;
 
 import java.io.*;
-import uk.co.peopleandroid.desktop.*;
 
 abstract class Native implements Runnable, Keys {
     //use static for instance control.

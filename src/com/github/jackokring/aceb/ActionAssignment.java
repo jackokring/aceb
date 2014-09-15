@@ -9,7 +9,6 @@ package com.github.jackokring.aceb;
  *
  * @author jacko
  */
-import uk.co.peopleandroid.desktop.*;
 
 public class ActionAssignment {
 

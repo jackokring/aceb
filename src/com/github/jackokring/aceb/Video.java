@@ -10,9 +10,6 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
-import uk.co.peopleandroid.desktop.Screen;
-import uk.co.peopleandroid.desktop.*;
-
 public interface Video {
     public void setCurrent(Screen a);
     public void setCurrentForget(Screen a, Screen last);

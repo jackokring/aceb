@@ -10,8 +10,6 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
-import uk.co.peopleandroid.aceb.*;
-import java.awt.*;
 import java.io.IOException;
 
 public class Desktop extends Frame implements Video, Audio, Keys, Storage {

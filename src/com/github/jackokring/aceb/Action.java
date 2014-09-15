@@ -1,7 +1,6 @@
 package com.github.jackokring.aceb;
 
 
-import uk.co.peopleandroid.aceb.Keys;
 
 /*
  * To change this template, choose Tools | Templates
@@ -12,9 +11,8 @@ import uk.co.peopleandroid.aceb.Keys;
  *
  * @author jacko
  */
-import java.awt.event.*;
-import java.awt.*;
-import uk.co.peopleandroid.aceb.*;
+
+import android.widget.*;
 
 public class Action extends Button implements ActionListener {
 
