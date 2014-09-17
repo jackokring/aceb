@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import android.view.View;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -10,7 +12,7 @@ package com.github.jackokring.aceb;
  */
 
 
-public class Screen extends Component implements Keys {
+public class Screen extends View implements Keys {
 
     Screen last;
     ActionAssignment head;
@@ -75,4 +77,10 @@ public class Screen extends Component implements Keys {
     public synchronized void addCommand(Action a) {
         head = new ActionAssignment(a,this,head);
     }
+
+	@Override
+	public void actions(Action ac, Keys s) {
+		// TODO Auto-generated method stub
+		
+	}
 }
