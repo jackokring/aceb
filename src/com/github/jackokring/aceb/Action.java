@@ -13,8 +13,9 @@ package com.github.jackokring.aceb;
  */
 
 import android.widget.*;
+import android.view.*;//????
 
-public class Action extends Button implements ActionListener {
+public class Action extends Button implements OnClickListener {
 
     public void actionPerformed(ActionEvent e) {
         ActionAssignment aa = ActionAssignment.que;
@@ -28,9 +29,5 @@ public class Action extends Button implements ActionListener {
     public Action(String s, int pri) {
         setLabel(s);
         addActionListener(this);
-    }
-
-    public static void noActions(Keys k) {
-
     }
 }

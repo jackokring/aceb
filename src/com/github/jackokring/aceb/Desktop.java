@@ -12,13 +12,9 @@ package com.github.jackokring.aceb;
 
 import java.io.IOException;
 
-public class Desktop extends Frame implements Video, Audio, Keys, Storage {
+public class Desktop extends MainActivity implements Video, Audio, Keys, Storage {
+	
     AceB a = new AceB(this);
-    static Desktop me;
-
-    public static void main(String[] args) {
-        me = new Desktop();
-    }
 
     public Desktop() {
         //build Frame
@@ -42,11 +38,6 @@ public class Desktop extends Frame implements Video, Audio, Keys, Storage {
 
     public Screen getCurrent() {
         return null;//????
-    }
-
-    public void setCurrentForget(Screen a, Screen last) {
-        Action.noActions(last);
-        setCurrent(a);
     }
 
     /* THE AUDIO INTERFACE */

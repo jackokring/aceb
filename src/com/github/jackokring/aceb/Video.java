@@ -12,6 +12,5 @@ package com.github.jackokring.aceb;
 
 public interface Video {
     public void setCurrent(Screen a);
-    public void setCurrentForget(Screen a, Screen last);
     public Screen getCurrent();
 }
