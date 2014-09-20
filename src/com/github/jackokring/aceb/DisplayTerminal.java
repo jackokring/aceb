@@ -39,7 +39,7 @@ package com.github.jackokring.aceb;
             layers.append(tl);
         }
 
-             public void stringToCells(String s) {
+     public void stringToCells(String s) {
         int x;
         for(x = 0; x < s.length(); x++)
             ac.setCell(x%getWidth(), x/getWidth(), s.charAt(x));

@@ -12,7 +12,11 @@ package com.github.jackokring.aceb;
 
 import java.io.IOException;
 
-public class Desktop extends MainActivity implements Video, Audio, Keys, Storage {
+public class Desktop extends MainActivity {
+	
+	//default ones
+	int viewXML = R.layout.activity_desktop;
+	int menuXML = R.menu.desktop;
 	
     AceB a = new AceB(this);
 

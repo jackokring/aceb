@@ -13,7 +13,7 @@ import android.support.v4.app.Fragment;
  */
 
 
-public class Screen extends Fragment implements Keys {
+public class Screen extends Fragment {
 
     Screen last;
     ActionAssignment head;
@@ -79,9 +79,4 @@ public class Screen extends Fragment implements Keys {
         head = new ActionAssignment(a,this,head);
     }
 
-	@Override
-	public void actions(Action ac, Keys s) {
-		// TODO Auto-generated method stub
-		
-	}
 }
