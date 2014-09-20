@@ -8,6 +8,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.github.jackokring.aceb.MainActivity" >
 
-    
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="com.github.jackokring.aceb.Screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

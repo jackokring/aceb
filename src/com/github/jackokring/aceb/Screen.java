@@ -1,6 +1,7 @@
 package com.github.jackokring.aceb;
 
-import android.view.View;
+import android.graphics.Paint.FontMetrics;
+import android.support.v4.app.Fragment;
 
 /*
  * To change this template, choose Tools | Templates
@@ -12,7 +13,7 @@ import android.view.View;
  */
 
 
-public class Screen extends View implements Keys {
+public class Screen extends Fragment implements Keys {
 
     Screen last;
     ActionAssignment head;
