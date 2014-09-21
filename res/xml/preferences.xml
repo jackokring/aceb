@@ -1,31 +1,31 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory 
-        android:title="@string/pref_sms_storage_title"
+        android:title="@string/help"
         android:key="pref_key_storage_settings">
         <CheckBoxPreference
             android:key="pref_key_auto_delete"
-            android:summary="@string/pref_summary_auto_delete"
-            android:title="@string/pref_title_auto_delete"
-            android:defaultValue="false"... />
+            android:summary="@string/help"
+            android:title="@string/help"
+            android:defaultValue="false"/>
         <Preference 
             android:key="pref_key_sms_delete_limit"
             android:dependency="pref_key_auto_delete"
-            android:summary="@string/pref_summary_delete_limit"
-            android:title="@string/pref_title_sms_delete"... />
+            android:summary="@string/help"
+            android:title="@string/help"/>
         <Preference 
             android:key="pref_key_mms_delete_limit"
             android:dependency="pref_key_auto_delete"
-            android:summary="@string/pref_summary_delete_limit"
-            android:title="@string/pref_title_mms_delete" ... />
+            android:summary="@string/help"
+            android:title="@string/help"/>
     </PreferenceCategory>
     <ListPreference
         android:dependency="pref_sync"
         android:key="pref_syncConnectionType"
-        android:title="@string/pref_syncConnectionType"
-        android:dialogTitle="@string/pref_syncConnectionType"
-        android:entries="@array/pref_syncConnectionTypes_entries"
-        android:entryValues="@array/pref_syncConnectionTypes_values"
-        android:defaultValue="@string/pref_syncConnectionTypes_default" />
-<intent android:action="android.intent.action.VIEW"
-            android:data="http://www.example.com" />
+        android:title="@string/help"
+        android:dialogTitle="@string/help"
+        android:entries="@array/names"
+        android:entryValues="@array/values"
+        android:defaultValue="@string/help" />
+	<intent android:action="android.intent.action.VIEW"
+            android:data="http://www.github.com/jackokring/aceb" />
 </PreferenceScreen>

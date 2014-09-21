@@ -587,7 +587,7 @@ public class AceB implements Runnable {
                 m[dp] = maxDp;
             } else if(s.equals("<all>")) {
                 all = dp;//set for later
-            } else ((Video)machine).setCurrent(new Screen("DEBUG: "+s));
+            } else ((Video)machine).setCurrent(new MyDialog("DEBUG: "+s));
         }
         dp++;
     }

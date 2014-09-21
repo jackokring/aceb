@@ -13,7 +13,7 @@ import android.support.v4.app.Fragment;
  */
 
 
-public class Screen extends Fragment {
+public abstract class Screen extends Fragment {
 
     Screen last;
     ActionAssignment head;
