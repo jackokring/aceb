@@ -16,6 +16,7 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(viewXML);
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
 
 	@Override
@@ -35,5 +36,10 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public File getStorage() {
+		return Environment.getExternalStoragePublicDirectory(
+            	Environment.DIRECTORY_DOCUMENTS);
 	}
 }
