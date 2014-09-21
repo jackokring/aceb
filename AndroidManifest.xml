@@ -21,6 +21,32 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+		<intent-filter>
+		<!-- compile loader -->
+        	<action android:name="android.intent.action.RUN"/>
+        	<category android:name="android.intent.category.DEFAULT"/>
+		<category android:name="android.intent.category.BROWSABLE"/>
+        	<data android:scheme="file"
+			android:mimeType="*/*"
+ 			android:pathPattern=".*\\.ace"
+			android:pathPattern=".*\\..*\\.ace"
+            		android:pathPattern=".*\\..*\\..*\\.ace"
+            		android:pathPattern=".*\\..*\\..*\\..*\\.ace"
+        		android:host="*" />
+    		</intent-filter>
+		<intent-filter>
+		<!-- binary loader -->
+        	<action android:name="android.intent.action.RUN"/>
+        	<category android:name="android.intent.category.DEFAULT"/>
+		<category android:name="android.intent.category.BROWSABLE"/>
+        	<data android:scheme="file"
+			android:mimeType="*/*"
+ 			android:pathPattern=".*\\.aceb"
+			android:pathPattern=".*\\..*\\.aceb"
+            		android:pathPattern=".*\\..*\\..*\\.aceb"
+            		android:pathPattern=".*\\..*\\..*\\..*\\.aceb"
+        		android:host="*" />
+    		</intent-filter>
         </activity>
     </application>
 

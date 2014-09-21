@@ -1,5 +1,4 @@
-aceb
-====
+# aceb
 
 Android only continuation of [[http://acebforth.googlecode.com]].
 The other platforms will no longer be developed for. Strictly Android only.
@@ -9,10 +8,13 @@ removed words based on them having little use for a 16 bit address width
 FORTH, and some additions for modern utility. It is not and never will be an
 ANS FORTH. There are many differences.
 
-Extensions (will) use an Intent interface, so that anybody may make an Android
+Extensions use an Intent interface, so that anybody may make an Android
 application which supports the possible event triggers. This allows a great
-flexibility. This app itself (will) supports some triggers to allow other
-apps to use this one as a language and evaluation service. 
+flexibility. This app itself supports some triggers to allow other
+apps to use this one as a language and evaluation service.
+
+* .ace - a text FORTH file extension (for code to compile)
+* .aceb - a binary format file extension (for snapshots of memory)
 
 Check the Wiki for more information. I've included the extra project which
 eclipse made called appcompat_v7 for handling the action bar. Apart from that
