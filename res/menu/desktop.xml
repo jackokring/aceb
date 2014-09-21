@@ -1,12 +1,42 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.github.jackokring.aceb.Desktop" >
+    tools:context="com.github.jackokring.aceb.Desktop" 
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
 
     <item
+        android:id="@+id/action_home"
+        android:title="@string/action_home"
+        android:icon="@drawable/ic_action_computer"
+        yourapp:showAsAction="ifRoom|withText"
+        />
+    
+    <item
+        android:id="@+id/action_edit"
+        android:title="@string/action_edit"
+        android:icon="@drawable/ic_action_edit"
+        yourapp:showAsAction="ifRoom|withText"
+        />
+    
+    <item
+        android:id="@+id/action_load"
+        android:title="@string/action_load"
+        android:icon="@drawable/ic_action_play"
+        yourapp:showAsAction="ifRoom|withText"
+        />
+    
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_action_save"
+        yourapp:showAsAction="ifRoom|withText"
+    	/>
+    
+    <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_action_settings"
+        yourapp:showAsAction="ifRoom|withText"
+        />
 
 </menu>
