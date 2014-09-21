@@ -1,6 +1,6 @@
 # aceb
 
-Android only continuation of [[http://acebforth.googlecode.com]].
+Android only continuation of http://acebforth.googlecode.com on Google.
 The other platforms will no longer be developed for. Strictly Android only.
 
 The FORTH system supported is very close to the Jupiter Ace's FORTH, with some
@@ -20,3 +20,6 @@ Check the Wiki for more information. I've included the extra project which
 eclipse made called appcompat_v7 for handling the action bar. Apart from that
 this project is an exact dump of the working project directory, including all
 setup files.
+
+For licence information excluding the appcompat_v7 see [[LICENCE.md]] which is
+quite open source if you want it.
