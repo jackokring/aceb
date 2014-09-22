@@ -14,5 +14,4 @@ package com.github.jackokring.aceb;
 
 public interface Keys {
     public void exited();
-    public void actions(Action ac, Keys s);
 }

@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import android.support.v4.app.Fragment;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -9,7 +11,7 @@ package com.github.jackokring.aceb;
  *
  * @author jacko
  */
-public class TextBox extends Screen {???
+public class TextBox extends Fragment {???
     public TextBox(String s) {
         super(s);
     }

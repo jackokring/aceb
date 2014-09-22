@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import android.support.v4.app.Fragment;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -11,6 +13,5 @@ package com.github.jackokring.aceb;
  */
 
 public interface Video {
-    public void setCurrent(Screen a);
-    public Screen getCurrent();
+    public void setCurrent(Fragment a);
 }

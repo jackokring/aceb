@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import android.support.v4.app.Fragment;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -9,7 +11,7 @@ package com.github.jackokring.aceb;
  *
  * @author jacko
  */
-public class Lister extends Screen {???
+public class Lister extends Fragment {???
     public Lister(String s) {
         super(s);
     }

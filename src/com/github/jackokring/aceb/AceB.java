@@ -684,54 +684,21 @@ public class AceB implements Runnable {
     }
 
     /* APPLICATION INTERFACE */
-    private static Action exitCommand; // The exit command
-    private static Action inputCommand;
-    private static Action brk, rst, past;
-    private static char key;
-
-    private static DisplayTerminal gc;
-    private static TextBox ta;
-    private static Screen xit;
-    private static Screen probs;
-    private static Lister history;
 
     public static Object machine;
 
     public AceB(Object mach) {
         machine = mach;
-        exitCommand = new Action("EXIT", 3);
-        inputCommand = new Action("ENTER", 0);
-        brk = new Action("STOP", 2);
-        rst = new Action("RESET", 2);
-        past = new Action("PAST", 1);
-        gc = new DisplayTerminal();
-        ta = new TextBox("FORTH Input");
-        xit = new Screen("BYE, BYE! Thanks for using AceB FORTH.");
-        probs = new Screen("NATIVE or MEDIA ignored.");
-        history = new Lister("PAST");
-        history.addCommand(exitCommand);
-        history.addCommand(inputCommand);
-        gc.addCommand(exitCommand);
-        gc.addCommand(inputCommand);
-        gc.addCommand(brk);
-        gc.addCommand(rst);
-        ta.addCommand(exitCommand);
-        ta.addCommand(inputCommand);
-        ta.addCommand(past);
-        ((Video)machine).setCurrent(gc);
         (new Thread(this)).start();
     }
 
-    public void startApp() {
-        p = false;
-    }
-
-    static boolean destroy;
-    private static boolean p;//internal application pause
-    static boolean pause;
-    static boolean exited;
+    public boolean destroy;
+    public static boolean p;//internal application pause
+    public boolean pause;
+    public boolean exited;
 
     public void run() {
+    	p = true;
         pause = false;
         exited = false;
         dict();
@@ -743,60 +710,4 @@ public class AceB implements Runnable {
         exited = true;
     }
 
-    public void pauseApp() {
-        p = true;
-    }
-
-    public void destroyApp(boolean unconditional) {
-        try {
-            p = false;
-            destroy = true;
-            if(urlStream != null) urlStream.close();
-        } catch (Exception e) {
-            
-        }
-    }
-
-    public void actions(Action c, Keys s) {
-        if (c == exitCommand) {
-            if(s == gc) {
-                ((Video)machine).setCurrent(xit);
-            } else if(s == ta) {
-                //keep buffer for flipping back to look
-                ((Video)machine).setCurrent(gc);
-            } else {
-                ((Video)machine).setCurrent(ta);
-            }
-        }
-        if (c == inputCommand) {
-            //prcess input screen
-            if(s == gc) {
-                ((Video)machine).setCurrent(ta);
-            } else if(s == ta) {
-                if(history.append(ta.getString())>16) {
-                    history.delete(0);
-                }
-                evaluate(ta.getString());
-                ta.setString("");
-                ((Video)machine).setCurrent(gc);
-            } else {
-                int i = history.getSelectedIndex();
-                if(i!=-1) ta.setString(history.getString(i));
-                ((Video)machine).setCurrent(ta);
-            }
-        }
-        if(c == brk) alloc();//goto start vector
-        if(c == rst) {
-            destroy = true;
-            while(!exited) Thread.yield();
-            (new Thread(this)).start();
-        }
-        if(c == past) {
-            ((Video)machine).setCurrent(history);
-        }
-        if(s == xit) {
-            destroyApp(false);
-            ((Keys)machine).exited();
-        }
-    }
 }

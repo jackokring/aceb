@@ -1089,7 +1089,8 @@ containing a value of this type.
         public static final int ic_action_play=0x7f02005a;
         public static final int ic_action_save=0x7f02005b;
         public static final int ic_action_settings=0x7f02005c;
-        public static final int ic_launcher=0x7f02005d;
+        public static final int ic_action_share=0x7f02005d;
+        public static final int ic_launcher=0x7f02005e;
     }
     public static final class id {
         public static final int action_bar=0x7f06001c;
@@ -1108,6 +1109,7 @@ containing a value of this type.
         public static final int action_mode_close_button=0x7f060024;
         public static final int action_save=0x7f060040;
         public static final int action_settings=0x7f060041;
+        public static final int action_share=0x7f060042;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1261,10 +1263,16 @@ containing a value of this type.
         public static final int action_load=0x7f0b0010;
         public static final int action_save=0x7f0b0011;
         public static final int action_settings=0x7f0b0012;
+        public static final int action_share=0x7f0b0013;
         public static final int app_name=0x7f0b000d;
-        public static final int cancel=0x7f0b0013;
-        public static final int help=0x7f0b0015;
-        public static final int ok=0x7f0b0014;
+        public static final int cancel=0x7f0b0014;
+        public static final int help=0x7f0b001a;
+        public static final int help_text_generic=0x7f0b001b;
+        public static final int ok=0x7f0b0015;
+        public static final int probs=0x7f0b0018;
+        public static final int probs_help=0x7f0b0019;
+        public static final int xit=0x7f0b0016;
+        public static final int xit_help=0x7f0b0017;
     }
     public static final class style {
         /** 
@@ -1497,7 +1505,8 @@ containing a value of this type.
         public static final int Widget_AppCompat_Spinner_DropDown_ActionBar=0x7f0c0022;
     }
     public static final class xml {
-        public static final int preferences=0x7f050000;
+        public static final int filepaths=0x7f050000;
+        public static final int preferences=0x7f050001;
     }
     public static final class styleable {
         /**  ============================================ 

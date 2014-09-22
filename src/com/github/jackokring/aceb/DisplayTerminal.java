@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import android.support.v4.app.Fragment;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -12,7 +14,7 @@ package com.github.jackokring.aceb;
  */
 
 
- public class DisplayTerminal extends Screen {
+ public class DisplayTerminal extends Fragment {
 
         public void setCell(int x, int y, int c) {
             

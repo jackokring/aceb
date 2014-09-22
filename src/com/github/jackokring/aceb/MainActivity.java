@@ -1,7 +1,15 @@
 package com.github.jackokring.aceb;
 
+import java.io.File;
+
+import android.support.v4.content.FileProvider;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.*;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,11 +34,11 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(menuXML, menu);
 
-// Set up ShareActionProvider's default share intent
-    MenuItem shareItem = menu.findItem(R.id.action_share);
-    mShareActionProvider = (ShareActionProvider)
-            MenuItemCompat.getActionProvider(shareItem);
-    mShareActionProvider.setShareIntent(getDefaultIntent());
+		// Set up ShareActionProvider's default share intent
+		MenuItem shareItem = menu.findItem(R.id.action_share);
+		mShareActionProvider = (ShareActionProvider)
+										MenuItemCompat.getActionProvider(shareItem);
+		mShareActionProvider.setShareIntent(getDefaultIntent());
 
 		return true;
 	}
@@ -42,6 +50,7 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			//TODO: open settings activity
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -49,21 +58,25 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 
 	public File getStorage() {
 		return Environment.getExternalStoragePublicDirectory(
-            	Environment.DIRECTORY_DOCUMENTS);
+            	Environment.DIRECTORY_DOWNLOADS);
+	}
+	
+	public File getMemFile() {
+		return new File("memory.ace");
 	}
 
-/** Defines a default (dummy) share intent to initialize the action provider.
-  * However, as soon as the actual content to be used in the intent
-  * is known or changes, you must update the share intent by again calling
-  * mShareActionProvider.setShareIntent()
-  */
-private Intent getDefaultIntent() {
-    Intent intent = new Intent(Intent.ACTION_SEND);
-	intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-	fileUri = FileProvider.getUriForFile(this,
-                            "com.github.jackokring.aceb.fileprovider",
-                            memFile);
-    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
-    return intent;
-}
+	/** Defines a default (dummy) share intent to initialize the action provider.
+	  * However, as soon as the actual content to be used in the intent
+	  * is known or changes, you must update the share intent by again calling
+	  * mShareActionProvider.setShareIntent()
+	  */
+	private Intent getDefaultIntent() {
+	    Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		Uri fileUri = FileProvider.getUriForFile(this,
+	                            "com.github.jackokring.aceb.fileprovider",
+	                            getMemFile());
+	    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
+	    return intent;
+	}
 }

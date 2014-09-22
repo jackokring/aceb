@@ -244,7 +244,8 @@ int drawable ic_action_edit 0x7f020059
 int drawable ic_action_play 0x7f02005a
 int drawable ic_action_save 0x7f02005b
 int drawable ic_action_settings 0x7f02005c
-int drawable ic_launcher 0x7f02005d
+int drawable ic_action_share 0x7f02005d
+int drawable ic_launcher 0x7f02005e
 int id action_bar 0x7f06001c
 int id action_bar_activity_content 0x7f060015
 int id action_bar_container 0x7f06001b
@@ -261,6 +262,7 @@ int id action_menu_presenter 0x7f060017
 int id action_mode_close_button 0x7f060024
 int id action_save 0x7f060040
 int id action_settings 0x7f060041
+int id action_share 0x7f060042
 int id activity_chooser_view_content 0x7f060025
 int id always 0x7f06000b
 int id beginning 0x7f060011
@@ -357,10 +359,16 @@ int string action_home 0x7f0b000e
 int string action_load 0x7f0b0010
 int string action_save 0x7f0b0011
 int string action_settings 0x7f0b0012
+int string action_share 0x7f0b0013
 int string app_name 0x7f0b000d
-int string cancel 0x7f0b0013
-int string help 0x7f0b0015
-int string ok 0x7f0b0014
+int string cancel 0x7f0b0014
+int string help 0x7f0b001a
+int string help_text_generic 0x7f0b001b
+int string ok 0x7f0b0015
+int string probs 0x7f0b0018
+int string probs_help 0x7f0b0019
+int string xit 0x7f0b0016
+int string xit_help 0x7f0b0017
 int style AppBaseTheme 0x7f0c008b
 int style AppTheme 0x7f0c008c
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0c0063
@@ -612,4 +620,5 @@ int[] styleable View { 0x010100da, 0x7f010038, 0x7f010039 }
 int styleable View_android_focusable 0
 int styleable View_paddingEnd 2
 int styleable View_paddingStart 1
-int xml preferences 0x7f050000
+int xml filepaths 0x7f050000
+int xml preferences 0x7f050001

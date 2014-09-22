@@ -8,10 +8,35 @@ import android.support.v4.app.DialogFragment;
 public class MyDialog extends DialogFragment {
 	
 	int res;
+	int help;
 	
-	public MyDialog(int what) {
+	public MyDialog(int what, int how) {
 		super();
 		res = what;
+		help = how;
+	}
+	
+	public void ok() {
+		
+	}
+	
+	private void proxy(boolean t) {
+		if(t) ok(); else cancel();
+	}
+	
+	public void help() {
+		(new MyDialog(help, R.string.help_text_generic) {
+			public void ok() {
+				proxy(true);
+			}
+			public void cancel() {
+				proxy(false);
+			}
+		}).show(getFragmentManager(), getTag());
+	}
+	
+	public void cancel() {
+		
 	}
 	
     @Override
@@ -21,18 +46,18 @@ public class MyDialog extends DialogFragment {
         builder.setMessage(res)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // FIRE ZE MISSILES!
+                       ok();
                    }
             })
             .setNeutralButton(R.string.help, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // User cancelled the dialog
+                       help();
                    }
             })
             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                }
+                	public void onClick(DialogInterface dialog, int id) {
+                		cancel();
+                	}
         });
         // Create the AlertDialog object and return it
         return builder.create();
