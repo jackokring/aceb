@@ -12,7 +12,9 @@ package com.github.jackokring.aceb;
 
 import java.io.IOException;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 public class Desktop extends MainActivity {
@@ -31,8 +33,8 @@ public class Desktop extends MainActivity {
 		int id = item.getItemId();
 		switch(id) {
 		//TODO: fill in actions
-		case R.id.action_home: return true;
-		case R.id.action_edit: return true;
+		case R.id.action_home: setCurrent(gc); return true;
+		case R.id.action_edit: setCurrent(ta); return true;
 		case R.id.action_load: return true;
 		case R.id.action_save: return true;
 		//rest is settings in super
@@ -40,13 +42,13 @@ public class Desktop extends MainActivity {
 		}
 	}
 
-    private static DisplayTerminal gc;
-    private static TextBox ta;
-    private static MyDialog xit;
-    private static MyDialog probs;
-    private static Lister history;
+    public DisplayTerminal gc;
+    public TextBox ta;
+    public MyDialog xit;
+    public MyDialog probs;
+    public Lister history;
     
-    public void pauseApp() {
+    public void OnPause(Bundle b) {
         a.p = true;
     }
 
@@ -54,6 +56,8 @@ public class Desktop extends MainActivity {
         a.p = false;
         a.destroy = true;
     }
+    
+    /*
 
     public void actions(Action c, Keys s) {
         if (c == exitCommand) {
@@ -97,6 +101,8 @@ public class Desktop extends MainActivity {
             ((Keys)machine).exited();
         }
     }
+    
+    */
 
     public Desktop() {
         gc = new DisplayTerminal();
@@ -115,9 +121,12 @@ public class Desktop extends MainActivity {
     }
 
     /* THE VIDEO INTERFACE */
+    private int remove = R.id.content;
 
     public void setCurrent(Fragment a) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        FragmentManager fm = this.getSupportFragmentManager();
+        fm.beginTransaction().replace(remove, a).commit();
+        remove = a.getId();
     }
 
     /* THE AUDIO INTERFACE */

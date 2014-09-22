@@ -1258,21 +1258,22 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000b;
-        public static final int action_edit=0x7f0b000f;
-        public static final int action_home=0x7f0b000e;
-        public static final int action_load=0x7f0b0010;
-        public static final int action_save=0x7f0b0011;
-        public static final int action_settings=0x7f0b0012;
-        public static final int action_share=0x7f0b0013;
+        public static final int action_edit=0x7f0b0010;
+        public static final int action_home=0x7f0b000f;
+        public static final int action_load=0x7f0b0011;
+        public static final int action_save=0x7f0b0012;
+        public static final int action_settings=0x7f0b0013;
+        public static final int action_share=0x7f0b0014;
         public static final int app_name=0x7f0b000d;
-        public static final int cancel=0x7f0b0014;
-        public static final int help=0x7f0b001a;
-        public static final int help_text_generic=0x7f0b001b;
-        public static final int ok=0x7f0b0015;
-        public static final int probs=0x7f0b0018;
-        public static final int probs_help=0x7f0b0019;
-        public static final int xit=0x7f0b0016;
-        public static final int xit_help=0x7f0b0017;
+        public static final int cancel=0x7f0b0015;
+        public static final int help=0x7f0b001b;
+        public static final int help_text_generic=0x7f0b001c;
+        public static final int ok=0x7f0b0016;
+        public static final int probs=0x7f0b0019;
+        public static final int probs_help=0x7f0b001a;
+        public static final int setting_name=0x7f0b000e;
+        public static final int xit=0x7f0b0017;
+        public static final int xit_help=0x7f0b0018;
     }
     public static final class style {
         /** 

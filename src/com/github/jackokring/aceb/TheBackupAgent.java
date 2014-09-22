@@ -1,7 +1,9 @@
 package com.github.jackokring.aceb;
 
 import android.app.backup.BackupAgentHelper;
- import android.app.backup.SharedPreferencesBackupHelper;
+import android.app.backup.BackupManager;
+import android.app.backup.FileBackupHelper;
+import android.app.backup.SharedPreferencesBackupHelper;
 
 //requestRestore() for manual restore ...
 
@@ -14,30 +16,27 @@ import android.app.backup.BackupAgentHelper;
      // An arbitrary string used within the BackupAgentHelper implementation to
      // identify the SharedPreferencesBackupHelper's data.
      static final String MY_PREFS_BACKUP_KEY = "myprefs";
+     
+     // The name of the SharedPreferences file
+     static final String HIGH_SCORES_FILENAME = "scores";
+
+     // A key to uniquely identify the set of backup data
+     static final String FILES_BACKUP_KEY = "myfiles";
 
      // Simply allocate a helper and install it
-     void onCreate() {
+     public void onCreate() {
          SharedPreferencesBackupHelper helper =
                  new SharedPreferencesBackupHelper(this, PREFS_DISPLAY, PREFS_SCORES);
          addHelper(MY_PREFS_BACKUP_KEY, helper);
+
+
+         FileBackupHelper helper2 = new FileBackupHelper(this, HIGH_SCORES_FILENAME);
+         addHelper(FILES_BACKUP_KEY, helper2);
      }
 
-// The name of the SharedPreferences file
-    static final String HIGH_SCORES_FILENAME = "scores";
-
-    // A key to uniquely identify the set of backup data
-    static final String FILES_BACKUP_KEY = "myfiles";
-
-    // Allocate a helper and add it to the backup agent
-    @Override
-    void onCreate() {
-        FileBackupHelper helper = new FileBackupHelper(this, HIGH_SCORES_FILENAME);
-        addHelper(FILES_BACKUP_KEY, helper);
-    }
-
-public void requestBackup() {
-   BackupManager bm = new BackupManager(this);
-   bm.dataChanged();
- }
+     public void requestBackup() {
+    	 BackupManager bm = new BackupManager(this);
+    	 bm.dataChanged();
+     }
 
  }

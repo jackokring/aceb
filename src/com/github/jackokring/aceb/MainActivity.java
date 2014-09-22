@@ -13,7 +13,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public abstract class MainActivity extends ActionBarActivity implements Video, Audio, Keys, Storage {
+public abstract class MainActivity extends ActionBarActivity {
 	
 	//only for common life cycle stuff
 	
@@ -51,6 +51,7 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			//TODO: open settings activity
+			this.startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -62,10 +63,10 @@ public abstract class MainActivity extends ActionBarActivity implements Video, A
 	}
 	
 	public File getMemFile() {
-		return new File("memory.ace");
+		return new File("memory.aceb");//a binary image share
 	}
 
-	/** Defines a default (dummy) share intent to initialize the action provider.
+	/** Defines a default share intent to initialize the action provider.
 	  * However, as soon as the actual content to be used in the intent
 	  * is known or changes, you must update the share intent by again calling
 	  * mShareActionProvider.setShareIntent()

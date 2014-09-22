@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">AceB FORTH</string>
+    <string name="setting_name">AceB Settings</string>
     
     <string name="action_home">Home</string>
     <string name="action_edit">Edit</string>

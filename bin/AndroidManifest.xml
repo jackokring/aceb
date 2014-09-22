@@ -9,12 +9,26 @@
         android:targetSdkVersion="16" />
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+		android:backupAgent="TheBackupAgent">
+		<meta-data android:name="com.google.android.backup.api_key"
+			android:value="AEdPqrEAAAAIHzTc-hndbgWY17GnNdnmmpfAoW2xyoM0EtNbYg" />
+		
+		<activity
+		    android:name=".SettingsActivity"
+		    android:label="@string/setting_name">
+        	<intent-filter>
+            	<action android:name="android.intent.action.MAIN" />
+            	<category android:name="android.intent.category.PREFERENCE" />
+        	</intent-filter>
+		</activity>
+		
         <activity
             android:name=".Desktop"
             android:label="@string/app_name" >
@@ -40,14 +54,29 @@
 	        	<action android:name="android.intent.action.RUN"/>
 	        	<category android:name="android.intent.category.DEFAULT"/>
 				<category android:name="android.intent.category.BROWSABLE"/>
-	        	<data android:scheme="file"/>
-				<data android:mimeType="*/*"/>
-	 			<data android:pathPattern=".*\\.aceb"/>
-				<data android:pathPattern=".*\\..*\\.aceb"/>
-	            <data android:pathPattern=".*\\..*\\..*\\.aceb"/>
-	            <data android:pathPattern=".*\\..*\\..*\\..*\\.aceb"/>
-	        	<data android:host="*"/>
+	        		<data android:scheme="file"/>
+					<data android:mimeType="*/*"/>
+	 				<data android:pathPattern=".*\\.aceb"/>
+					<data android:pathPattern=".*\\..*\\.aceb"/>
+	            	<data android:pathPattern=".*\\..*\\..*\\.aceb"/>
+	            	<data android:pathPattern=".*\\..*\\..*\\..*\\.aceb"/>
+	        		<data android:host="*"/>
+    		</intent-filter>
+			<!-- Script loader -->
+			<intent-filter>
+        		<action android:name="android.intent.action.SEND"/>
+        		<category android:name="android.intent.category.DEFAULT"/>
+        			<data android:mimeType="application/com.github.jackokring.aceb"/>
     		</intent-filter>
         </activity>
+		<provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.github.jackoring.aceb.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 </manifest>

@@ -3,6 +3,8 @@ package com.github.jackokring.aceb;
 
 import java.io.*;
 
+import android.app.Activity;
+
 public class AceB implements Runnable {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
@@ -150,14 +152,14 @@ public class AceB implements Runnable {
 
     static void beep(int f, int d) {
         try {
-            ((Audio)machine).beep(f, d);
+            machine.beep(f, d);
         } catch(Exception e) {
             
         }
     }
 
     static void bye() {
-        ((Video)machine).setCurrent(xit);
+        machine.setCurrent(machine.xit);
     }
 
     private static String eval; //max 256 at PAD
@@ -194,8 +196,8 @@ public class AceB implements Runnable {
     }
 
     private static void edit(int s) {
-        ta.setString(asString(s)+eval);
-        ((Video)machine).setCurrent(ta);
+        machine.ta.setString(asString(s)+eval);
+        machine.setCurrent(machine.ta);
     }
 
     private static int inkey() {
@@ -232,29 +234,12 @@ public class AceB implements Runnable {
             if(s != 0) {
                 if(urlStream != null) urlStream.close();
                 /* urlStream = Connector.openInputStream(asString(s)); */
-                ((Storage)machine).openURL(asString(s));
+                machine.openURL(asString(s));
             }
             i = Native.fromUTF(urlStream);
             return i;
         } catch (Exception e) {
             return 0;
-        }
-    }
-
-    static void media(int s) {
-        try {
-            ((Storage)machine).play(asString(s));
-        } catch (Exception e) {
-            ((Video)machine).setCurrent(probs);
-        }
-    }
-
-    static void nativ(int s) {
-        try {
-            Native n = (Native)Class.forName(asString(s)).newInstance();
-            sp = (char)n.code(sp);
-        } catch(Exception e) {
-            ((Video)machine).setCurrent(probs);
         }
     }
 
@@ -273,9 +258,9 @@ public class AceB implements Runnable {
             for(j=0;j<y;j++)
                 a = j*x;
                 for(i=0;i<x;i++) {
-                    gc.setCell(i, j, m[b+i+a]+1);
+                    machine.gc.setCell(i, j, m[b+i+a]+1);
             }
-            gc.update();
+            machine.gc.update();
             mils=mil2;
             return(mil3);
         }
@@ -670,9 +655,9 @@ public class AceB implements Runnable {
     static void alloc() {
         //default
         //build screen structure
-        m[screen] = (char)(-(gc.getWidth()/8)*(gc.getHeight()/12)-3);
-        m[m[screen]] = (char)(gc.getWidth()/8);
-        m[m[screen]+1] = (char)(gc.getHeight()/12);
+        m[screen] = (char)(-(machine.gc.getWidth()/8)*(machine.gc.getHeight()/12)-3);
+        m[m[screen]] = (char)(machine.gc.getWidth()/8);
+        m[m[screen]+1] = (char)(machine.gc.getHeight()/12);
         //set return stack
         rp = (char)(m[screen]);//just under screen as pre decrement
         //set data stack
@@ -685,15 +670,15 @@ public class AceB implements Runnable {
 
     /* APPLICATION INTERFACE */
 
-    public static Object machine;
+    public static Desktop machine;
 
-    public AceB(Object mach) {
+    public AceB(Desktop mach) {
         machine = mach;
         (new Thread(this)).start();
     }
 
     public boolean destroy;
-    public static boolean p;//internal application pause
+    public boolean p;//internal application pause
     public boolean pause;
     public boolean exited;
 
