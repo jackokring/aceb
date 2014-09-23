@@ -20,10 +20,12 @@ public class DisplayTerminal extends Fragment {
 	public int x = 32;
 	public int y = 32;
 	int cx, cy;
+	char cc;
+	boolean co;
 	Bitmap b = getNew(x, y);
 	Canvas c;
 	Bitmap f;
-	int bg = 0x00ffff00;
+	char bg = 0x0ff0;
 	Context con = getActivity().getApplicationContext();
 	ImageView i;
 	
@@ -44,7 +46,9 @@ public class DisplayTerminal extends Fragment {
 		x = xs;
 		y = ys;
 		c = new Canvas(b);
-		clear();
+		char t = bg;
+		clear((char)(bg&0x0fff));//no alpha on clear
+		bg = t;//restore fade
 		return b;
 	}
 	 
@@ -62,13 +66,16 @@ public class DisplayTerminal extends Fragment {
 		i.invalidate();
 	}
 	 
-	public void clear() {
+	public void clear(char i) {
+		int a, r, g, b;
+		a = ((i >> 12)&15) << 28;
+		r = ((i >> 8)&15) << 20;
+		g = ((i >> 4)&15) << 12;
+		b = (i&15) << 4;
+		bg = (char)(a + r + g + b);//also fade blending
+		p = new Paint(bg);
 		c.drawColor(bg);
 		invalidate();
-	}
-	
-	public void setBg(int b) {
-		bg = b;
 	}
 	 
 	public void setCell(int px, int py, char ch) {
@@ -82,17 +89,26 @@ public class DisplayTerminal extends Fragment {
 			setInk(xt);
 		}
 		ch %= 1024;
-		Rect r = new Rect(px*8, py*12, px*8 + 8, py*12 + 12);
-		Rect chr = new Rect((ch%32)*8, (ch/32)*12, (ch%32)*8 + 8, (ch/32)*12 + 12);
+		Rect r = new Rect(px*8, py*12, px*8 + 7, py*12 + 11);
+		Rect chr = new Rect((ch%32)*8, (ch/32)*12, (ch%32)*8 + 7, (ch/32)*12 + 11);
 		c.drawRect(r, p);//bg
 		c.drawBitmap(f, chr, r, ink);
 		invalidate();
     } 
 	
+	public void cursor(boolean on) {
+		if(on && (System.currentTimeMillis()&1024) == 0) {
+			setCell(cx, cy, (char)127);
+		} else if(co) {
+			setCell(cx, cy, cc);
+		}
+		co = on;//persist
+	}
+	
 	public void setInk(int i) {
 		int r, g, b;
-		r = (i%16)*64;
-		g = ((i%4)&3)*64;
+		r = (i/16)*64;
+		g = ((i/4)&3)*64;
 		b = (i&3)*64;
 		filt[4] = r;
 		filt[9] = g;
