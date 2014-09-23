@@ -15,12 +15,12 @@
     <string name="ok">OK</string>
 
     <string name="xit">BYE, BYE! Thanks for using AceB FORTH.</string>
-    <string name="xit_help">You can exit from here by selecting OK in the previous dialog.</string>
+    <string name="xit_help">You can exit from here by selecting OK or Cancel to continue working in AceB.</string>
     
-    <string name="probs">There was a problem with IO.</string>
-    <string name="probs_help">An error prevented a feature from working, and so it was ignored.</string>
+    <string name="probs">There was an unexpected problem with input or output. Ignore it?</string>
+    <string name="probs_help">You can use Cancel to stop the program, or OK to simulate the end of input or success of output.</string>
     
     <string name="help">Help</string>
-    <string name="help_text_generic">Help can be displayed by pressing the help button in a dialog.</string>
+    <string name="help_text_generic">Help can be displayed by pressing the help button in a dialog, and the OK and Cancel buttons still function the same.</string>
 
 </resources>

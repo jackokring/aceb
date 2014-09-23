@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 /**
  *
@@ -20,12 +19,14 @@ public class DisplayTerminal extends Fragment {
 
 	public int x = 32;
 	public int y = 32;
+	int cx, cy;
 	Bitmap b = getNew(x, y);
 	Canvas c;
-	Bitmap f = ((BitmapDrawable) BitmapDrawable.createFromPath("font.png")).getBitmap();
+	Bitmap f;
 	int bg = 0x00ffff00;
-	ImageView i;
 	Context con = getActivity().getApplicationContext();
+	ImageView i;
+	
 	Paint p = new Paint(bg);
 	Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);
 	float[] filt = {
@@ -43,14 +44,15 @@ public class DisplayTerminal extends Fragment {
 		x = xs;
 		y = ys;
 		c = new Canvas(b);
-		i = new ImageView(con);
-		i.setScaleType(ScaleType.FIT_XY);
+		clear();
 		return b;
 	}
 	 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
+		i = (ImageView) getActivity().findViewById(R.id.font);
+		f = ((BitmapDrawable)con.getResources().getDrawable(R.drawable.font)).getBitmap();
 		container.addView(i);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
@@ -69,14 +71,18 @@ public class DisplayTerminal extends Fragment {
 		bg = b;
 	}
 	 
-	public void setCell(int x, int y, char ch) {
+	public void setCell(int px, int py, char ch) {
+		px %= x;
+		py %= y;
+		cx = px;
+		cy = py;
 		int xt = ch / 1024;
 		if(xt != last) {//new colour
 			last = xt;//cache
 			setInk(xt);
 		}
 		ch %= 1024;
-		Rect r = new Rect(x*8, y*12, x*8 + 8, y*12 + 12);
+		Rect r = new Rect(px*8, py*12, px*8 + 8, py*12 + 12);
 		Rect chr = new Rect((ch%32)*8, (ch/32)*12, (ch%32)*8 + 8, (ch/32)*12 + 12);
 		c.drawRect(r, p);//bg
 		c.drawBitmap(f, chr, r, ink);

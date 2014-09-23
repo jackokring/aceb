@@ -1101,15 +1101,15 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f060023;
         public static final int action_bar_title=0x7f060022;
         public static final int action_context_bar=0x7f06001d;
-        public static final int action_edit=0x7f06003e;
-        public static final int action_home=0x7f06003d;
-        public static final int action_load=0x7f06003f;
+        public static final int action_edit=0x7f06003f;
+        public static final int action_home=0x7f06003e;
+        public static final int action_load=0x7f060040;
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_save=0x7f060040;
-        public static final int action_settings=0x7f060041;
-        public static final int action_share=0x7f060042;
+        public static final int action_save=0x7f060041;
+        public static final int action_settings=0x7f060042;
+        public static final int action_share=0x7f060043;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1124,6 +1124,7 @@ containing a value of this type.
         public static final int end=0x7f060013;
         public static final int expand_activities_button=0x7f060026;
         public static final int expanded_menu=0x7f06002c;
+        public static final int font=0x7f06003d;
         public static final int home=0x7f060014;
         public static final int homeAsUp=0x7f060005;
         public static final int icon=0x7f06002a;
@@ -1212,7 +1213,8 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_desktop=0x7f030018;
-        public static final int support_simple_spinner_dropdown_item=0x7f030019;
+        public static final int font=0x7f030019;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
     }
     public static final class menu {
         public static final int desktop=0x7f0e0000;

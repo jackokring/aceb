@@ -82,6 +82,7 @@ public class AceB implements Runnable {
             //INURL
             case 9: m[sp]=(char)inurl(t);
                 break;
+            //TODO: provide different actions for next 2
             //MEDIA
             case 10: sp++;
                 media(t); break;
@@ -151,11 +152,7 @@ public class AceB implements Runnable {
     }
 
     void beep(int f, int d) {
-        try {
-            machine.beep(f, d);
-        } catch(Exception e) {
-            
-        }
+        machine.beep(f, d);
     }
 
     void bye() {
@@ -236,9 +233,10 @@ public class AceB implements Runnable {
                 /* urlStream = Connector.openInputStream(asString(s)); */
                 machine.openURL(asString(s));
             }
-            i = Native.fromUTF(urlStream);
+            i = (new UTF()).fromUTF(urlStream);
             return i;
         } catch (Exception e) {
+        	//TODO: IO error
             return 0;
         }
     }

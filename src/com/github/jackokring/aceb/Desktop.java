@@ -56,54 +56,8 @@ public class Desktop extends MainActivity {
         a.p = false;
         a.destroy = true;
     }
-    
-    /*
 
-    public void actions(Action c, Keys s) {
-        if (c == exitCommand) {
-            if(s == gc) {
-                ((Video)machine).setCurrent(xit);
-            } else if(s == ta) {
-                //keep buffer for flipping back to look
-                ((Video)machine).setCurrent(gc);
-            } else {
-                ((Video)machine).setCurrent(ta);
-            }
-        }
-        if (c == inputCommand) {
-            //prcess input screen
-            if(s == gc) {
-                ((Video)machine).setCurrent(ta);
-            } else if(s == ta) {
-                if(history.append(ta.getString())>16) {
-                    history.delete(0);
-                }
-                a.evaluate(ta.getString());
-                ta.setString("");
-                ((Video)machine).setCurrent(gc);
-            } else {
-                int i = history.getSelectedIndex();
-                if(i!=-1) ta.setString(history.getString(i));
-                setCurrent(ta);
-            }
-        }
-        if(c == brk) a.alloc();//goto start vector
-        if(c == rst) {
-            a.destroy = true;
-            while(!exited) Thread.yield();
-            (new Thread(this)).start();
-        }
-        if(c == past) {
-            ((Video)machine).setCurrent(history);
-        }
-        if(s == xit) {
-            destroyApp(false);
-            ((Keys)machine).exited();
-        }
-    }
-    
-    */
-
+    //TODO: oncreate vs constructor
     public Desktop() {
         gc = new DisplayTerminal();
         ta = new TextBox("FORTH Input");
@@ -112,6 +66,8 @@ public class Desktop extends MainActivity {
         probs = new MyDialog(R.string.probs, R.string.probs_help);
         history = new Lister("PAST");
         setCurrent(gc);
+        //TODO: vid and pause start...
+        a.vidout(1);
     }
 
     /* THE KEY INTERFACE */
