@@ -1,77 +1,68 @@
 package com.github.jackokring.aceb;
 
+import android.content.Context;
+import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 /**
  *
  * @author jacko
  */
 
+public class DisplayTerminal extends Fragment {
 
- public class DisplayTerminal extends Fragment {
+	public int x = 32;
+	public int y = 32;
+	Bitmap b = getNew(x, y);
+	Canvas c;
+	Bitmap f = ((BitmapDrawable) BitmapDrawable.createFromPath("font.png")).getBitmap();
+	public int bg = 0x00ffff00;
+	ImageView i;
+	Context con = getActivity().getApplicationContext();
+	 
+	public Bitmap getNew(int xs, int ys) {
+		b = Bitmap.createBitmap(xs*8, ys*12, Bitmap.Config.ARGB_8888);
+		x = xs;
+		y = ys;
+		c = new Canvas(b);
+		i = new ImageView(con);
+		i.setScaleType(ScaleType.FIT_XY);
+		return b;
+	}
+	 
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+		Bundle savedInstanceState) {
+		container.addView(i);
+		return super.onCreateView(inflater, container, savedInstanceState);
+	}
 
-        public void setCell(int x, int y, int c) {
-            
-        }
-        LayerManager layers;
-        TiledLayer tl;
-        Image paper;    // Holds the default paper yellow
-        public DisplayTerminal() {
-            super(false);
-            Image font;
-            scrn = (paper = Image.createImage(getWidth(), getHeight())).getGraphics();
-            scrn.setColor(255, 255, 0);
-            scrn.fillRect(0, 0, getWidth(), getHeight());
-            disp = getGraphics();
-            try {
-                font = Image.createImage("/Font.png");
-            } catch(Exception e) {
-                font = null;
-            }
-            tl = new TiledLayer(getWidth()/8,getHeight()/12,font,8,12);
-            layers = new LayerManager();
-            tl.setPosition(0,0);
-            tl.setVisible(true);
-            layers.append(tl);
-        }
+	public void invalidate() {
+		i.setImageBitmap(b);
+	}
+	 
+	public void clear() {
+		c.drawColor(bg);
+		invalidate();
+	}
+	 
+	public void setCell(int x, int y, int ch) {
+		int xt = ch / 1024;
+		//TODO: process high bits 
+		ch %= 1024;
+		Paint p = new Paint(bg);
+		Rect r = new Rect(x*8, y*12, x*8 + 8, y*12 + 12);
+		Rect chr = new Rect((ch%32)*8, (ch/32)*12, (ch%32)*8 + 8, (ch/32)*12 + 12);
+		c.drawRect(r, p);//bg
+		c.drawBitmap(f, chr, r, null);
+		invalidate();
+    } 
 
-     public void stringToCells(String s) {
-        int x;
-        for(x = 0; x < s.length(); x++)
-            ac.setCell(x%getWidth(), x/getWidth(), s.charAt(x));
-        //simple for moment ????
-     }
-
-     public void clear() {
-        int x, y;
-        for(x = 0; x < getWidth(); x++)
-            for(y = 0; y < getHeight(); y++)
-                ac.setCell(x, y, 33);//a space with the +1 offset
-     }
-
-        //something about an obvious character unicode
-        public void keyPressed(int code) {
-            String j = getKeyName(getKeyCode(getGameAction(code)));
-            if(j.length() != 0) {
-                key = j.charAt(0);
-            }
-        }
-
-        public void keyRepeated(int code) {
-            keyPressed(code);
-            //handle key repeats easy
-            //changed method of telpad
-        }
-
-        public void update() {
-            disp.drawImage(paper, 0, 0, Graphics.TOP | Graphics.LEFT);
-            layers.paint(disp,0,0);
-            flushGraphics();
-        }
-    }
+}

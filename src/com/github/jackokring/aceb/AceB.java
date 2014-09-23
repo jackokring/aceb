@@ -246,6 +246,7 @@ public class AceB implements Runnable {
     private static long mils;
 
     static long vidout(int mode) {
+    	//TODO: remove
         long mil2 = System.currentTimeMillis();
         long mil3 = mil2-mils;
         int a = 0;
