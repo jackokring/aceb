@@ -8,8 +8,8 @@ import android.app.Activity;
 public class AceB implements Runnable {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
-    static char[] m = new char[65536]; //memory
-    private static char rp, ip, sp, dp;
+    char[] m = new char[65536]; //memory
+    private char rp, ip, sp, dp;
 
     private static String[] prims = {
         //must keep the order like this
@@ -43,7 +43,7 @@ public class AceB implements Runnable {
         "(ALT)" //27
     };
 
-    private static void p(int p) {
+    private void p(int p) {
         char t = m[sp];
         char s = m[sp+1];
         char r = m[rp++];
@@ -137,7 +137,7 @@ public class AceB implements Runnable {
         ip=r;
     }
 
-    private static void next() {
+    private void next() {
         int addr = m[ip++];
         if(addr == 0) {
             //primitive
@@ -150,7 +150,7 @@ public class AceB implements Runnable {
         }
     }
 
-    static void beep(int f, int d) {
+    void beep(int f, int d) {
         try {
             machine.beep(f, d);
         } catch(Exception e) {
@@ -158,7 +158,7 @@ public class AceB implements Runnable {
         }
     }
 
-    static void bye() {
+    void bye() {
         machine.setCurrent(machine.xit);
     }
 
@@ -195,7 +195,7 @@ public class AceB implements Runnable {
             return true;
     }
 
-    private static void edit(int s) {
+    private void edit(int s) {
         machine.ta.setString(asString(s)+eval);
         machine.setCurrent(machine.ta);
     }
@@ -218,7 +218,7 @@ public class AceB implements Runnable {
             }
     }
 
-    static String asString(int s) {
+    String asString(int s) {
         String i = "";
         for(int j = 1; j <= m[s]; j++) {
             i+=(char)m[s+j];
@@ -226,9 +226,9 @@ public class AceB implements Runnable {
         return(i);
     }
 
-    static InputStream urlStream;
+    InputStream urlStream;
     // a UTF-8 to UTF-16 without suragate handling reader
-    private static int inurl(int s) {
+    private int inurl(int s) {
         try {
             int i;
             if(s != 0) {
@@ -243,9 +243,9 @@ public class AceB implements Runnable {
         }
     }
 
-    private static long mils;
+    private long mils;
 
-    static long vidout(int mode) {
+    long vidout(int mode) {
     	//TODO: remove
         long mil2 = System.currentTimeMillis();
         long mil3 = mil2-mils;
@@ -259,9 +259,8 @@ public class AceB implements Runnable {
             for(j=0;j<y;j++)
                 a = j*x;
                 for(i=0;i<x;i++) {
-                    machine.gc.setCell(i, j, m[b+i+a]+1);
+                    machine.gc.setCell(i, j, m[b+i+a]);
             }
-            machine.gc.update();
             mils=mil2;
             return(mil3);
         }
@@ -269,9 +268,9 @@ public class AceB implements Runnable {
     }
 
     /* DICTIONARY CONSTRUCTION */
-    private static int link=0, oldlink=0;    //zero default and -1 dict end
+    private int link=0, oldlink=0;    //zero default and -1 dict end
 
-    private static void head(String s) {
+    private void head(String s) {
         //makes a dictionary header
         //use ip as construction index
         int len = s.length();
@@ -284,7 +283,7 @@ public class AceB implements Runnable {
         oldlink=link;
     }
 
-    private static void prims() {
+    private void prims() {
         //builds the primitive dictionary entries
         int len = prims.length;
         for(int i=0;i<len;i++) {
@@ -493,7 +492,7 @@ public class AceB implements Runnable {
         "FORTH", "VOCABULARY <link>", //must be the last word, as it's an error thing
     };
 
-    static String[] split(String s) {
+    String[] split(String s) {
         int i = 0, j = 0;
         String old = "\n\t";//replace newline and tab
         for(i = 0;i < old.length();i++)
@@ -518,7 +517,7 @@ public class AceB implements Runnable {
         return rtn;
     }
 
-    private static void words(boolean b) {
+    private void words(boolean b) {
         //builds the dictionary entries
         int len = words.length;
         for(int i=0;i<len;i+=2) {
@@ -527,7 +526,7 @@ public class AceB implements Runnable {
         }
     }
 
-    private static void body(String s, boolean addr) {
+    private void body(String s, boolean addr) {
         //if addr is true the do search and fill with addresses
         //else just one cell per word
         //compile a body from the pseudo forth
@@ -542,9 +541,9 @@ public class AceB implements Runnable {
         } else dp+=cells.length; //jump over compilation cells
     }
 
-    private static int masterLink=0;//the compilation entry pointer
+    private int masterLink=0;//the compilation entry pointer
 
-    private static boolean findCompile(String s) {
+    private boolean findCompile(String s) {
         int j = masterLink;
         String i;
         while(!((i=asString(j)).equals(s))&&j!=0) {
@@ -559,9 +558,9 @@ public class AceB implements Runnable {
         }
     }
 
-    private static char all;
+    private char all;
 
-    private static void doSpecial(String s) {
+    private void doSpecial(String s) {
         //compile special
         try {
             m[dp]=(char)Integer.parseInt(s);//number
@@ -579,7 +578,7 @@ public class AceB implements Runnable {
     }
 
     /* SANITY */
-    private static void hide() {
+    private void hide() {
         int j = masterLink;
         int k = 0;//botch for no prvious
         String i;
@@ -616,7 +615,7 @@ public class AceB implements Runnable {
         "ERROR" //0 - may skip over
     };
 
-    private static void errors() {
+    private void errors() {
         int z = dp++;//a blank cell for string list
         int len = errors.length;
         for(int i=0;i<len;i++) {
@@ -626,9 +625,9 @@ public class AceB implements Runnable {
     }
 
     /* MAIN BUILDER */
-    private static char maxDp = 0;
+    private char maxDp = 0;
 
-    private static void dict() {
+    private void dict() {
         //make the dictionary
         dp = 1;
         prims();
@@ -651,14 +650,14 @@ public class AceB implements Runnable {
         alloc();//allocate and fill specials etc
     }
 
-    final static char screen = (char)-1;//DisplayTerminal structure pointer
+    final char screen = (char)-1;//DisplayTerminal structure pointer
 
-    static void alloc() {
+    void alloc() {
         //default
         //build screen structure
-        m[screen] = (char)(-(machine.gc.getWidth()/8)*(machine.gc.getHeight()/12)-3);
-        m[m[screen]] = (char)(machine.gc.getWidth()/8);
-        m[m[screen]+1] = (char)(machine.gc.getHeight()/12);
+        m[screen] = (char)(-1024 - 3);
+        m[m[screen]] = 32;
+        m[m[screen]+1] = 32;
         //set return stack
         rp = (char)(m[screen]);//just under screen as pre decrement
         //set data stack
@@ -671,11 +670,12 @@ public class AceB implements Runnable {
 
     /* APPLICATION INTERFACE */
 
-    public static Desktop machine;
+    public Desktop machine;
+    Thread ref;
 
     public AceB(Desktop mach) {
         machine = mach;
-        (new Thread(this)).start();
+        (ref = new Thread(this)).start();
     }
 
     public boolean destroy;
