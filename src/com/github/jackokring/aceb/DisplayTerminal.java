@@ -22,6 +22,7 @@ public class DisplayTerminal extends Fragment {
 	int cx, cy;
 	char cc;
 	boolean co;
+	
 	Bitmap b = getNew(x, y);
 	Canvas c;
 	Bitmap f;
@@ -98,7 +99,9 @@ public class DisplayTerminal extends Fragment {
 	
 	public void cursor(boolean on) {
 		if(on && (System.currentTimeMillis()&1024) == 0) {
+			char t = cc;
 			setCell(cx, cy, (char)127);
+			cc = t;//restore correct
 		} else if(co) {
 			setCell(cx, cy, cc);
 		}
