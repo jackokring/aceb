@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/input_area"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:autoLink="web"
+    android:enabled="true"
+    android:gravity="top"
+    android:hint="@string/source"
+    android:inputType="textMultiLine"
+    android:linksClickable="true"
+    android:scrollHorizontally="false"
+    android:selectAllOnFocus="false"
+    android:typeface="monospace" >
+
+</EditText>

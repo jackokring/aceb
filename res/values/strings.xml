@@ -11,6 +11,8 @@
     <string name="action_settings">Setings</string>
 	<string name="action_share">Share</string>
 	
+	<string name="source">Source Input Here</string>
+	
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
 
