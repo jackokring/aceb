@@ -1,13 +1,11 @@
 package com.github.jackokring.aceb;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 /*
  * To change this template, choose Tools | Templates
@@ -18,12 +16,12 @@ import android.widget.ImageView;
  *
  * @author jacko
  */
-public class TextBox extends Fragment {???
+public class TextBox extends Fragment {
 		
 	EditText e = (EditText) getActivity().findViewById(R.id.input_area);
 
-	public TextBox(String s) {
-        super(s);
+	public TextBox() {
+        
     }
 
 	@Override
@@ -34,10 +32,10 @@ public class TextBox extends Fragment {???
 	}
 
     public void setString(String s) {
-        
+        e.setText(s, TextView.BufferType.EDITABLE);
     }
 
     public String getString() {
-        return "";
+        return e.getEditableText().toString();
     }
 }
