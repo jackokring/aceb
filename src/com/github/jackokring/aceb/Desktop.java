@@ -33,10 +33,10 @@ public class Desktop extends MainActivity {
 		int id = item.getItemId();
 		switch(id) {
 		//TODO: fill in actions
-		case R.id.action_home: setCurrent(gc); return true;
-		case R.id.action_edit: setCurrent(ta); return true;
-		case R.id.action_load: return true;
-		case R.id.action_save: return true;
+		case R.id.action_home: if(!setCurrent(gc)) setCurrent(reset); return true;
+		case R.id.action_edit: if(!setCurrent(ta)) setCurrent(enter); return true;
+		case R.id.action_load: setCurrent(load);return true;
+		case R.id.action_save: setCurrent(save); return true;
 		//rest is settings in super
 		default: return super.onOptionsItemSelected(item);
 		}
@@ -46,6 +46,10 @@ public class Desktop extends MainActivity {
     public TextBox ta;
     public MyDialog xit;
     public MyDialog probs;
+    public MyDialog load;
+    public MyDialog save;
+    public MyDialog reset;
+    public MyDialog enter;
     public Lister history;
     
     public void OnPause(Bundle b) {
@@ -60,10 +64,14 @@ public class Desktop extends MainActivity {
     //TODO: oncreate vs constructor
     public Desktop() {
         gc = new DisplayTerminal();
-        ta = new TextBox("FORTH Input");
+        ta = new TextBox();
         //TODO: needs override of ok, cancel
         xit = new MyDialog(R.string.xit, R.string.xit_help);
         probs = new MyDialog(R.string.probs, R.string.probs_help);
+        load = new MyDialog(R.string.load, R.string.load_help);
+        save = new MyDialog(R.string.save, R.string.save_help);
+        reset = new MyDialog(R.string.reset, R.string.reset_help);
+        enter = new MyDialog(R.string.enter, R.string.enter_help);
         history = new Lister("PAST");
         setCurrent(gc);
         //TODO: vid and pause start...
@@ -79,10 +87,12 @@ public class Desktop extends MainActivity {
     /* THE VIDEO INTERFACE */
     private int remove = R.id.content;
 
-    public void setCurrent(Fragment a) {
+    public boolean setCurrent(Fragment a) {
+    	if(a.getId() == remove) return false;
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().replace(remove, a).commit();
         remove = a.getId();
+        return true;
     }
 
     /* THE AUDIO INTERFACE */
