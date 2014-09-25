@@ -33,10 +33,9 @@ public class Desktop extends MainActivity {
 		int id = item.getItemId();
 		switch(id) {
 		//TODO: fill in actions
-		case R.id.action_home: if(!setCurrent(gc)) setCurrent(reset); return true;
-		case R.id.action_edit: if(!setCurrent(ta)) setCurrent(enter); return true;
-		case R.id.action_load: setCurrent(load);return true;
-		case R.id.action_save: setCurrent(save); return true;
+		case R.id.action_home: if(!setCurrent(gc)) reset.show(); return true;
+		case R.id.action_edit: if(!setCurrent(ta)) enter.show(); return true;
+		case R.id.action_load: load.show();return true;
 		//rest is settings in super
 		default: return super.onOptionsItemSelected(item);
 		}
@@ -59,6 +58,10 @@ public class Desktop extends MainActivity {
     public void destroyApp(boolean unconditional) {
         a.p = false;
         a.destroy = true;
+    }
+    
+    public void onBackPressed() {
+    	xit.show();
     }
 
     //TODO: oncreate vs constructor

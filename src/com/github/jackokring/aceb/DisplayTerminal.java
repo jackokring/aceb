@@ -90,8 +90,8 @@ public class DisplayTerminal extends Fragment {
 			setInk(xt);
 		}
 		ch %= 1024;
-		Rect r = new Rect(px*8, py*12, px*8 + 7, py*12 + 11);
-		Rect chr = new Rect((ch%32)*8, (ch/32)*12, (ch%32)*8 + 7, (ch/32)*12 + 11);
+		Rect r = new Rect(px*8, py*8, px*8 + 7, py*8 + 7);
+		Rect chr = new Rect((ch%32)*8, (ch/32)*8, (ch%32)*8 + 7, (ch/32)*8 + 7);
 		c.drawRect(r, p);//bg
 		c.drawBitmap(f, chr, r, ink);
 		invalidate();

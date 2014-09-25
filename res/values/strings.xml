@@ -20,10 +20,10 @@
     <string name="xit_help">You can exit from here by selecting OK or Cancel to continue working in AceB.</string>
     
     <string name="load">Load up AceB with a memory image?</string>
-    <string name="load_help">You can load a memory image which was saved. You don't have to do this to restore the AceB state as it persists. It is to allow you to experiment, and then load up the single saved state.</string>
+    <string name="load_help">You can load a memory image which was saved. You don\'t have to do this to restore the AceB state as it persists. It is to allow you to experiment, and then load up the single saved state.</string>
     
     <string name="save">Save a memory image of AceB?</string>
-    <string name="save_help">You can save a memory image to load later. You don't need to save before exiting AceB as the memory is persistent. The image you save via this dialog is backed up in the cloud.</string>
+    <string name="save_help">You can save a memory image to load later. You don\'t need to save before exiting AceB as the memory is persistent. The image you save via this dialog is backed up in the cloud.</string>
     
     <string name="reset">Reset AceB?</string>
     <string name="reset_help">You can reset AceB to the default dictionary. This helps in recovering from crashes. you may be tempted to save then load to recover, but if the dictionary is not in a consistent state, you may have loaded a non working system, and overwritten your backup.</string>

@@ -32,7 +32,11 @@ public class MyDialog extends DialogFragment {
 			public void cancel() {
 				proxy(false);
 			}
-		}).show(getFragmentManager(), getTag());
+		}).show();
+	}
+	
+	public void show() {
+		show(getFragmentManager(), getTag());
 	}
 	
 	public void cancel() {
