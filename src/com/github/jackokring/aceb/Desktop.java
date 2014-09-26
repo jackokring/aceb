@@ -59,12 +59,18 @@ public class Desktop extends MainActivity {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
         b.putInt("remove", remove);//last screen TODO: more
+        b.putString("input", ta.getString());
+        a.save(b);
+        gc.save(b);
     }
     
     public void onRestoreInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
         remove = b.getInt("remove");
+        ta.setString(b.getString("input"));
+        a.load(b);
+        gc.load(b);
     }
 
     //TODO: oncreate vs constructor
@@ -126,7 +132,7 @@ public class Desktop extends MainActivity {
     }
     
     public void edit(int s) {
-        ta.setString(a.asString(s)+eval);
+        ta.setString(a.asString(s)+ta.getString());
         setCurrent(ta);
     }
 

@@ -41,6 +41,15 @@ public class DisplayTerminal extends Fragment {
 	};
 	ColorFilter inv = new ColorMatrixColorFilter(filt);
 	int last = 63;//white from inverse
+	
+    //TODO: persist before!!
+    public void load(Bundle b) {
+    	
+    }
+    
+    public void save(Bundle b) {
+    	
+    }
 	 
 	public Bitmap getNew(int xs, int ys) {
 		b = Bitmap.createBitmap(xs*8, ys*12, Bitmap.Config.ARGB_8888);

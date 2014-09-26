@@ -4,6 +4,7 @@ package com.github.jackokring.aceb;
 import java.io.*;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 public class AceB implements Runnable {
 
@@ -152,11 +153,11 @@ public class AceB implements Runnable {
     }
 
     //TODO: persist before!!
-    public void load() {
+    public void load(Bundle b) {
     	
     }
     
-    public void save() {
+    public void save(Bundle b) {
     	
     }
 
