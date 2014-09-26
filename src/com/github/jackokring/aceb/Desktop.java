@@ -12,14 +12,18 @@ package com.github.jackokring.aceb;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
-public class Desktop extends MainActivity {
+public class Desktop extends MainActivity implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	//default ones
 	int viewXML = R.layout.activity_desktop;
 	int menuXML = R.menu.desktop;
@@ -72,6 +76,16 @@ public class Desktop extends MainActivity {
         a.load(b);
         gc.load(b);
     }
+    
+    private void writeObject(ObjectOutputStream out)
+        throws IOException {
+        // write 'this' to 'out'...
+    }
+
+    private void readObject(ObjectInputStream in)
+        throws IOException, ClassNotFoundException {
+        // populate the fields of 'this' from the data in 'in'...
+    }
 
     //TODO: oncreate vs constructor
     public Desktop() {
@@ -81,6 +95,7 @@ public class Desktop extends MainActivity {
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
+        		//TODO: serialize
         		finish();
         	}
         };

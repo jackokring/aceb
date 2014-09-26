@@ -5,6 +5,7 @@ import java.io.File;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,6 +40,8 @@ public abstract class MainActivity extends ActionBarActivity {
 		mShareActionProvider = (ShareActionProvider)
 										MenuItemCompat.getActionProvider(shareItem);
 		mShareActionProvider.setShareIntent(getDefaultIntent());
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+	    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
 		return true;
 	}

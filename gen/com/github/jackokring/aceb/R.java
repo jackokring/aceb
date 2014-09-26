@@ -1109,6 +1109,7 @@ containing a value of this type.
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
         public static final int action_save=0x7f060042;
+        public static final int action_search=0x7f060045;
         public static final int action_settings=0x7f060043;
         public static final int action_share=0x7f060044;
         public static final int activity_chooser_view_content=0x7f060025;
@@ -1267,27 +1268,28 @@ containing a value of this type.
         public static final int action_home=0x7f0b000f;
         public static final int action_load=0x7f0b0011;
         public static final int action_save=0x7f0b0012;
+        public static final int action_search=0x7f0b0015;
         public static final int action_settings=0x7f0b0013;
         public static final int action_share=0x7f0b0014;
         public static final int app_name=0x7f0b000d;
-        public static final int cancel=0x7f0b0016;
-        public static final int enter=0x7f0b0021;
-        public static final int enter_help=0x7f0b0022;
-        public static final int help=0x7f0b0018;
-        public static final int help_text_generic=0x7f0b0025;
-        public static final int load=0x7f0b001b;
-        public static final int load_help=0x7f0b001c;
-        public static final int ok=0x7f0b0017;
-        public static final int probs=0x7f0b0023;
-        public static final int probs_help=0x7f0b0024;
-        public static final int reset=0x7f0b001f;
-        public static final int reset_help=0x7f0b0020;
-        public static final int save=0x7f0b001d;
-        public static final int save_help=0x7f0b001e;
+        public static final int cancel=0x7f0b0017;
+        public static final int enter=0x7f0b0022;
+        public static final int enter_help=0x7f0b0023;
+        public static final int help=0x7f0b0019;
+        public static final int help_text_generic=0x7f0b0026;
+        public static final int load=0x7f0b001c;
+        public static final int load_help=0x7f0b001d;
+        public static final int ok=0x7f0b0018;
+        public static final int probs=0x7f0b0024;
+        public static final int probs_help=0x7f0b0025;
+        public static final int reset=0x7f0b0020;
+        public static final int reset_help=0x7f0b0021;
+        public static final int save=0x7f0b001e;
+        public static final int save_help=0x7f0b001f;
         public static final int setting_name=0x7f0b000e;
-        public static final int source=0x7f0b0015;
-        public static final int xit=0x7f0b0019;
-        public static final int xit_help=0x7f0b001a;
+        public static final int source=0x7f0b0016;
+        public static final int xit=0x7f0b001a;
+        public static final int xit_help=0x7f0b001b;
     }
     public static final class style {
         /** 

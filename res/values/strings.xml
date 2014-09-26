@@ -10,6 +10,7 @@
     <string name="action_save">Save</string>
     <string name="action_settings">Setings</string>
 	<string name="action_share">Share</string>
+	<string name="action_search">Search</string>
 	
 	<string name="source">Source Input Here</string>
 	
