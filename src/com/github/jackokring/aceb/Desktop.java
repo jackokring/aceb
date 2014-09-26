@@ -11,6 +11,7 @@ package com.github.jackokring.aceb;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -49,19 +50,21 @@ public class Desktop extends MainActivity {
     public MyDialog save;
     public MyDialog reset;
     public MyDialog enter;
-    public Lister history;
-    
-    public void OnPause(Bundle b) {
-        a.p = true;
-    }
-
-    public void destroyApp(boolean unconditional) {
-        a.p = false;
-        a.destroy = true;
-    }
     
     public void onBackPressed() {
     	xit.show();
+    }
+    
+    public void onSaveInstanceState(Bundle b) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(b);
+        b.putInt("remove", remove);//last screen TODO: more
+    }
+    
+    public void onRestoreInstanceState(Bundle b) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(b);
+        remove = b.getInt("remove");
     }
 
     //TODO: oncreate vs constructor
@@ -69,22 +72,20 @@ public class Desktop extends MainActivity {
         gc = new DisplayTerminal();
         ta = new TextBox();
         //TODO: needs override of ok, cancel
-        xit = new MyDialog(R.string.xit, R.string.xit_help);
+        //Dialogs do not persist, as it is easy to get them again
+        xit = new MyDialog(R.string.xit, R.string.xit_help) {
+        	public void ok() {
+        		finish();
+        	}
+        };
         probs = new MyDialog(R.string.probs, R.string.probs_help);
         load = new MyDialog(R.string.load, R.string.load_help);
         save = new MyDialog(R.string.save, R.string.save_help);
         reset = new MyDialog(R.string.reset, R.string.reset_help);
         enter = new MyDialog(R.string.enter, R.string.enter_help);
-        history = new Lister("PAST");
         setCurrent(gc);
         //TODO: vid and pause start...
         a.vidout(1);
-    }
-
-    /* THE KEY INTERFACE */
-
-    public void exited() {
-        System.exit(0);//the last to happen
     }
 
     /* THE VIDEO INTERFACE */
@@ -105,6 +106,29 @@ public class Desktop extends MainActivity {
     }
 
     /* THE STORAGE INTERFACE */
+    
+    InputStream urlStream;
+    // a UTF-8 to UTF-16 without suragate handling reader
+    public int inurl(int s) {
+        try {
+            int i;
+            if(s != 0) {
+                if(urlStream != null) urlStream.close();
+                /* urlStream = Connector.openInputStream(asString(s)); */
+                openURL(a.asString(s));
+            }
+            i = (new UTF()).fromUTF(urlStream);
+            return i;
+        } catch (Exception e) {
+        	//TODO: IO error
+            return 0;
+        }
+    }
+    
+    public void edit(int s) {
+        ta.setString(a.asString(s)+eval);
+        setCurrent(ta);
+    }
 
     public int openURL(String s) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");

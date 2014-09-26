@@ -36,7 +36,7 @@ public class MyDialog extends DialogFragment {
 	}
 	
 	public void show() {
-		show(getFragmentManager(), getTag());
+		show(getFragmentManager(), "Dialog");
 	}
 	
 	public void cancel() {

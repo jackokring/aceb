@@ -59,9 +59,9 @@ public class AceB implements Runnable {
             case 2: m[sp]=m[t]; break;
             //BEEP
             case 3: sp+=2;
-                beep(s, t); break;
+                machine.beep(s, t); break;
             //BYE
-            case 4: bye(); break;
+            case 4: machine.onBackPressed(); break;
             //D+
             case 5: x=(t<<16)+s;
                 sp+=2;
@@ -80,7 +80,7 @@ public class AceB implements Runnable {
             //INKEY
             case 8: m[--sp]=(char)inkey(); break;
             //INURL
-            case 9: m[sp]=(char)inurl(t);
+            case 9: m[sp]=(char)machine.inurl(t);
                 break;
             //TODO: provide different actions for next 2
             //MEDIA
@@ -109,7 +109,7 @@ public class AceB implements Runnable {
             //>R
             case 16: m[--rp] = m[sp++]; break;
             //(EDIT)
-            case 17: edit(m[sp++]); break;
+            case 17: machine.edit(m[sp++]); break;
             //(COMP)
             case 18: z = m[--sp] = m[rp];//params
                 m[rp] += (m[r+1]==(char)(-1))?m[z]+1:m[r+1];//return ip after params
@@ -151,68 +151,13 @@ public class AceB implements Runnable {
         }
     }
 
-    void beep(int f, int d) {
-        machine.beep(f, d);
+    //TODO: persist before!!
+    public void load() {
+    	
     }
-
-    void bye() {
-        machine.setCurrent(machine.xit);
-    }
-
-    private static String eval; //max 256 at PAD
-    private static int seqtx = 0;
-    private static int seqrx = 0;
-
-    static class Comm implements Runnable {
-
-        private String eval;
-        int j;
-
-        public Comm(String s) {
-            eval = s;
-            j = seqtx++;
-            (new Thread(this)).start();
-        }
-
-        public void run() {
-            while(evaloop(this)) Thread.yield();
-        }
-    }
-
-    synchronized static void evaluate(String s) {
-        new Comm(s);
-    }
-
-    private static boolean evaloop(Comm s) {
-        if(eval == null && seqrx == s.j) {
-            eval = s.eval;
-            //allowing multi threading
-            return false;
-        } else
-            return true;
-    }
-
-    private void edit(int s) {
-        machine.ta.setString(asString(s)+eval);
-        machine.setCurrent(machine.ta);
-    }
-
-    private static int inkey() {
-        if(eval == null) {
-            int i = key;
-            key = 0;
-            Thread.yield();
-            return i;
-        } else
-            if(eval.equals("")) {
-                seqrx++;//maintain sequencing of input
-                eval = null;
-                return 0;
-            } else {
-                int x = eval.charAt(0);
-                eval = eval.substring(1);
-                return x;
-            }
+    
+    public void save() {
+    	
     }
 
     String asString(int s) {
@@ -221,24 +166,6 @@ public class AceB implements Runnable {
             i+=(char)m[s+j];
         }
         return(i);
-    }
-
-    InputStream urlStream;
-    // a UTF-8 to UTF-16 without suragate handling reader
-    private int inurl(int s) {
-        try {
-            int i;
-            if(s != 0) {
-                if(urlStream != null) urlStream.close();
-                /* urlStream = Connector.openInputStream(asString(s)); */
-                machine.openURL(asString(s));
-            }
-            i = (new UTF()).fromUTF(urlStream);
-            return i;
-        } catch (Exception e) {
-        	//TODO: IO error
-            return 0;
-        }
     }
 
     private long mils;

@@ -1088,9 +1088,10 @@ containing a value of this type.
         public static final int ic_action_edit=0x7f020059;
         public static final int ic_action_play=0x7f02005a;
         public static final int ic_action_save=0x7f02005b;
-        public static final int ic_action_settings=0x7f02005c;
-        public static final int ic_action_share=0x7f02005d;
-        public static final int ic_launcher=0x7f02005e;
+        public static final int ic_action_search=0x7f02005c;
+        public static final int ic_action_settings=0x7f02005d;
+        public static final int ic_action_share=0x7f02005e;
+        public static final int ic_launcher=0x7f02005f;
     }
     public static final class id {
         public static final int action_bar=0x7f06001c;
@@ -1270,23 +1271,23 @@ containing a value of this type.
         public static final int action_share=0x7f0b0014;
         public static final int app_name=0x7f0b000d;
         public static final int cancel=0x7f0b0016;
-        public static final int enter=0x7f0b0020;
-        public static final int enter_help=0x7f0b0021;
-        public static final int help=0x7f0b0024;
+        public static final int enter=0x7f0b0021;
+        public static final int enter_help=0x7f0b0022;
+        public static final int help=0x7f0b0018;
         public static final int help_text_generic=0x7f0b0025;
-        public static final int load=0x7f0b001a;
-        public static final int load_help=0x7f0b001b;
+        public static final int load=0x7f0b001b;
+        public static final int load_help=0x7f0b001c;
         public static final int ok=0x7f0b0017;
-        public static final int probs=0x7f0b0022;
-        public static final int probs_help=0x7f0b0023;
-        public static final int reset=0x7f0b001e;
-        public static final int reset_help=0x7f0b001f;
-        public static final int save=0x7f0b001c;
-        public static final int save_help=0x7f0b001d;
+        public static final int probs=0x7f0b0023;
+        public static final int probs_help=0x7f0b0024;
+        public static final int reset=0x7f0b001f;
+        public static final int reset_help=0x7f0b0020;
+        public static final int save=0x7f0b001d;
+        public static final int save_help=0x7f0b001e;
         public static final int setting_name=0x7f0b000e;
         public static final int source=0x7f0b0015;
-        public static final int xit=0x7f0b0018;
-        public static final int xit_help=0x7f0b0019;
+        public static final int xit=0x7f0b0019;
+        public static final int xit_help=0x7f0b001a;
     }
     public static final class style {
         /** 

@@ -15,6 +15,7 @@
 	
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="help">Help</string>
 
     <string name="xit">BYE, BYE! Thanks for using AceB FORTH.</string>
     <string name="xit_help">You can exit from here by selecting OK or Cancel to continue working in AceB.</string>
