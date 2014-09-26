@@ -42,13 +42,35 @@ public class DisplayTerminal extends Fragment {
 	ColorFilter inv = new ColorMatrixColorFilter(filt);
 	int last = 63;//white from inverse
 	
-    //TODO: persist before!!
-    public void load(Bundle b) {
-    	
+    public void load(Bundle bu) {
+    	x = bu.getInt("x");
+    	y = bu.getInt("y");
+    	cx = bu.getInt("cx");
+    	cy = bu.getInt("cy");
+    	cc = (char)bu.getInt("cc");
+    	co = bu.getBoolean("co");
+    	b = bu.getParcelable("b");
+    	bg = (char)bu.getInt("bg");
+    	filt = bu.getFloatArray("filt");
+    	last = bu.getInt("last");
+    	//restore
+    	inv = new ColorMatrixColorFilter(filt);//set it
+		ink.setColorFilter(inv);
+		p = new Paint(bg);
+		invalidate();
     }
     
-    public void save(Bundle b) {
-    	
+    public void save(Bundle bu) {
+    	bu.putInt("x", x);
+    	bu.putInt("y", y);
+    	bu.putInt("cx", cx);
+    	bu.putInt("cy", cy);
+    	bu.putInt("cc", cc);
+    	bu.putBoolean("co", co);
+    	bu.putParcelable("b", b);
+    	bu.putInt("bg", bg);
+    	bu.putFloatArray("filt", filt);
+    	bu.putInt("last", last);
     }
 	 
 	public Bitmap getNew(int xs, int ys) {
