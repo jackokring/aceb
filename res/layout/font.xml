@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:contentDescription="@string/ok"
     android:scaleType="fitXY"
-    android:src="@drawable/font" >
+    android:src="@drawable/font"
+    android:saveEnabled="false">
 
 </ImageView>

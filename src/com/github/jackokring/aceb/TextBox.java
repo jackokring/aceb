@@ -20,8 +20,13 @@ public class TextBox extends Fragment {
 		
 	EditText e = (EditText) getActivity().findViewById(R.id.input_area);
 
-	public TextBox() {
-        
+    //TODO: persist before!!
+    public void load(Bundle b) {
+    	e.setText(b.getCharSequence("input"));
+    }
+    
+    public void save(Bundle b) {
+    	b.putCharSequence("input", e.getEditableText());
     }
 
 	@Override

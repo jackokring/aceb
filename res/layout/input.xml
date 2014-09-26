@@ -11,6 +11,7 @@
     android:linksClickable="true"
     android:scrollHorizontally="false"
     android:selectAllOnFocus="false"
-    android:typeface="monospace" >
+    android:typeface="monospace"
+    android:saveEnabled="false">
 
 </EditText>
