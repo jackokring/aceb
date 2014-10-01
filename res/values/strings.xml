@@ -11,6 +11,7 @@
     <string name="action_settings">Setings</string>
 	<string name="action_share">Share</string>
 	<string name="action_search">Search</string>
+	<string name="search_hint">Find</string>
 	
 	<string name="source">Source Input Here</string>
 	

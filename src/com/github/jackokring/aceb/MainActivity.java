@@ -1,12 +1,17 @@
 package com.github.jackokring.aceb;
 
 import java.io.File;
+import java.io.IOException;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.*;
@@ -41,10 +46,22 @@ public abstract class MainActivity extends ActionBarActivity {
 										MenuItemCompat.getActionProvider(shareItem);
 		mShareActionProvider.setShareIntent(getDefaultIntent());
 		MenuItem searchItem = menu.findItem(R.id.action_search);
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
 		return true;
 	}
+	
+    public int remove = R.id.content;
+
+    public boolean setCurrent(Fragment a) {
+    	if(a.getId() == remove) return false;
+        FragmentManager fm = this.getSupportFragmentManager();
+        fm.beginTransaction().replace(remove, a).commit();
+        remove = a.getId();
+        return true;
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -68,6 +85,14 @@ public abstract class MainActivity extends ActionBarActivity {
 	public File getMemFile() {
 		return new File("memory.aceb");//a binary image share
 	}
+	
+    public int openURL(String s) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void play(String s) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 	/** Defines a default share intent to initialize the action provider.
 	  * However, as soon as the actual content to be used in the intent

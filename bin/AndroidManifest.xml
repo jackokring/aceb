@@ -68,6 +68,11 @@
         		<category android:name="android.intent.category.DEFAULT"/>
         			<data android:mimeType="application/com.github.jackokring.aceb"/>
     		</intent-filter>
+        	<intent-filter>
+            	<action android:name="android.intent.action.SEARCH" />
+        	</intent-filter>
+        	<meta-data android:name="android.app.searchable"
+                   android:resource="@xml/searchable"/>
         </activity>
 		<provider
             android:name="android.support.v4.content.FileProvider"

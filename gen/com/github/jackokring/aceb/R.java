@@ -1272,24 +1272,25 @@ containing a value of this type.
         public static final int action_settings=0x7f0b0013;
         public static final int action_share=0x7f0b0014;
         public static final int app_name=0x7f0b000d;
-        public static final int cancel=0x7f0b0017;
-        public static final int enter=0x7f0b0022;
-        public static final int enter_help=0x7f0b0023;
-        public static final int help=0x7f0b0019;
-        public static final int help_text_generic=0x7f0b0026;
-        public static final int load=0x7f0b001c;
-        public static final int load_help=0x7f0b001d;
-        public static final int ok=0x7f0b0018;
-        public static final int probs=0x7f0b0024;
-        public static final int probs_help=0x7f0b0025;
-        public static final int reset=0x7f0b0020;
-        public static final int reset_help=0x7f0b0021;
-        public static final int save=0x7f0b001e;
-        public static final int save_help=0x7f0b001f;
+        public static final int cancel=0x7f0b0018;
+        public static final int enter=0x7f0b0023;
+        public static final int enter_help=0x7f0b0024;
+        public static final int help=0x7f0b001a;
+        public static final int help_text_generic=0x7f0b0027;
+        public static final int load=0x7f0b001d;
+        public static final int load_help=0x7f0b001e;
+        public static final int ok=0x7f0b0019;
+        public static final int probs=0x7f0b0025;
+        public static final int probs_help=0x7f0b0026;
+        public static final int reset=0x7f0b0021;
+        public static final int reset_help=0x7f0b0022;
+        public static final int save=0x7f0b001f;
+        public static final int save_help=0x7f0b0020;
+        public static final int search_hint=0x7f0b0016;
         public static final int setting_name=0x7f0b000e;
-        public static final int source=0x7f0b0016;
-        public static final int xit=0x7f0b001a;
-        public static final int xit_help=0x7f0b001b;
+        public static final int source=0x7f0b0017;
+        public static final int xit=0x7f0b001b;
+        public static final int xit_help=0x7f0b001c;
     }
     public static final class style {
         /** 
@@ -1524,6 +1525,7 @@ containing a value of this type.
     public static final class xml {
         public static final int filepaths=0x7f050000;
         public static final int preferences=0x7f050001;
+        public static final int searchable=0x7f050002;
     }
     public static final class styleable {
         /**  ============================================ 

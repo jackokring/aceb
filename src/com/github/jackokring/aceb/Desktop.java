@@ -10,20 +10,16 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
-public class Desktop extends MainActivity implements Serializable {
+public class Desktop extends MainActivity {
 	
-	private static final long serialVersionUID = 1L;
 	//default ones
 	int viewXML = R.layout.activity_desktop;
 	int menuXML = R.menu.desktop;
@@ -59,6 +55,28 @@ public class Desktop extends MainActivity implements Serializable {
     	xit.show();
     }
     
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setContentView(R.layout.search);
+        //TODO: intent handlers
+
+        // Get the intent, verify the action and get the query
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+          String query = intent.getStringExtra(SearchManager.QUERY);
+          //doMySearch(query);
+        }
+    }
+    
+    public void load(File f) {
+    	a.load(f);
+    }
+    
+    public void save(File f) {
+    	a.save(f);
+    }
+    
     public void onSaveInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
@@ -75,16 +93,6 @@ public class Desktop extends MainActivity implements Serializable {
         ta.load(b);
         a.load(b);
         gc.load(b);
-    }
-    
-    private void writeObject(ObjectOutputStream out)
-        throws IOException {
-        // write 'this' to 'out'...
-    }
-
-    private void readObject(ObjectInputStream in)
-        throws IOException, ClassNotFoundException {
-        // populate the fields of 'this' from the data in 'in'...
     }
 
     //TODO: oncreate vs constructor
@@ -109,24 +117,9 @@ public class Desktop extends MainActivity implements Serializable {
         a.vidout(1);
     }
 
-    /* THE VIDEO INTERFACE */
-    private int remove = R.id.content;
-
-    public boolean setCurrent(Fragment a) {
-    	if(a.getId() == remove) return false;
-        FragmentManager fm = this.getSupportFragmentManager();
-        fm.beginTransaction().replace(remove, a).commit();
-        remove = a.getId();
-        return true;
-    }
-
-    /* THE AUDIO INTERFACE */
-
     public void beep(int f, int d) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    /* THE STORAGE INTERFACE */
     
     InputStream urlStream;
     // a UTF-8 to UTF-16 without suragate handling reader
@@ -149,14 +142,6 @@ public class Desktop extends MainActivity implements Serializable {
     public void edit(int s) {
         ta.setString(a.asString(s)+ta.getString());
         setCurrent(ta);
-    }
-
-    public int openURL(String s) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void play(String s) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

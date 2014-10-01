@@ -160,6 +160,14 @@ public class AceB implements Runnable {
     public void save(Bundle b) {
     	
     }
+    
+    public void load(File f) {
+    	
+    }
+    
+    public void save(File f) {
+    	
+    }
 
     String asString(int s) {
         String i = "";
