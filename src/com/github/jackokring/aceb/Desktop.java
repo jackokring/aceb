@@ -30,7 +30,7 @@ public class Desktop extends MainActivity {
 	int menuXML = R.menu.desktop;
 	
 	public void defFile() {
-		while(a.destroy) Thread.yield();//wait
+		a.reset();
 		save(getMemFile(), false);//make a dump
 	}
 	

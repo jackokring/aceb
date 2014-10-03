@@ -162,6 +162,7 @@ public class AceB implements Runnable {
     }
     
     public void load(FileInputStream f) {
+    	reset();//must do
     	
     }
     
@@ -609,11 +610,10 @@ public class AceB implements Runnable {
 
     public AceB(Desktop mach) {
         machine = mach;
-        (ref = new Thread(this)).start();
     }
 
-    public boolean destroy = true;//botch for file initialization
-    public boolean pause = true;
+    public boolean destroy;//botch for file initialization
+    public boolean pause;
 
     public void run() {
         pause = false;
@@ -621,7 +621,7 @@ public class AceB implements Runnable {
         destroy = false;
         while(!destroy) {
             if(pause) Thread.yield();
-            next();
+            else next();
         }
         destroy = false;
     }
