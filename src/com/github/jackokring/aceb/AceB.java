@@ -6,7 +6,7 @@ import java.io.*;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class AceB implements Runnable, Machine {
+public class AceB implements Machine {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
     char[] m = new char[65536]; //memory
@@ -605,7 +605,7 @@ public class AceB implements Runnable, Machine {
 
     /* APPLICATION INTERFACE */
 
-    public Desktop machine;
+    public OSAdapter machine;
     Thread ref;
 
     public AceB(Desktop mach) {

@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-public class Desktop extends MainActivity {
+public class Desktop extends MainActivity implements OSAdapter {
 	
 	//default ones
 	int viewXML = R.layout.activity_desktop;

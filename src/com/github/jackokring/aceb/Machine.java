@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 
 import android.os.Bundle;
 
-public interface Machine {
+public interface Machine extends Runnable {
 
     public void load(Bundle b);
     public void save(Bundle b);
