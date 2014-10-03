@@ -11,9 +11,14 @@ package com.github.jackokring.aceb;
  */
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 
 import android.app.SearchManager;
+import android.app.backup.BackupManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -23,6 +28,11 @@ public class Desktop extends MainActivity {
 	//default ones
 	int viewXML = R.layout.activity_desktop;
 	int menuXML = R.menu.desktop;
+	
+	public void defFile() {
+		while(a.destroy) Thread.yield();//wait
+		save(getMemFile(), false);//make a dump
+	}
 	
     AceB a = new AceB(this);
     
@@ -58,6 +68,7 @@ public class Desktop extends MainActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        load(getMemFile()+".bak", false);
         //setContentView(R.layout.search);
         //TODO: intent handlers
 
@@ -69,12 +80,22 @@ public class Desktop extends MainActivity {
         }
     }
     
-    public void load(File f) {
-    	a.load(f);
+    public void load(String name, boolean err) {
+    	try {
+    		File f = new File(getFilesDir(), name);
+			a.load(new FileInputStream(f));
+		} catch (FileNotFoundException e) {
+			if(err) probs.show();
+		}
     }
     
-    public void save(File f) {
-    	a.save(f);
+    public void save(String name, boolean err) {
+    	try {
+    		File f = new File(getFilesDir(), name);
+			a.save(new FileOutputStream(f));
+		} catch (FileNotFoundException e) {
+			if(err) probs.show();
+		}
     }
     
     public void onSaveInstanceState(Bundle b) {
@@ -103,18 +124,34 @@ public class Desktop extends MainActivity {
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
-        		//TODO: serialize
+        		save(getMemFile()+".bak", false);
         		finish();
         	}
         };
-        probs = new MyDialog(R.string.probs, R.string.probs_help);
-        load = new MyDialog(R.string.load, R.string.load_help);
-        save = new MyDialog(R.string.save, R.string.save_help);
-        reset = new MyDialog(R.string.reset, R.string.reset_help);
+        probs = new MyDialog(R.string.probs, R.string.probs_help) {
+        	public void cancel() {
+        		throw new RuntimeException();//TODO: catch
+        	}
+        };
+        load = new MyDialog(R.string.load, R.string.load_help) {
+        	public void ok() {
+        		load(getMemFile(), false);
+        	}
+        };
+        save = new MyDialog(R.string.save, R.string.save_help) {
+        	public void ok() {
+        		save(getMemFile(), false);
+        		BackupManager bm = new BackupManager(this.getActivity().getApplicationContext());
+        		bm.dataChanged();
+        	}
+        };
+        reset = new MyDialog(R.string.reset, R.string.reset_help) {
+        	public void ok() {
+        		a.reset();
+        	}
+        };
         enter = new MyDialog(R.string.enter, R.string.enter_help);
         setCurrent(gc);
-        //TODO: vid and pause start...
-        a.vidout(1);
     }
 
     public void beep(int f, int d) {

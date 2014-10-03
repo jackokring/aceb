@@ -76,14 +76,9 @@ public abstract class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	public File getStorage() {
-		return Environment.getExternalStoragePublicDirectory(
-            	Environment.DIRECTORY_DOWNLOADS);
-	}
 	
-	public File getMemFile() {
-		return new File("memory.aceb");//a binary image share
+	public static String getMemFile() {
+		return "memory.aceb";//a binary image share
 	}
 	
     public int openURL(String s) throws IOException {
@@ -93,6 +88,8 @@ public abstract class MainActivity extends ActionBarActivity {
     public void play(String s) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    public abstract void defFile();
 
 	/** Defines a default share intent to initialize the action provider.
 	  * However, as soon as the actual content to be used in the intent
@@ -102,9 +99,11 @@ public abstract class MainActivity extends ActionBarActivity {
 	private Intent getDefaultIntent() {
 	    Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		File f = new File(getMemFile());
+		if(!f.exists()) defFile();
 		Uri fileUri = FileProvider.getUriForFile(this,
 	                            "com.github.jackokring.aceb.fileprovider",
-	                            getMemFile());
+	                            f);
 	    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
 	    return intent;
 	}

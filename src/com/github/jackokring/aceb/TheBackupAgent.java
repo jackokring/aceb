@@ -8,6 +8,8 @@ import android.app.backup.SharedPreferencesBackupHelper;
 //requestRestore() for manual restore ...
 
  public class TheBackupAgent extends BackupAgentHelper {
+	 
+	 /*
      // The names of the SharedPreferences groups that the application maintains.  These
      // are the same strings that are passed to getSharedPreferences(String, int).
      static final String PREFS_DISPLAY = "displayprefs";
@@ -16,27 +18,21 @@ import android.app.backup.SharedPreferencesBackupHelper;
      // An arbitrary string used within the BackupAgentHelper implementation to
      // identify the SharedPreferencesBackupHelper's data.
      static final String MY_PREFS_BACKUP_KEY = "myprefs";
-     
+     */
      // The name of the SharedPreferences file
-     static final String HIGH_SCORES_FILENAME = "scores";
-
+     static final String FILENAME = MainActivity.getMemFile();
+     
      // A key to uniquely identify the set of backup data
      static final String FILES_BACKUP_KEY = "myfiles";
 
      // Simply allocate a helper and install it
      public void onCreate() {
-         SharedPreferencesBackupHelper helper =
+         /* SharedPreferencesBackupHelper helper =
                  new SharedPreferencesBackupHelper(this, PREFS_DISPLAY, PREFS_SCORES);
          addHelper(MY_PREFS_BACKUP_KEY, helper);
+	*/
 
-
-         FileBackupHelper helper2 = new FileBackupHelper(this, HIGH_SCORES_FILENAME);
+         FileBackupHelper helper2 = new FileBackupHelper(this, FILENAME);
          addHelper(FILES_BACKUP_KEY, helper2);
      }
-
-     public void requestBackup() {
-    	 BackupManager bm = new BackupManager(this);
-    	 bm.dataChanged();
-     }
-
  }

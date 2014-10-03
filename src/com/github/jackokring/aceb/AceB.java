@@ -161,11 +161,11 @@ public class AceB implements Runnable {
     	
     }
     
-    public void load(File f) {
+    public void load(FileInputStream f) {
     	
     }
     
-    public void save(File f) {
+    public void save(FileOutputStream f) {
     	
     }
 
@@ -612,22 +612,24 @@ public class AceB implements Runnable {
         (ref = new Thread(this)).start();
     }
 
-    public boolean destroy;
-    public boolean p;//internal application pause
-    public boolean pause;
-    public boolean exited;
+    public boolean destroy = true;//botch for file initialization
+    public boolean pause = true;
 
     public void run() {
-    	p = true;
         pause = false;
-        exited = false;
         dict();
         destroy = false;
         while(!destroy) {
-            if(p || pause) Thread.yield();
+            if(pause) Thread.yield();
             next();
         }
-        exited = true;
+        destroy = false;
+    }
+    
+    public void reset() {
+    	destroy = true;
+    	while(destroy) Thread.yield();
+    	(ref = new Thread(this)).start();
     }
 
 }
