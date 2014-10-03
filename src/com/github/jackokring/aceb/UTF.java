@@ -10,7 +10,7 @@ public class UTF {
     // Technically codes 0x10000 to 0x1ffff could be folded as 3 bytes
     // with 0xf_ lead byte. When does character separate from font?
     // Well, who uses UTF-32 anyhow?
-	public byte[] asBytes(char[] str) {
+	public static byte[] asBytes(char[] str) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             int strlen = str.length;
@@ -34,7 +34,7 @@ public class UTF {
         return bos.toByteArray();
     }
 
-    public char fromUTF(InputStream in) throws IOException {
+    public static char fromUTF(InputStream in) throws IOException {
         char c = 0;
         if(((c = (char)in.read()) & 0x80) != 0) {
             c &= 0x7f;
@@ -50,7 +50,7 @@ public class UTF {
     // This will load all 7, 11 and 16 bit codes.
     // 21, 26 and 31/32 bit codes will be mangled.
     // Excessive byte count for a code will be ignored.
-    public char[] fromBytes(byte[] in) {
+    public static char[] fromBytes(byte[] in) {
         StringBuffer buff = new StringBuffer();
         ByteArrayInputStream bin = new ByteArrayInputStream(in);
         try {

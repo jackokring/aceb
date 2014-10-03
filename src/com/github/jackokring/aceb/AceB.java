@@ -6,7 +6,7 @@ import java.io.*;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class AceB implements Runnable {
+public class AceB implements Runnable, Machine {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
     char[] m = new char[65536]; //memory
@@ -162,7 +162,7 @@ public class AceB implements Runnable {
     }
     
     public void load(FileInputStream f) {
-    	reset();//must do
+    	reset(false);//must do
     	
     }
     
@@ -170,7 +170,7 @@ public class AceB implements Runnable {
     	
     }
 
-    String asString(int s) {
+    public String asString(int s) {
         String i = "";
         for(int j = 1; j <= m[s]; j++) {
             i+=(char)m[s+j];
@@ -616,17 +616,18 @@ public class AceB implements Runnable {
     public boolean pause;
 
     public void run() {
-        pause = false;
-        dict();
-        destroy = false;
         while(!destroy) {
             if(pause) Thread.yield();
             else next();
         }
-        destroy = false;
+        destroy = false;//reinit?
     }
     
-    public void reset() {
+    public void reset(boolean build) {
+    	pause = true;
+    	if(build) dict();
+    	else alloc();//just the warm start
+    	pause = false;
     	destroy = true;
     	while(destroy) Thread.yield();
     	(ref = new Thread(this)).start();

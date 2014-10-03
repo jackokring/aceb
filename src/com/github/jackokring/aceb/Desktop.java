@@ -18,7 +18,6 @@ import java.io.InputStream;
 
 import android.app.SearchManager;
 import android.app.backup.BackupManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -30,11 +29,11 @@ public class Desktop extends MainActivity {
 	int menuXML = R.menu.desktop;
 	
 	public void defFile() {
-		a.reset();
+		a.reset(true);//initial state
 		save(getMemFile(), false);//make a dump
 	}
 	
-    AceB a = new AceB(this);
+    Machine a = new AceB(this);
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -47,6 +46,7 @@ public class Desktop extends MainActivity {
 		case R.id.action_home: if(!setCurrent(gc)) reset.show(); return true;
 		case R.id.action_edit: if(!setCurrent(ta)) enter.show(); return true;
 		case R.id.action_load: load.show();return true;
+		case R.id.action_save: save.show();return true;
 		//rest is settings in super
 		default: return super.onOptionsItemSelected(item);
 		}
@@ -147,7 +147,7 @@ public class Desktop extends MainActivity {
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
         	public void ok() {
-        		a.reset();
+        		a.reset(true);//rebuild init state
         	}
         };
         enter = new MyDialog(R.string.enter, R.string.enter_help);
@@ -168,7 +168,7 @@ public class Desktop extends MainActivity {
                 /* urlStream = Connector.openInputStream(asString(s)); */
                 openURL(a.asString(s));
             }
-            i = (new UTF()).fromUTF(urlStream);
+            i = UTF.fromUTF(urlStream);
             return i;
         } catch (Exception e) {
         	//TODO: IO error
