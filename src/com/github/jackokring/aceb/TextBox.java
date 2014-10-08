@@ -1,8 +1,8 @@
 package com.github.jackokring.aceb;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,12 +21,12 @@ public class TextBox extends Fragment {
 	EditText e = (EditText) getActivity().findViewById(R.id.input_area);
 
     //TODO: persist before!!
-    public void load(Bundle b) {
-    	e.setText(b.getCharSequence("input"));
+    public synchronized void load(Bundle b) {
+    	setString(b.getString("input"));
     }
     
-    public void save(Bundle b) {
-    	b.putCharSequence("input", e.getEditableText());
+    public synchronized void save(Bundle b) {
+    	b.putString("input", getString(true));
     }
 
 	@Override
@@ -36,11 +36,24 @@ public class TextBox extends Fragment {
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
-    public void setString(String s) {
+    public synchronized void setString(String s) {
+    	e.setEnabled(false);
         e.setText(s, TextView.BufferType.EDITABLE);
+        e.setEnabled(true);
     }
 
-    public String getString() {
-        return e.getEditableText().toString();
+    public synchronized String getString(boolean en) {
+    	e.setEnabled(false);
+    	String s = e.getEditableText().toString();
+        if(en) e.setEnabled(true);
+        return s;
+    }
+    
+    public synchronized String enter() {
+    	String s = getString(false);
+    	int i = s.indexOf(" ");
+    	if(i < 0) i = s.length()-1;
+    	setString(s.substring(i+1));
+    	return s.substring(0, i+1);
     }
 }

@@ -45,10 +45,11 @@ public class Desktop extends MainActivity implements OSAdapter {
 		int id = item.getItemId();
 		switch(id) {
 		//TODO: fill in actions
-		case R.id.action_home: if(!setCurrent(gc)) setCurrent(ws); else setCurrent(gc); return true;
-		case R.id.action_edit: if(!setCurrent(ta)) enter.show(); return true;
-		case R.id.action_load: load.show();return true;
-		case R.id.action_save: save.show();return true;
+		case R.id.action_home: if(setCurrent(gc)) setCurrent(ws); else setCurrent(gc); return true;
+		case R.id.action_edit: if(setCurrent(ta)) enter.show(); return true;
+		case R.id.action_load: load.show(); return true;
+		case R.id.action_save: save.show(); return true;
+		case R.id.action_reset: reset.show(); return true;
 		//rest is settings in super TODO: reset
 		default: return super.onOptionsItemSelected(item);
 		}
@@ -104,7 +105,9 @@ public class Desktop extends MainActivity implements OSAdapter {
     public void onSaveInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
-        b.putInt("remove", remove);//last screen TODO: more
+        b.putInt("remove", remove);
+        b.putString("buf", buf);
+        b.putBoolean("run", run);
         ta.save(b);
         a.save(b);
         gc.save(b);
@@ -115,6 +118,8 @@ public class Desktop extends MainActivity implements OSAdapter {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
         remove = b.getInt("remove");
+        buf = b.getString("buf");
+        run = b.getBoolean("run");
         ta.load(b);
         a.load(b);
         gc.load(b);
@@ -164,19 +169,35 @@ public class Desktop extends MainActivity implements OSAdapter {
         setCurrent(gc);
     }
     
-    public synchronized void enter() {
-    	
-    }
+    synchronized void enter() {
+		run = true;
+		buf = ta.enter();
+	}
 
+	boolean run = false;
+    String buf = "";
+    
 	@Override
 	public synchronized int inKey() {
-		// TODO Auto-generated method stub
-		return 0;
+		if(!run) {
+			gc.cursor(true);
+			return -1;//no key
+		}
+		if(buf.equals("")) {
+			buf = ta.enter();
+			if(buf.equals("")) {
+				run = false;//end of input
+				return -1;//no key
+			}
+		}
+		int s = buf.charAt(0);
+		buf = buf.substring(0, buf.length());
+		return s;
 	}
 
 	@Override
 	public synchronized void outKeys(String key) {
-		ta.setString(key+ta.getString());
+		ta.setString(key+ta.getString(false));
         setCurrent(ta);
 	}
 
@@ -194,6 +215,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 		} catch (Exception e) {
 			//TODO:
 		}
+		buf.append(32);//chain source
 		outKeys(buf.toString());
 		enter();
 	}

@@ -109,32 +109,37 @@ public class DisplayTerminal extends Fragment {
 		c.drawColor(bg);
 		invalidate();
 	}
-	 
-	public void setCell(int px, int py, char ch) {
-		px %= x;
-		py %= y;
-		cx = px;
-		cy = py;
+	
+	public void setCell(char ch) {
 		int xt = ch / 1024;
 		if(xt != last) {//new colour
 			last = xt;//cache
 			setInk(xt);
 		}
 		ch %= 1024;
-		Rect r = new Rect(px*8, py*8, px*8 + 7, py*8 + 7);
+		Rect r = new Rect(cx*8, cy*8, cx*8 + 7, cy*8 + 7);
 		Rect chr = new Rect((ch%32)*8, (ch/32)*8, (ch%32)*8 + 7, (ch/32)*8 + 7);
 		c.drawRect(r, p);//bg
 		c.drawBitmap(f, chr, r, ink);
 		invalidate();
+	}
+	 
+	public void setCell(int px, int py, char ch) {
+		px %= x;
+		py %= y;
+		cx = px;
+		cy = py;
+		cursor(false);//until input
+		setCell(ch);
     } 
 	
 	public void cursor(boolean on) {
 		if(on && (System.currentTimeMillis()&1024) == 0) {
 			char t = cc;
-			setCell(cx, cy, (char)127);
+			setCell((char)127);
 			cc = t;//restore correct
 		} else if(co) {
-			setCell(cx, cy, cc);
+			setCell(cc);
 		}
 		co = on;//persist
 	}

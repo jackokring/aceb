@@ -56,7 +56,7 @@ public abstract class MainActivity extends ActionBarActivity {
     public int remove = R.id.content;
 
     public boolean setCurrent(Fragment a) {
-    	if(a.getId() == remove) return false;
+    	if(a.getId() == remove) return true;
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().replace(remove, a).commit();
         remove = a.getId();
