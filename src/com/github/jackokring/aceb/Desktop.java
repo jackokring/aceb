@@ -54,6 +54,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 
     public DisplayTerminal gc;
     public TextBox ta;
+    public WebShow ws;
     public MyDialog xit;
     public MyDialog probs;
     public MyDialog load;
@@ -105,6 +106,7 @@ public class Desktop extends MainActivity implements OSAdapter {
         ta.save(b);
         a.save(b);
         gc.save(b);
+        ws.save(b);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -114,12 +116,14 @@ public class Desktop extends MainActivity implements OSAdapter {
         ta.load(b);
         a.load(b);
         gc.load(b);
+        ws.load(b);
     }
 
     //TODO: oncreate vs constructor
     public Desktop() {
         gc = new DisplayTerminal();
         ta = new TextBox();
+        ws = new WebShow();
         //TODO: needs override of ok, cancel
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
