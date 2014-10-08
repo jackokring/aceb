@@ -80,14 +80,6 @@ public abstract class MainActivity extends ActionBarActivity {
 	public static String getMemFile() {
 		return "memory.aceb";//a binary image share
 	}
-	
-    public int openURL(String s) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void play(String s) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
     
     public abstract void defFile();
 

@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 
 import android.app.SearchManager;
 import android.app.backup.BackupManager;
@@ -43,11 +45,11 @@ public class Desktop extends MainActivity implements OSAdapter {
 		int id = item.getItemId();
 		switch(id) {
 		//TODO: fill in actions
-		case R.id.action_home: if(!setCurrent(gc)) reset.show(); return true;
+		case R.id.action_home: if(!setCurrent(gc)) setCurrent(ws); else setCurrent(gc); return true;
 		case R.id.action_edit: if(!setCurrent(ta)) enter.show(); return true;
 		case R.id.action_load: load.show();return true;
 		case R.id.action_save: save.show();return true;
-		//rest is settings in super
+		//rest is settings in super TODO: reset
 		default: return super.onOptionsItemSelected(item);
 		}
 	}
@@ -154,35 +156,64 @@ public class Desktop extends MainActivity implements OSAdapter {
         		a.reset(true);//rebuild init state
         	}
         };
-        enter = new MyDialog(R.string.enter, R.string.enter_help);
+        enter = new MyDialog(R.string.enter, R.string.enter_help) {
+        	public void ok() {
+        		enter();//rebuild init state
+        	}
+        };
         setCurrent(gc);
     }
+    
+    public synchronized void enter() {
+    	
+    }
 
-    public void beep(int f, int d) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    InputStream urlStream;
-    // a UTF-8 to UTF-16 without suragate handling reader
-    public int inurl(int s) {
-        try {
-            int i;
-            if(s != 0) {
-                if(urlStream != null) urlStream.close();
-                /* urlStream = Connector.openInputStream(asString(s)); */
-                openURL(a.asString(s));
-            }
-            i = UTF.fromUTF(urlStream);
-            return i;
-        } catch (Exception e) {
-        	//TODO: IO error
-            return 0;
-        }
-    }
-    
-    public void edit(int s) {
-        ta.setString(a.asString(s)+ta.getString());
+	@Override
+	public synchronized int inKey() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public synchronized void outKeys(String key) {
+		ta.setString(key+ta.getString());
         setCurrent(ta);
-    }
+	}
+
+	@Override
+	public synchronized void inURL(String url) {
+		StringBuilder buf = new StringBuilder();
+		try {
+			URL ht = new URL(url);
+			Reader r = new InputStreamReader(ht.openStream());
+			while (true) {
+				int ch = r.read();
+				if (ch < 0) break;
+				buf.append((char) ch);
+			}
+		} catch (Exception e) {
+			//TODO:
+		}
+		outKeys(buf.toString());
+		enter();
+	}
+
+	@Override
+	public void outURL(String url) {
+		ws.e.loadUrl(url);
+		setCurrent(ws);
+	}
+
+	@Override
+	public int inJoy() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void outAudio(String music) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }
