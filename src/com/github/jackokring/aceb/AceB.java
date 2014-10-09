@@ -194,7 +194,7 @@ public class AceB implements Machine {
             for(j=0;j<y;j++)
                 a = j*x;
                 for(i=0;i<x;i++) {
-                    machine.gc.setCell(i, j, m[b+i+a]);
+                    machine.setChar(i, j, m[b+i+a]);
             }
             mils=mil2;
             return(mil3);

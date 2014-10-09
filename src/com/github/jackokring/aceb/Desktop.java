@@ -237,5 +237,15 @@ public class Desktop extends MainActivity implements OSAdapter {
 		// TODO Auto-generated method stub
 		
 	}
-    
+
+	@Override
+	public void setChar(int x, int y, char c) {
+		gc.setCell(x, y, c);	
+	}
+
+	@Override
+	public void setRes(int x, int y, char col) {
+		gc.getNew(x, y);
+		gc.clear(col);
+	}
 }

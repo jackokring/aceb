@@ -1,8 +1,6 @@
 package com.github.jackokring.aceb;
 
 import java.io.File;
-import java.io.IOException;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
