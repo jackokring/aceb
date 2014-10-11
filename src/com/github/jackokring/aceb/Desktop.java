@@ -234,9 +234,9 @@ public class Desktop extends MainActivity implements OSAdapter {
 		setCurrent(ws);
 	}
 	
-	Joy j = new Joy();
+	Joy j = new Joy(this);
 	Thread joy = new Thread(j);
-	Audio m = new Audio();
+	Audio m = new Audio(this);
 	Thread sound = new Thread(m);
 	
 	public void onPause() {
