@@ -92,7 +92,7 @@ public abstract class MainActivity extends ActionBarActivity {
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		File f = new File(getMemFile());
 		if(!f.exists()) {
-			findViewById(R.id.action_share).setVisibility(View.INVISIBLE);//hide it
+			findViewById(R.id.action_share).setClickable(false);//hide it
 			defFile();
 			return null;
 		}
@@ -100,7 +100,7 @@ public abstract class MainActivity extends ActionBarActivity {
 	                            "com.github.jackokring.aceb.fileprovider",
 	                            f);
 	    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
-	    findViewById(R.id.action_share).setVisibility(View.VISIBLE);//show it
+	    findViewById(R.id.action_share).setClickable(true);//show it
 	    return intent;
 	}
 }

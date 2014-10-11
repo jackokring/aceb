@@ -35,8 +35,6 @@ public class Desktop extends MainActivity implements OSAdapter {
 			public void run() {
 				a.reset(true);//initial state
 				save(getMemFile(), false);//make a dump
-				if(!(new File(getMemFile())).exists()) return;//no valid method of constructing file
-				mShareActionProvider.setShareIntent(getDefaultIntent());
 		}};
 		back.start();//in background do it
 	}
@@ -106,6 +104,8 @@ public class Desktop extends MainActivity implements OSAdapter {
 		} catch (FileNotFoundException e) {
 			if(err) probs.show();
 		}
+    	if(!(new File(getMemFile())).exists()) return;//no valid method of constructing file
+		mShareActionProvider.setShareIntent(getDefaultIntent());
     }
     
     public void onSaveInstanceState(Bundle b) {
@@ -173,7 +173,9 @@ public class Desktop extends MainActivity implements OSAdapter {
         	}
         };
         setCurrent(gc);
+        joy.start();
     }
+
     
     synchronized void enter() {
 		run = true;
@@ -231,17 +233,32 @@ public class Desktop extends MainActivity implements OSAdapter {
 		ws.e.loadUrl(url);
 		setCurrent(ws);
 	}
+	
+	Joy j = new Joy();
+	Thread joy = new Thread(j);
+	Audio m = new Audio();
+	Thread sound = new Thread(m);
+	
+	public void onPause() {
+		j.pause(true);
+		a.pause(true);
+		m.pause(true);
+	}
+	
+	public void onResume() {
+		j.pause(false);
+		a.pause(false);
+		m.pause(false);
+	}
 
 	@Override
 	public int inJoy() {
-		// TODO Auto-generated method stub
-		return 0;
+		return j.get();
 	}
 
 	@Override
 	public void outAudio(String music) {
-		// TODO Auto-generated method stub
-		
+		m.set(music);		
 	}
 
 	@Override

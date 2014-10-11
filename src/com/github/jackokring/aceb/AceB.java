@@ -154,6 +154,7 @@ public class AceB implements Machine {
 
     //TODO: persist before!!
     public void load(Bundle b) {
+    	reset(false);
     	
     }
     
@@ -612,8 +613,8 @@ public class AceB implements Machine {
         machine = mach;
     }
 
-    public boolean destroy;//botch for file initialization
-    public boolean pause;
+    public boolean destroy = false;//botch for file initialization
+    public boolean pause = false;
 
     public void run() {
         while(!destroy) {
@@ -632,5 +633,10 @@ public class AceB implements Machine {
     	while(destroy) Thread.yield();
     	(ref = new Thread(this)).start();
     }
+
+	@Override
+	public void pause(boolean state) {
+		pause = state;
+	}
 
 }
