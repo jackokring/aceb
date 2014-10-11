@@ -16,6 +16,7 @@ import android.os.*;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public abstract class MainActivity extends ActionBarActivity {
 	
@@ -24,7 +25,7 @@ public abstract class MainActivity extends ActionBarActivity {
 	public int viewXML = R.layout.activity_desktop;
 	public int menuXML = R.menu.desktop;
 
-	private ShareActionProvider mShareActionProvider;
+	protected ShareActionProvider mShareActionProvider;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +87,20 @@ public abstract class MainActivity extends ActionBarActivity {
 	  * is known or changes, you must update the share intent by again calling
 	  * mShareActionProvider.setShareIntent()
 	  */
-	private Intent getDefaultIntent() {
+	protected Intent getDefaultIntent() {
 	    Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		File f = new File(getMemFile());
-		if(!f.exists()) defFile();
+		if(!f.exists()) {
+			findViewById(R.id.action_share).setVisibility(View.INVISIBLE);//hide it
+			defFile();
+			return null;
+		}
 		Uri fileUri = FileProvider.getUriForFile(this,
 	                            "com.github.jackokring.aceb.fileprovider",
 	                            f);
 	    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
+	    findViewById(R.id.action_share).setVisibility(View.VISIBLE);//show it
 	    return intent;
 	}
 }

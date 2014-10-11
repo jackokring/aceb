@@ -31,8 +31,14 @@ public class Desktop extends MainActivity implements OSAdapter {
 	int menuXML = R.menu.desktop;
 	
 	public void defFile() {
-		a.reset(true);//initial state
-		save(getMemFile(), false);//make a dump
+		Thread back = new Thread() {
+			public void run() {
+				a.reset(true);//initial state
+				save(getMemFile(), false);//make a dump
+				if(!(new File(getMemFile())).exists()) return;//no valid method of constructing file
+				mShareActionProvider.setShareIntent(getDefaultIntent());
+		}};
+		back.start();//in background do it
 	}
 	
     Machine a = new AceB(this);
