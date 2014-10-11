@@ -173,7 +173,7 @@ public class Desktop extends MainActivity implements OSAdapter {
         	}
         };
         setCurrent(gc);
-        joy.start();
+        sound.start();
     }
 
     
@@ -235,7 +235,6 @@ public class Desktop extends MainActivity implements OSAdapter {
 	}
 	
 	Joy j = new Joy(this);
-	Thread joy = new Thread(j);
 	Audio m = new Audio(this);
 	Thread sound = new Thread(m);
 	
