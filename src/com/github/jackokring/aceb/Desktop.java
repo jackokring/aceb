@@ -21,10 +21,13 @@ import java.net.URL;
 import android.app.SearchManager;
 import android.app.backup.BackupManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
-public class Desktop extends MainActivity implements OSAdapter {
+public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferenceChangeListener {
 	
 	//default ones
 	int viewXML = R.layout.activity_desktop;
@@ -33,13 +36,10 @@ public class Desktop extends MainActivity implements OSAdapter {
 	public void defFile() {
 		Thread back = new Thread() {
 			public void run() {
-				a.reset(true);//initial state
 				save(getMemFile(), false);//make a dump
 		}};
 		back.start();//in background do it
 	}
-	
-    Machine a = new AceB(this);
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -48,13 +48,17 @@ public class Desktop extends MainActivity implements OSAdapter {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		switch(id) {
-		//TODO: fill in actions
-		case R.id.action_home: if(setCurrent(gc)) setCurrent(ws); else setCurrent(gc); return true;
-		case R.id.action_edit: if(setCurrent(ta)) enter.show(); return true;
-		case R.id.action_load: load.show(); return true;
-		case R.id.action_save: save.show(); return true;
-		case R.id.action_reset: reset.show(); return true;
-		//rest is settings in super TODO: reset
+		case R.id.action_home:
+			if(setCurrent(gc)) setCurrent(ws); else setCurrent(gc); return true;
+		case R.id.action_edit:
+			if(setCurrent(ta)) enter.show(); return true;
+		case R.id.action_load:
+			load.show(); return true;
+		case R.id.action_save:
+			save.show(); return true;
+		case R.id.action_reset:
+			reset.show(); return true;
+		//rest is settings in super
 		default: return super.onOptionsItemSelected(item);
 		}
 	}
@@ -131,12 +135,21 @@ public class Desktop extends MainActivity implements OSAdapter {
         gc.load(b);
         ws.load(b);
     }
+    
+    Machine a;
+    SharedPreferences sp;
+    
+    public void finalize() {
+    	sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
 
     public Desktop() {
-        gc = new DisplayTerminal();
+        gc = new DisplayTerminal(this);
         ta = new TextBox();
         ws = new WebShow();
-        //TODO: needs override of ok, cancel
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        onSharedPreferenceChanged(sp, "a");
+        sp.registerOnSharedPreferenceChangeListener(this);
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
@@ -204,7 +217,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 
 	@Override
 	public synchronized void outKeys(String key) {
-		ta.setString(key+ta.getString(false));
+		ta.setString(key+buf+ta.getString(false));
         setCurrent(ta);
 	}
 
@@ -220,7 +233,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 				buf.append((char) ch);
 			}
 		} catch (Exception e) {
-			//TODO:
+			probs.show();
 		}
 		buf.append(32);//chain source
 		outKeys(buf.toString());
@@ -268,5 +281,19 @@ public class Desktop extends MainActivity implements OSAdapter {
 	public void setRes(int x, int y, char col) {
 		gc.getNew(x, y);
 		gc.clear(col);
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if(sp != sharedPreferences || !key.equals("a")) return;
+		int num = sp.getInt("a", 1);
+		switch(num) {
+		case 2:
+			a = new Tester(this);
+		case 1:	
+		default:
+			a = new AceB(this);	break;
+		}
 	}
 }

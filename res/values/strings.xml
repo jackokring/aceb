@@ -40,5 +40,12 @@
     
     <string name="help_text_generic">Help can be displayed by pressing the help button in a dialog, and the OK and Cancel buttons will still function.</string>
 
+    <string name="pref_hardware">Hardware Settings</string>
     <string name="pref_joy">Tilt Joystick Gain</string>
+    <string name="pref_screen">Default Screen Size</string>
+    
+    <string name="pref_machine">Machine Type</string>
+    <string name="pref_a">Function</string>
+    
+    <string name="pref_web">Visit Website</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.github.jackokring.aceb;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.EditText;

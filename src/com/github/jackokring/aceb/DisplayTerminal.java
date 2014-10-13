@@ -1,9 +1,11 @@
 package com.github.jackokring.aceb;
 
-import android.content.Context;
+import android.content.*;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,20 +17,32 @@ import android.widget.ImageView;
  * @author jacko
  */
 
-public class DisplayTerminal extends Fragment {
+public class DisplayTerminal extends Fragment implements OnSharedPreferenceChangeListener {
 
-	public int x = 32;
-	public int y = 32;
+	public int x;
+	public int y;
 	int cx, cy;
 	char cc;
 	boolean co;
 	
-	Bitmap b = getNew(x, y);
+	Bitmap b;
 	Canvas c;
 	Bitmap f;
 	char bg = 0x0ff0;
 	Context con = getActivity().getApplicationContext();
 	ImageView i;
+	SharedPreferences sp;
+	
+	public DisplayTerminal(Desktop d) {
+		super();
+		sp = PreferenceManager.getDefaultSharedPreferences(d);
+		onSharedPreferenceChanged(sp, "pref_screen");
+		sp.registerOnSharedPreferenceChangeListener(this);
+	}
+	
+	public void finalize() {
+		sp.unregisterOnSharedPreferenceChangeListener(this);
+	}
 	
 	Paint p = new Paint(bg);
 	Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);
@@ -74,7 +88,7 @@ public class DisplayTerminal extends Fragment {
     }
 	 
 	public Bitmap getNew(int xs, int ys) {
-		b = Bitmap.createBitmap(xs*8, ys*12, Bitmap.Config.ARGB_8888);
+		b = Bitmap.createBitmap(xs*8, ys*8, Bitmap.Config.ARGB_8888);
 		x = xs;
 		y = ys;
 		c = new Canvas(b);
@@ -107,6 +121,7 @@ public class DisplayTerminal extends Fragment {
 		bg = (char)(a + r + g + b);//also fade blending
 		p = new Paint(bg);
 		c.drawColor(bg);
+		cx = cy = 0;
 		invalidate();
 	}
 	
@@ -156,4 +171,12 @@ public class DisplayTerminal extends Fragment {
 		ink.setColorFilter(inv);
 	}
 
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if(sp == sharedPreferences && key.equals("pref_screen")) {
+			x = y = sp.getInt("pref_screen", 32);
+			b = getNew(x, y);
+		}
+	}
 }

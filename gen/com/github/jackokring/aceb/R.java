@@ -17,6 +17,8 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
+        public static final int a=0x7f0d0004;
+        public static final int a_val=0x7f0d0005;
         /**  <array name="icons">
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_settings</item>
@@ -30,6 +32,8 @@ public final class R {
          */
         public static final int joy_gain=0x7f0d0000;
         public static final int joy_gain_val=0x7f0d0001;
+        public static final int screen_size=0x7f0d0002;
+        public static final int screen_size_val=0x7f0d0003;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -1294,7 +1298,12 @@ containing a value of this type.
         public static final int load=0x7f0b001e;
         public static final int load_help=0x7f0b001f;
         public static final int ok=0x7f0b001a;
-        public static final int pref_joy=0x7f0b0029;
+        public static final int pref_a=0x7f0b002d;
+        public static final int pref_hardware=0x7f0b0029;
+        public static final int pref_joy=0x7f0b002a;
+        public static final int pref_machine=0x7f0b002c;
+        public static final int pref_screen=0x7f0b002b;
+        public static final int pref_web=0x7f0b002e;
         public static final int probs=0x7f0b0026;
         public static final int probs_help=0x7f0b0027;
         public static final int reset=0x7f0b0022;

@@ -4,8 +4,12 @@ int anim abc_slide_in_bottom 0x7f040002
 int anim abc_slide_in_top 0x7f040003
 int anim abc_slide_out_bottom 0x7f040004
 int anim abc_slide_out_top 0x7f040005
+int array a 0x7f0d0004
+int array a_val 0x7f0d0005
 int array joy_gain 0x7f0d0000
 int array joy_gain_val 0x7f0d0001
+int array screen_size 0x7f0d0002
+int array screen_size_val 0x7f0d0003
 int attr actionBarDivider 0x7f01000f
 int attr actionBarItemBackground 0x7f010010
 int attr actionBarSize 0x7f01000e
@@ -379,7 +383,12 @@ int string help_text_generic 0x7f0b0028
 int string load 0x7f0b001e
 int string load_help 0x7f0b001f
 int string ok 0x7f0b001a
-int string pref_joy 0x7f0b0029
+int string pref_a 0x7f0b002d
+int string pref_hardware 0x7f0b0029
+int string pref_joy 0x7f0b002a
+int string pref_machine 0x7f0b002c
+int string pref_screen 0x7f0b002b
+int string pref_web 0x7f0b002e
 int string probs 0x7f0b0026
 int string probs_help 0x7f0b0027
 int string reset 0x7f0b0022

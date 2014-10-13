@@ -6,7 +6,7 @@ import java.io.*;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class AceB extends Tester {
+public class Tester implements Machine {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
     char[] m = new char[65536]; //memory
@@ -609,7 +609,7 @@ public class AceB extends Tester {
     public OSAdapter machine;
     Thread ref;
 
-    public AceB(Desktop mach) {
+    public Tester(Desktop mach) {
         machine = mach;
     }
 

@@ -25,5 +25,7 @@ import android.app.backup.SharedPreferencesBackupHelper;
          addHelper(MY_PREFS_BACKUP_KEY, helper);
          FileBackupHelper helper2 = new FileBackupHelper(this, FILENAME);
          addHelper(FILES_BACKUP_KEY, helper2);
+         FileBackupHelper helper3 = new FileBackupHelper(this, FILENAME+".bak");
+         addHelper(FILES_BACKUP_KEY, helper3);
      }
  }

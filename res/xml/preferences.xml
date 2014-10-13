@@ -19,13 +19,39 @@
             android:summary="@string/help"
             android:title="@string/help"/>
     </PreferenceCategory> -->
-    <ListPreference
-        android:key="pref_joy"
-        android:title="@string/pref_joy"
-        android:dialogTitle="@string/pref_joy"
-        android:entries="@array/joy_gain"
-        android:entryValues="@array/joy_gain_val"
-        android:defaultValue="1" />
-	<intent android:action="android.intent.action.VIEW"
-            android:data="http://www.github.com/jackokring/aceb" />
+    <PreferenceCategory 
+        android:title="@string/pref_hardware"
+        android:key="pref_key_hardware">
+	    <ListPreference
+	        android:key="pref_screen"
+	        android:title="@string/pref_screen"
+	        android:dialogTitle="@string/pref_screen"
+	        android:entries="@array/screen_size"
+	        android:entryValues="@array/screen_size_val"
+	        android:defaultValue="32" />
+	    <ListPreference
+	        android:key="pref_joy"
+	        android:title="@string/pref_joy"
+	        android:dialogTitle="@string/pref_joy"
+	        android:entries="@array/joy_gain"
+	        android:entryValues="@array/joy_gain_val"
+	        android:defaultValue="1" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+        android:title="@string/pref_machine"
+        android:key="pref_key_machine">
+	    <ListPreference
+	        android:key="a"
+	        android:title="@string/pref_a"
+	        android:dialogTitle="@string/pref_a"
+	        android:entries="@array/a"
+	        android:entryValues="@array/a_val"
+	        android:defaultValue="1" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+        android:title="@string/pref_web"
+        android:key="pref_key_website">
+		<intent android:action="android.intent.action.VIEW"
+	            android:data="http://www.github.com/jackokring/aceb" />
+	</PreferenceCategory>
 </PreferenceScreen>

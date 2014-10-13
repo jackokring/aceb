@@ -20,4 +20,22 @@
         <item>3</item>
         <item>5</item>
     </array>
+    <array name="screen_size">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </array>
+    <array name="screen_size_val">
+        <item>32</item>
+        <item>48</item>
+        <item>64</item>
+    </array>
+        <array name="a">
+        <item>AceB</item>
+        <item>Tests</item>
+    </array>
+    <array name="a_val">
+        <item>1</item>
+        <item>2</item>
+    </array>
 </resources>
