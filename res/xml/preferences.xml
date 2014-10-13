@@ -18,15 +18,14 @@
             android:dependency="pref_key_auto_delete"
             android:summary="@string/help"
             android:title="@string/help"/>
-    </PreferenceCategory>
+    </PreferenceCategory> -->
     <ListPreference
-        android:dependency="pref_sync"
-        android:key="pref_syncConnectionType"
-        android:title="@string/help"
-        android:dialogTitle="@string/help"
-        android:entries="@array/names"
-        android:entryValues="@array/values"
-        android:defaultValue="@string/help" /> -->
+        android:key="pref_joy"
+        android:title="@string/pref_joy"
+        android:dialogTitle="@string/pref_joy"
+        android:entries="@array/joy_gain"
+        android:entryValues="@array/joy_gain_val"
+        android:defaultValue="1" />
 	<intent android:action="android.intent.action.VIEW"
             android:data="http://www.github.com/jackokring/aceb" />
 </PreferenceScreen>

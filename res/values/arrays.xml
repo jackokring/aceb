@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="icons">
+    <!-- <array name="icons">
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_settings</item>
         <item>@drawable/ic_action_settings</item>
@@ -9,15 +9,15 @@
         <item>#FFFF0000</item>
         <item>#FF00FF00</item>
         <item>#FF0000FF</item>
+    </array> -->
+    <array name="joy_gain">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
     </array>
-    <array name="names">
-        <item>a</item>
-        <item>b</item>
-        <item>c</item>
-    </array>
-    <array name="values">
+    <array name="joy_gain_val">
         <item>1</item>
-        <item>2</item>
         <item>3</item>
+        <item>5</item>
     </array>
 </resources>

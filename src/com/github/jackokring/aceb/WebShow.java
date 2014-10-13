@@ -20,11 +20,11 @@ public class WebShow extends Fragment {
 
     //TODO: persist before!!
     public void load(Bundle b) {
-    	e.loadUrl(b.getString("web"));
+    	setString(b.getString("web"));
     }
     
     public void save(Bundle b) {
-    	b.putString("web", e.getUrl());
+    	b.putString("web", getString());
     }
 
 	@Override

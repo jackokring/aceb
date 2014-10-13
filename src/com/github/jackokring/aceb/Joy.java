@@ -1,7 +1,9 @@
 package com.github.jackokring.aceb;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.*;
+import android.preference.PreferenceManager;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,8 +12,9 @@ public class Joy implements SensorEventListener, OnClickListener {
 	
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	private int value, rotation;
+	private int rotation;
 	private boolean fire = false;
+	private SharedPreferences sp;
 
 	public Joy(Desktop desktop) {
 		mSensorManager = (SensorManager) desktop.getSystemService(Context.SENSOR_SERVICE);
@@ -19,6 +22,7 @@ public class Joy implements SensorEventListener, OnClickListener {
 		pause(false);
 		rotation = desktop.getWindowManager().getDefaultDisplay().getRotation();//on reconstruction
 		desktop.findViewById(R.id.font).setOnClickListener(this);
+		sp = PreferenceManager.getDefaultSharedPreferences(desktop);
 	}
 
 	public void pause(boolean b) {
@@ -26,17 +30,36 @@ public class Joy implements SensorEventListener, OnClickListener {
 		if(b) mSensorManager.unregisterListener(this);
 		else mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
 	}
+	
+	char[] mask = {
+		1, //X+
+		2, //Y+
+		4, //Z+
+		8, //X-
+		16, //Y-
+		32, //Z-
+		64 //F
+	};
 
-	public int get() {
-		//TODO: process fire and accel to one int
+	public char get() {
+		int g = sp.getInt("pref_joy", 1);
+		char value = 0;
+		grav[0] = g * grav[0];
+		grav[1] = g * grav[1];
+		for(int i = 0; i < grav.length; i++) {
+			if(grav[i] > 4) value |= mask[i];
+			if(grav[i] < 4) value |= mask[i + grav.length];
+		}
+		if(fire) value |= mask[grav.length << 1];
+		
 		fire = false;//reset it
 		return value;
 	}
 	
 	float[] gravity = new float[3];
 	float[] linear = new float[3];
-	float[] grav = new float[2];
-	float[] lin = new float[2];
+	float[] grav = new float[3];
+	float[] lin = new float[3];
 			
 	@Override
 	public void onSensorChanged(SensorEvent event) {
@@ -80,6 +103,8 @@ public class Joy implements SensorEventListener, OnClickListener {
 			lin[1] = linear[1];
 			break;
 		}
+		grav[2] = gravity[2];
+		lin[2] = linear[2];
 	}
 
 	@Override

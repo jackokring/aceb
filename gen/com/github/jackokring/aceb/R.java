@@ -17,10 +17,19 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
-        public static final int colors=0x7f0d0001;
-        public static final int icons=0x7f0d0000;
-        public static final int names=0x7f0d0002;
-        public static final int values=0x7f0d0003;
+        /**  <array name="icons">
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_settings</item>
+        <item>@drawable/ic_action_settings</item>
+    </array>
+    <array name="colors">
+        <item>#FFFF0000</item>
+        <item>#FF00FF00</item>
+        <item>#FF0000FF</item>
+    </array> 
+         */
+        public static final int joy_gain=0x7f0d0000;
+        public static final int joy_gain_val=0x7f0d0001;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -1285,6 +1294,7 @@ containing a value of this type.
         public static final int load=0x7f0b001e;
         public static final int load_help=0x7f0b001f;
         public static final int ok=0x7f0b001a;
+        public static final int pref_joy=0x7f0b0029;
         public static final int probs=0x7f0b0026;
         public static final int probs_help=0x7f0b0027;
         public static final int reset=0x7f0b0022;

@@ -29,7 +29,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 	//default ones
 	int viewXML = R.layout.activity_desktop;
 	int menuXML = R.menu.desktop;
-	
+
 	public void defFile() {
 		Thread back = new Thread() {
 			public void run() {
@@ -132,7 +132,6 @@ public class Desktop extends MainActivity implements OSAdapter {
         ws.load(b);
     }
 
-    //TODO: oncreate vs constructor
     public Desktop() {
         gc = new DisplayTerminal();
         ta = new TextBox();
@@ -172,7 +171,7 @@ public class Desktop extends MainActivity implements OSAdapter {
         		enter();//rebuild init state
         	}
         };
-        setCurrent(gc);
+        outURL("file:///android_asset/index.html");//general intro
         sound.start();
     }
 
@@ -186,19 +185,19 @@ public class Desktop extends MainActivity implements OSAdapter {
     String buf = "";
     
 	@Override
-	public synchronized int inKey() {
+	public synchronized char inKey() {
 		if(!run) {
 			gc.cursor(true);
-			return -1;//no key
+			return (char)-1;//no key
 		}
 		if(buf.equals("")) {
 			buf = ta.enter();
 			if(buf.equals("")) {
 				run = false;//end of input
-				return -1;//no key
+				return (char)-1;//no key
 			}
 		}
-		int s = buf.charAt(0);
+		char s = buf.charAt(0);
 		buf = buf.substring(0, buf.length());
 		return s;
 	}
@@ -251,7 +250,7 @@ public class Desktop extends MainActivity implements OSAdapter {
 	}
 
 	@Override
-	public int inJoy() {
+	public char inJoy() {
 		return j.get();
 	}
 
