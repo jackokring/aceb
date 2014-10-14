@@ -181,7 +181,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         enter = new MyDialog(R.string.enter, R.string.enter_help) {
         	public void ok() {
-        		enter();//rebuild init state
+        		enter();
         	}
         };
         outURL("file:///android_asset/index.html");//general intro
@@ -288,12 +288,22 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			String key) {
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
+		OSAdapter t = this;
 		switch(num) {
 		case 2:
-			a = new Tester(this);
+			a = new Tester(t);
+			break;
 		case 1:	
 		default:
-			a = new AceB(this);	break;
+			a = new AceB(t);
+			break;
 		}
+		a.reset(true);
+	}
+
+	@Override
+	public void scroll() {
+		gc.scroll();
+		setCurrent(gc);//show video out
 	}
 }

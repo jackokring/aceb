@@ -19,8 +19,8 @@ import android.widget.ImageView;
 
 public class DisplayTerminal extends Fragment implements OnSharedPreferenceChangeListener {
 
-	public int x;
-	public int y;
+	int x;
+	int y;
 	int cx, cy;
 	char cc;
 	boolean co;
@@ -56,7 +56,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	ColorFilter inv = new ColorMatrixColorFilter(filt);
 	int last = 63;//white from inverse
 	
-    public void load(Bundle bu) {
+    public synchronized void load(Bundle bu) {
     	x = bu.getInt("x");
     	y = bu.getInt("y");
     	cx = bu.getInt("cx");
@@ -74,7 +74,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		invalidate();
     }
     
-    public void save(Bundle bu) {
+    public synchronized void save(Bundle bu) {
     	bu.putInt("x", x);
     	bu.putInt("y", y);
     	bu.putInt("cx", cx);
@@ -87,7 +87,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
     	bu.putInt("last", last);
     }
 	 
-	public Bitmap getNew(int xs, int ys) {
+	public synchronized Bitmap getNew(int xs, int ys) {
 		b = Bitmap.createBitmap(xs*8, ys*8, Bitmap.Config.ARGB_8888);
 		x = xs;
 		y = ys;
@@ -107,12 +107,12 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
-	public void invalidate() {
+	public synchronized void invalidate() {
 		i.setImageBitmap(b);
 		i.invalidate();
 	}
 	 
-	public void clear(char i) {
+	public synchronized void clear(char i) {
 		int a, r, g, b;
 		a = ((i >> 12)&15) << 28;
 		r = ((i >> 8)&15) << 20;
@@ -125,7 +125,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		invalidate();
 	}
 	
-	public void setCell(char ch) {
+	public synchronized void setCell(char ch) {
 		int xt = ch / 1024;
 		if(xt != last) {//new colour
 			last = xt;//cache
@@ -139,7 +139,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		invalidate();
 	}
 	 
-	public void setCell(int px, int py, char ch) {
+	public synchronized void setCell(int px, int py, char ch) {
 		px %= x;
 		py %= y;
 		cx = px;
@@ -148,7 +148,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		setCell(ch);
     } 
 	
-	public void cursor(boolean on) {
+	public synchronized void cursor(boolean on) {
 		if(on && (System.currentTimeMillis()&1024) == 0) {
 			char t = cc;
 			setCell((char)127);
@@ -159,7 +159,18 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		co = on;//persist
 	}
 	
-	public void setInk(int i) {
+	public synchronized void scroll() {
+		cursor(false);//before
+		Paint pt = new Paint(bg&0xffffff);//no blend
+		for(int i = 1; i < y; i++) {
+			Rect r = new Rect(0, i * 8 - 8, x * 8 - 1, i * 8 - 1);
+			//c.drawRect(r, pt); -- no blends
+			c.drawBitmap(b, new Rect(0, i * 8, x * 8 - 1, i * 8 + 7), r, null);
+		}
+		c.drawRect(new Rect(0, y * 8, x * 8 - 1, y * 8 + 7), pt);
+	}
+	
+	public synchronized void setInk(int i) {
 		int r, g, b;
 		r = (i/16)*64;
 		g = ((i/4)&3)*64;
@@ -172,7 +183,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+	public synchronized void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if(sp == sharedPreferences && key.equals("pref_screen")) {
 			x = y = sp.getInt("pref_screen", 32);

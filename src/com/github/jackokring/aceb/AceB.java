@@ -604,39 +604,7 @@ public class AceB extends Tester {
         //screen,rp,sp,dp
     }
 
-    /* APPLICATION INTERFACE */
-
-    public OSAdapter machine;
-    Thread ref;
-
-    public AceB(Desktop mach) {
-        machine = mach;
+    public AceB(OSAdapter os) {
+    	super(os);
     }
-
-    public boolean destroy = false;//botch for file initialization
-    public boolean pause = false;
-
-    public void run() {
-        while(!destroy) {
-            if(pause) Thread.yield();
-            else next();
-        }
-        destroy = false;//reinit?
-    }
-    
-    public void reset(boolean build) {
-    	pause = true;
-    	if(build) dict();
-    	else alloc();//just the warm start
-    	pause = false;
-    	destroy = true;
-    	while(destroy) Thread.yield();
-    	(ref = new Thread(this)).start();
-    }
-
-	@Override
-	public void pause(boolean state) {
-		pause = state;
-	}
-
 }

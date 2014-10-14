@@ -15,4 +15,5 @@ public interface OSAdapter {
 	public void outAudio(String music);//play audio
 	
 	public void onBackPressed();//allow exit
+	public void scroll();//scroll display
 }

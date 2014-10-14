@@ -583,7 +583,6 @@ public class Tester implements Machine {
         hide();//hide minor words
         dp = 0;
         findCompile("QUIT");//entry vector
-        alloc();//allocate and fill specials etc
     }
 
     final char screen = (char)-1;//DisplayTerminal structure pointer
@@ -609,7 +608,7 @@ public class Tester implements Machine {
     public OSAdapter machine;
     Thread ref;
 
-    public Tester(Desktop mach) {
+    public Tester(OSAdapter mach) {
         machine = mach;
     }
 
@@ -618,16 +617,21 @@ public class Tester implements Machine {
 
     public void run() {
         while(!destroy) {
-            if(pause) Thread.yield();
-            else next();
+        	try {
+        		if(pause) Thread.yield();
+        		else next();
+        	} catch(Exception e) {
+        		//error in system (not in language)
+        		alloc();//warm start
+        	}
         }
         destroy = false;//reinit?
     }
     
     public void reset(boolean build) {
     	pause = true;
-    	if(build) dict();
-    	else alloc();//just the warm start
+    	if(build) dict();//cold start
+    	alloc();//just the warm start
     	pause = false;
     	destroy = true;
     	while(destroy) Thread.yield();
