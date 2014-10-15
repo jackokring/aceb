@@ -20,7 +20,7 @@ public class MyDialog extends DialogFragment {
 		
 	}
 	
-	private void proxy(boolean t) {
+	void proxy(boolean t) {
 		if(t) ok(); else cancel();
 	}
 	

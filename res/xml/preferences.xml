@@ -51,7 +51,11 @@
 	<PreferenceCategory 
         android:title="@string/pref_web"
         android:key="pref_key_website">
-		<intent android:action="android.intent.action.VIEW"
-	            android:data="http://www.github.com/jackokring/aceb" />
+	    <Preference
+ 			android:title="@string/github"
+ 			android:key="pref_key_github">
+			<intent android:action="android.intent.action.VIEW"
+	            	android:data="http://www.github.com/jackokring/aceb" />
+		</Preference>
 	</PreferenceCategory>
 </PreferenceScreen>

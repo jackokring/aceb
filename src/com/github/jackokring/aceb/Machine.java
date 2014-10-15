@@ -13,5 +13,6 @@ public interface Machine extends Runnable {
     public void save(FileOutputStream f);
     public void reset(boolean build);
     public void pause(boolean state);
+    public void end();
     
 }

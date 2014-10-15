@@ -18,7 +18,6 @@ public class WebShow extends Fragment {
 		
 	WebView e = (WebView) getActivity().findViewById(R.id.web);
 
-    //TODO: persist before!!
     public void load(Bundle b) {
     	setString(b.getString("web"));
     }

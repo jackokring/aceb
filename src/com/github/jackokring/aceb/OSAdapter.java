@@ -3,6 +3,7 @@ package com.github.jackokring.aceb;
 public interface OSAdapter {
 	
 	public char inKey();//gets 1 key if +ve
+	public boolean hasKey();//check availability
 	public void outKeys(String key);//edit by placing string before current
 	
 	public void setChar(int x, int y, char c);//draw a character

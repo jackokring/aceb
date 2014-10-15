@@ -10,11 +10,11 @@ import android.view.View.OnClickListener;
 
 public class Joy implements SensorEventListener, OnClickListener {
 	
-	private SensorManager mSensorManager;
-	private Sensor mSensor;
-	private int rotation;
-	private boolean fire = false;
-	private SharedPreferences sp;
+	SensorManager mSensorManager;
+	Sensor mSensor;
+	int rotation;
+	boolean fire = false;
+	SharedPreferences sp;
 
 	public Joy(Desktop desktop) {
 		mSensorManager = (SensorManager) desktop.getSystemService(Context.SENSOR_SERVICE);

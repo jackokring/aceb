@@ -47,5 +47,6 @@
     <string name="pref_machine">Machine Type</string>
     <string name="pref_a">Function</string>
     
-    <string name="pref_web">Visit Website</string>
+    <string name="pref_web">Visit Websites</string>
+    <string name="github">Visit the Github Site</string>
 </resources>

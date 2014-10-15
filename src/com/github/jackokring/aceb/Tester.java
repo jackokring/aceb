@@ -605,15 +605,15 @@ public class Tester implements Machine {
 
     /* APPLICATION INTERFACE */
 
-    public OSAdapter machine;
+    OSAdapter machine;
     Thread ref;
 
     public Tester(OSAdapter mach) {
         machine = mach;
     }
 
-    public boolean destroy = false;//botch for file initialization
-    public boolean pause = false;
+    boolean destroy = false;//botch for file initialization
+    boolean pause = false;
 
     public void run() {
         while(!destroy) {
@@ -643,4 +643,11 @@ public class Tester implements Machine {
 		pause = state;
 	}
 
+	@Override
+	public void end() {
+		destroy = true;
+		while(destroy) Thread.yield();//lock
+		machine = null;//remove circular ref
+	}
+	
 }

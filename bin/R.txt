@@ -378,6 +378,7 @@ int string app_name 0x7f0b000d
 int string cancel 0x7f0b0019
 int string enter 0x7f0b0024
 int string enter_help 0x7f0b0025
+int string github 0x7f0b002f
 int string help 0x7f0b001b
 int string help_text_generic 0x7f0b0028
 int string load 0x7f0b001e

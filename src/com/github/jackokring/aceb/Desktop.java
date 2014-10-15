@@ -30,10 +30,10 @@ import android.view.MenuItem;
 public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferenceChangeListener {
 	
 	//default ones
-	int viewXML = R.layout.activity_desktop;
-	int menuXML = R.menu.desktop;
+	protected int viewXML = R.layout.activity_desktop;
+	protected int menuXML = R.menu.desktop;
 
-	public void defFile() {
+	protected void defFile() {
 		Thread back = new Thread() {
 			public void run() {
 				save(getMemFile(), false);//make a dump
@@ -63,15 +63,15 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 	}
 
-    public DisplayTerminal gc;
-    public TextBox ta;
-    public WebShow ws;
-    public MyDialog xit;
-    public MyDialog probs;
-    public MyDialog load;
-    public MyDialog save;
-    public MyDialog reset;
-    public MyDialog enter;
+    DisplayTerminal gc;
+    TextBox ta;
+    WebShow ws;
+    MyDialog xit;
+    MyDialog probs;
+    MyDialog load;
+    MyDialog save;
+    MyDialog reset;
+    MyDialog enter;
     
     public void onBackPressed() {
     	xit.show();
@@ -154,6 +154,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
         		save(getMemFile()+".bak", false);
+        		a.end();//clean up!
         		finish();
         	}
         };
@@ -184,7 +185,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         		enter();
         	}
         };
-        outURL("file:///android_asset/index.html");//general intro
         sound.start();
     }
 
@@ -192,23 +192,26 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     synchronized void enter() {
 		run = true;
 		buf = ta.enter();
+		if(buf.equals("")) run = false;//no input
 	}
 
 	boolean run = false;
     String buf = "";
     
+    @Override
+    public boolean hasKey() {//call after inKey() to check valid
+    	return run;
+    }
+    
 	@Override
 	public synchronized char inKey() {
 		if(!run) {
 			gc.cursor(true);
-			return (char)-1;//no key
+			return 0;//no key
 		}
 		if(buf.equals("")) {
-			buf = ta.enter();
-			if(buf.equals("")) {
-				run = false;//end of input
-				return (char)-1;//no key
-			}
+			enter();
+			return inKey();//nest test
 		}
 		char s = buf.charAt(0);
 		buf = buf.substring(0, buf.length());
@@ -235,7 +238,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		} catch (Exception e) {
 			probs.show();
 		}
-		buf.append(32);//chain source
+		buf.append("\n");//chain source
 		outKeys(buf.toString());
 		enter();
 	}
@@ -298,6 +301,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a = new AceB(t);
 			break;
 		}
+		outURL("file:///android_asset/" + a.getClass().getSimpleName() + "/index.html");//intro
 		a.reset(true);
 	}
 

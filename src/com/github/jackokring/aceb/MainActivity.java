@@ -21,13 +21,13 @@ public abstract class MainActivity extends ActionBarActivity {
 	
 	//only for common life cycle stuff
 	
-	public int viewXML = R.layout.activity_desktop;
-	public int menuXML = R.menu.desktop;
+	protected int viewXML = R.layout.activity_desktop;
+	protected int menuXML = R.menu.desktop;
 
 	protected ShareActionProvider mShareActionProvider;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(viewXML);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -51,7 +51,7 @@ public abstract class MainActivity extends ActionBarActivity {
 		return true;
 	}
 	
-    public int remove = R.id.content;
+    int remove = R.id.content;
 
     public boolean setCurrent(Fragment a) {
     	if(a.getId() == remove) return true;
@@ -79,7 +79,7 @@ public abstract class MainActivity extends ActionBarActivity {
 		return "memory.aceb";//a binary image share
 	}
     
-    public abstract void defFile();
+    protected abstract void defFile();
 
 	/** Defines a default share intent to initialize the action provider.
 	  * However, as soon as the actual content to be used in the intent

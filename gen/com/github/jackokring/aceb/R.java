@@ -1293,6 +1293,7 @@ containing a value of this type.
         public static final int cancel=0x7f0b0019;
         public static final int enter=0x7f0b0024;
         public static final int enter_help=0x7f0b0025;
+        public static final int github=0x7f0b002f;
         public static final int help=0x7f0b001b;
         public static final int help_text_generic=0x7f0b0028;
         public static final int load=0x7f0b001e;
