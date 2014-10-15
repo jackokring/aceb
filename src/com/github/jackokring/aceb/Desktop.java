@@ -10,9 +10,10 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -93,19 +94,31 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     public void load(String name, boolean err) {
+    	File f = new File(getFilesDir(), name);
+    	StringBuilder buf = new StringBuilder();
     	try {
-    		File f = new File(getFilesDir(), name);
-			a.load(new FileInputStream(f));
-		} catch (FileNotFoundException e) {
+    		DataInputStream in = new DataInputStream(new FileInputStream(f));
+			while(in.available() > 0) {
+				buf.append(in.readChar());
+			}
+			in.close();
+			char[] ch = new char[buf.length()];
+			buf.toString().getChars(0, buf.length(), ch, 0);
+			a.load(ch);
+		} catch (Exception e) {
 			if(err) probs.show();
 		}
     }
     
     public void save(String name, boolean err) {
+    	File f = new File(getFilesDir(), name);
+    	char[] ch = a.save();
     	try {
-    		File f = new File(getFilesDir(), name);
-			a.save(new FileOutputStream(f));
-		} catch (FileNotFoundException e) {
+    		DataOutputStream out = new DataOutputStream(new FileOutputStream(f));
+    		for(int i = 0; i < ch.length; i++)
+    			out.writeChar(ch[i]);
+			out.close();
+		} catch (Exception e) {
 			if(err) probs.show();
 		}
     	if(!(new File(getMemFile())).exists()) return;//no valid method of constructing file
@@ -119,7 +132,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putString("buf", buf);
         b.putBoolean("run", run);
         ta.save(b);
-        a.save(b);
+        b.putCharArray("mem", a.save());
         gc.save(b);
         ws.save(b);
     }
@@ -131,7 +144,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         buf = b.getString("buf");
         run = b.getBoolean("run");
         ta.load(b);
-        a.load(b);
+        a.load(b.getCharArray("mem"));
         gc.load(b);
         ws.load(b);
     }
@@ -160,7 +173,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         probs = new MyDialog(R.string.probs, R.string.probs_help) {
         	public void cancel() {
-        		throw new RuntimeException();//TODO: catch
+        		throw new RuntimeException();
         	}
         };
         load = new MyDialog(R.string.load, R.string.load_help) {
