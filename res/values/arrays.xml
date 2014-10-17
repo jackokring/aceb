@@ -30,12 +30,24 @@
         <item>48</item>
         <item>64</item>
     </array>
-        <array name="a">
+    <array name="a">
         <item>AceB</item>
         <item>Tests</item>
     </array>
     <array name="a_val">
         <item>1</item>
         <item>2</item>
+    </array>
+    <array name="file">
+        <item>Internal (Cloud)</item>
+        <item>External (SD)</item>
+        <item>Public in Downloads (SD)</item>
+        <item>Asset Demo (No Save)</item>
+    </array>
+    <array name="file_val">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </array>
 </resources>

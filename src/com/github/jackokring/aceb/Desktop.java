@@ -15,7 +15,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
 
@@ -25,6 +28,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
@@ -33,14 +37,48 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	//default ones
 	protected int viewXML = R.layout.activity_desktop;
 	protected int menuXML = R.menu.desktop;
-
-	protected void defFile() {
-		Thread back = new Thread() {
-			public void run() {
-				save(getMemFile(), false);//make a dump
-		}};
-		back.start();//in background do it
+	
+	protected InputStream getFile(String ext) throws IOException {
+		File nf;
+		String full = getMemFile();
+		if(ext != null) full += ext;
+		switch(sp.getInt("pref_file", 1)) {
+		default:case 1://internal
+			nf = new File(getFilesDir(), full);
+			break;
+		case 2://External
+			nf = new File(getExternalFilesDir(null), full);
+			break;
+		case 3://Public Downloads
+			nf = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+					full);
+			break;
+		case 4://Assets
+			return getAssets().open(full);
+		}
+		return new FileInputStream(nf);
 	}
+	
+	protected OutputStream putFile(String ext) throws IOException {
+		File nf;
+		String full = getMemFile();
+		if(ext != null) full += ext;
+		switch(sp.getInt("pref_file", 1)) {
+		default:case 1://internal
+			nf = new File(getFilesDir(), full);
+			break;
+		case 2://External
+			nf = new File(getExternalFilesDir(null), full);
+			break;
+		case 3://Public Downloads
+			nf = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+					full);
+			break;
+		case 4://Assets
+			throw new IOException();
+		}
+		return new FileOutputStream(nf);
+	}	
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -81,7 +119,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        load(getMemFile()+".bak", false);
         //setContentView(R.layout.search);
         //TODO: intent handlers
 
@@ -93,11 +130,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         }
     }
     
-    public void load(String name, boolean err) {
-    	File f = new File(getFilesDir(), name);
+    public void load(String ext, boolean err) {
     	StringBuilder buf = new StringBuilder();
     	try {
-    		DataInputStream in = new DataInputStream(new FileInputStream(f));
+    		DataInputStream in = new DataInputStream(getFile(ext));
 			while(in.available() > 0) {
 				buf.append(in.readChar());
 			}
@@ -110,19 +146,19 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
     }
     
-    public void save(String name, boolean err) {
-    	File f = new File(getFilesDir(), name);
+    public void save(String ext, boolean err) {
     	char[] ch = a.save();
     	try {
-    		DataOutputStream out = new DataOutputStream(new FileOutputStream(f));
+    		DataOutputStream out = new DataOutputStream(putFile(ext));
     		for(int i = 0; i < ch.length; i++)
     			out.writeChar(ch[i]);
 			out.close();
 		} catch (Exception e) {
 			if(err) probs.show();
 		}
-    	if(!(new File(getMemFile())).exists()) return;//no valid method of constructing file
 		mShareActionProvider.setShareIntent(getDefaultIntent());
+		BackupManager bm = new BackupManager(this);
+		bm.dataChanged();
     }
     
     public void onSaveInstanceState(Bundle b) {
@@ -158,7 +194,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         if(fetch) inURL(urlp);//complete URL fetch
     }
     
-    Machine a;
     SharedPreferences sp;
     
     public void finalize() {
@@ -175,7 +210,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
-        		save(getMemFile()+".bak", false);
+        		save(".bak", false);
         		a.end();//clean up!
         		finish();
         	}
@@ -187,14 +222,12 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         load = new MyDialog(R.string.load, R.string.load_help) {
         	public void ok() {
-        		load(getMemFile(), false);
+        		load(null, false);
         	}
         };
         save = new MyDialog(R.string.save, R.string.save_help) {
         	public void ok() {
-        		save(getMemFile(), false);
-        		BackupManager bm = new BackupManager(this.getActivity().getApplicationContext());
-        		bm.dataChanged();
+        		save(null, false);
         	}
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
@@ -265,7 +298,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		u.start();
 	}
 	
-	class UrlGetter implements Runnable {
+	protected class UrlGetter implements Runnable {
 		
 		public UrlGetter(String url) {
 			urlp = url;
@@ -348,6 +381,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			String key) {
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
+		if(a != null) {// not first run
+			save(".bak", false);//save
+		}
 		OSAdapter t = this;
 		switch(num) {
 		case 2:
@@ -358,8 +394,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a = new AceB(t);
 			break;
 		}
-		outURL("file:///android_asset/" + a.getClass().getSimpleName() + "/index.html");//intro
-		a.reset(true);
+		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
+		load(".bak", false);
 	}
 
 	@Override

@@ -3,6 +3,8 @@
 
     <string name="app_name">AceB FORTH</string>
     <string name="setting_name">AceB Settings</string>
+    <string name="extension">.aceb</string>
+    <string name="fileprovider">com.github.jackokring.aceb.fileprovider</string>
     
     <string name="action_home">Home</string>
     <string name="action_edit">Edit</string>
@@ -43,6 +45,7 @@
     <string name="pref_hardware">Hardware Settings</string>
     <string name="pref_joy">Tilt Joystick Gain</string>
     <string name="pref_screen">Default Screen Size</string>
+    <string name="pref_file">Load and Save location</string>
     
     <string name="pref_machine">Machine Type</string>
     <string name="pref_a">Function</string>

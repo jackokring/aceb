@@ -1,24 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 
-    <PreferenceCategory 
-        android:title="@string/help"
-        android:key="pref_key_storage_settings">
-        <CheckBoxPreference
-            android:key="pref_key_auto_delete"
-            android:summary="@string/help"
-            android:title="@string/help"
-            android:defaultValue="false"/>
-        <Preference 
-            android:key="pref_key_sms_delete_limit"
             android:dependency="pref_key_auto_delete"
-            android:summary="@string/help"
-            android:title="@string/help"/>
-        <Preference 
-            android:key="pref_key_mms_delete_limit"
-            android:dependency="pref_key_auto_delete"
-            android:summary="@string/help"
-            android:title="@string/help"/>
-    </PreferenceCategory> -->
+	 -->
     <PreferenceCategory 
         android:title="@string/pref_hardware"
         android:key="pref_key_hardware">
@@ -35,6 +18,13 @@
 	        android:dialogTitle="@string/pref_joy"
 	        android:entries="@array/joy_gain"
 	        android:entryValues="@array/joy_gain_val"
+	        android:defaultValue="1" />
+	    <ListPreference
+	        android:key="pref_file"
+	        android:title="@string/pref_file"
+	        android:dialogTitle="@string/pref_file"
+	        android:entries="@array/file"
+	        android:entryValues="@array/file_val"
 	        android:defaultValue="1" />
 	</PreferenceCategory>
 	<PreferenceCategory 

@@ -11,21 +11,18 @@ import android.app.backup.SharedPreferencesBackupHelper;
      // An arbitrary string used within the BackupAgentHelper implementation to
      // identify the SharedPreferencesBackupHelper's data.
      static final String MY_PREFS_BACKUP_KEY = "myprefs";
-     
-     // The name of the SharedPreferences file
-     static final String FILENAME = MainActivity.getMemFile();
-     
-     // A key to uniquely identify the set of backup data
-     static final String FILES_BACKUP_KEY = "myfiles";
 
      // Simply allocate a helper and install it
      public void onCreate() {
          SharedPreferencesBackupHelper helper =
                  new SharedPreferencesBackupHelper(this);
          addHelper(MY_PREFS_BACKUP_KEY, helper);
-         FileBackupHelper helper2 = new FileBackupHelper(this, FILENAME);
-         addHelper(FILES_BACKUP_KEY, helper2);
-         FileBackupHelper helper3 = new FileBackupHelper(this, FILENAME+".bak");
-         addHelper(FILES_BACKUP_KEY, helper3);
+         FileBackupHelper helpf;
+         String[] files = getResources().getStringArray(R.array.a);
+         for(int i = 0; i < files.length; i++) {
+        	 helpf = new FileBackupHelper(this, files[i]
+        			 + getResources().getString(R.string.extension));
+        	 addHelper(files[i], helpf);
+         }
      }
  }

@@ -25,6 +25,8 @@ public abstract class MainActivity extends ActionBarActivity {
 	protected int menuXML = R.menu.desktop;
 
 	protected ShareActionProvider mShareActionProvider;
+	
+	protected Machine a;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,18 +70,15 @@ public abstract class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			//TODO: open settings activity
 			this.startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public static String getMemFile() {
-		return "memory.aceb";//a binary image share
+	protected String getMemFile() {
+		return a.getClass().getSimpleName() + getResources().getString(R.string.extension);//a binary image share
 	}
-    
-    protected abstract void defFile();
 
 	/** Defines a default share intent to initialize the action provider.
 	  * However, as soon as the actual content to be used in the intent
@@ -92,12 +91,10 @@ public abstract class MainActivity extends ActionBarActivity {
 		File f = new File(getMemFile());
 		if(!f.exists()) {
 			findViewById(R.id.action_share).setClickable(false);//hide it
-			defFile();
 			return null;
 		}
 		Uri fileUri = FileProvider.getUriForFile(this,
-	                            "com.github.jackokring.aceb.fileprovider",
-	                            f);
+				getResources().getString(R.string.fileprovider), f);
 	    intent.setDataAndType(fileUri, getContentResolver().getType(fileUri));
 	    findViewById(R.id.action_share).setClickable(true);//show it
 	    return intent;
