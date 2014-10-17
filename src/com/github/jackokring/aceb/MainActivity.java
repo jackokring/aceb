@@ -77,7 +77,11 @@ public abstract class MainActivity extends ActionBarActivity {
 	}
 	
 	protected String getMemFile() {
-		return a.getClass().getSimpleName() + getResources().getString(R.string.extension);//a binary image share
+		return a.getClass().getSimpleName() + getExtension();//a binary image share
+	}
+	
+	protected String getExtension() {
+		return getResources().getString(R.string.extension);
 	}
 
 	/** Defines a default share intent to initialize the action provider.

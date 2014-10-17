@@ -27,6 +27,7 @@ import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -119,16 +120,53 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.search);
-        //TODO: intent handlers
-
-        // Get the intent, verify the action and get the query
         Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        if(Intent.ACTION_VIEW.equals(intent.getAction())) {
+        	//a file has been requested to view
+        	Uri u = intent.getData();//gets the filename
+        	String s = u.toString();
+        	if(s.substring(s.length() - getExtension().length()).equals(getExtension())) {
+        		//have a binary
+        		loadIntent(u, true);
+        	} else {
+        		//treat as code
+        		loadIntent(u, false);
+        	}
+        }
+        if(Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null
+        		&& intent.getType().equals(getResources().getString(R.string.mimecode))) {
+        	//some direct code has been sent
+        	String s = intent.getStringExtra(Intent.EXTRA_TEXT);
+        	s += "\n";
+			outKeys(s);
+			enter();
+        }
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
           String query = intent.getStringExtra(SearchManager.QUERY);
-          //doMySearch(query);
+          //TODO: doMySearch(query);
         }
     }
+    
+    protected void loadIntent(Uri u, boolean bin) {
+    	StringBuilder buf = new StringBuilder();
+    	try {
+    		DataInputStream in = new DataInputStream(getContentResolver().openInputStream(u));
+			while(in.available() > 0) {
+				buf.append(in.readChar());
+			}
+			in.close();
+			if(!bin) {
+				buf.append("\n");
+				outKeys(buf.toString());
+				enter();
+			}
+			char[] ch = new char[buf.length()];
+			buf.toString().getChars(0, buf.length(), ch, 0);
+			a.load(ch);
+		} catch (Exception e) {
+			//nope.
+		}
+    }    
     
     public void load(String ext, boolean err) {
     	StringBuilder buf = new StringBuilder();

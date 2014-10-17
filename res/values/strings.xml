@@ -5,6 +5,9 @@
     <string name="setting_name">AceB Settings</string>
     <string name="extension">.aceb</string>
     <string name="fileprovider">com.github.jackokring.aceb.fileprovider</string>
+    <string name="mimecode">application/com.github.jackokring.aceb</string>
+    <string name="backup_agent_class">TheBackupAgent</string>
+    <string name="cloud_key">AEdPqrEAAAAIHzTc-hndbgWY17GnNdnmmpfAoW2xyoM0EtNbYg</string>
     
     <string name="action_home">Home</string>
     <string name="action_edit">Edit</string>
