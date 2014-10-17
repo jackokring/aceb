@@ -122,7 +122,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
+        onNewIntent(getIntent());
+
+    }
+    
+    protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_VIEW.equals(intent.getAction())) {
         	//a file has been requested to view
         	Uri u = intent.getData();//gets the filename
