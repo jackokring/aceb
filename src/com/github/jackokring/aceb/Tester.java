@@ -9,13 +9,13 @@ public class Tester implements Machine {
         //TODO: all the tests
     }
     
-    public void load(char[] f) {
+    public synchronized void load(char[] f) {
     	end();
     	m = f.clone();
     	reset(false);
     }
     
-    public char[] save() {
+    public synchronized char[] save() {
     	end();
     	char[] f = m.clone();
     	reset(false);
@@ -90,7 +90,7 @@ public class Tester implements Machine {
         destroy = false;//reinit?
     }
     
-    public void reset(boolean build) {
+    public synchronized void reset(boolean build) {
     	pause = true;
     	if(build) dict();//cold start
     	alloc();//just the warm start
@@ -101,12 +101,12 @@ public class Tester implements Machine {
     }
 
 	@Override
-	public void pause(boolean state) {
+	public synchronized void pause(boolean state) {
 		pause = state;
 	}
 
 	@Override
-	public void end() {
+	public synchronized void end() {
 		destroy = true;
 		while(destroy) Thread.yield();//lock
 		machine = null;//remove circular ref

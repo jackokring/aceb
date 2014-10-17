@@ -563,7 +563,7 @@ public class AceB extends Tester {
     /* MAIN BUILDER */
     private char maxDp = 0;
 
-    private void dict() {
+    protected void dict() {
         //make the dictionary
         dp = 1;
         prims();
@@ -588,7 +588,7 @@ public class AceB extends Tester {
 
     final char screen = (char)-1;//DisplayTerminal structure pointer
 
-    void alloc() {
+    protected void alloc() {
         //default
         //build screen structure
         m[screen] = (char)(-1024 - 3);

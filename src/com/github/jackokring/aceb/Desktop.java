@@ -135,6 +135,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putCharArray("mem", a.save());
         gc.save(b);
         ws.save(b);
+        b.putString("url", urlp);
+        b.putBoolean("fetch", fetch);
+        b.putBoolean("fetched", fetched);
+        b.putString("output", output);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -147,6 +151,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         a.load(b.getCharArray("mem"));
         gc.load(b);
         ws.load(b);
+        urlp = b.getString("urlp");
+        fetch = b.getBoolean("fetch");
+        fetched = b.getBoolean("fetched");
+        output = b.getString("output");
+        if(fetch) inURL(urlp);//complete URL fetch
     }
     
     Machine a;
@@ -207,18 +216,31 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		buf = ta.enter();
 		if(buf.equals("")) run = false;//no input
 	}
+    
+    synchronized void enterOutput() {
+    	fetch = false;
+    	fetched = false;
+    	outKeys(output);
+    	enter();
+    }
 
 	boolean run = false;
     String buf = "";
+    String urlp = "";
+    boolean fetch = false;
+    boolean fetched = false;
+    String output = "";
+    Thread u;
     
     @Override
-    public boolean hasKey() {//call after inKey() to check valid
-    	return run;
+    public synchronized boolean hasKey() {//call after inKey() to check valid
+    	return run && !fetch;//while not URL getting or has valid
     }
     
 	@Override
 	public synchronized char inKey() {
-		if(!run) {
+		if(fetched == true) enterOutput();
+		if(!hasKey()) {
 			gc.cursor(true);
 			return 0;//no key
 		}
@@ -239,25 +261,47 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void inURL(String url) {
-		StringBuilder buf = new StringBuilder();
-		try {
-			URL ht = new URL(url);
-			Reader r = new InputStreamReader(ht.openStream());
-			while (true) {
-				int ch = r.read();
-				if (ch < 0) break;
-				buf.append((char) ch);
-			}
-		} catch (Exception e) {
-			probs.show();
+		u = new Thread(new UrlGetter(url));
+		u.start();
+	}
+	
+	class UrlGetter implements Runnable {
+		
+		public UrlGetter(String url) {
+			urlp = url;
+			fetched = false;
+			fetch = true;
 		}
-		buf.append("\n");//chain source
-		outKeys(buf.toString());
-		enter();
+		
+		public void run() {
+			StringBuilder buf = new StringBuilder();
+			try {
+				URL ht = new URL(urlp);
+				Reader r = new InputStreamReader(ht.openStream());
+				while (true) {
+					int ch = r.read();
+					if (ch < 0) break;
+					buf.append((char) ch);
+				}
+			} catch (Exception e) {
+				try {
+					probs.show();
+				} catch(Exception g) {
+					//IO error
+					fetch = false;
+					a.reset(false);
+					return;
+				}
+			}
+			buf.append("\n");//chain source
+			output = buf.toString();
+			fetched = true;
+			fetch = false;
+		}
 	}
 
 	@Override
-	public void outURL(String url) {
+	public synchronized void outURL(String url) {
 		ws.e.loadUrl(url);
 		setCurrent(ws);
 	}
@@ -279,22 +323,22 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 
 	@Override
-	public char inJoy() {
+	public synchronized char inJoy() {
 		return j.get();
 	}
 
 	@Override
-	public void outAudio(String music) {
+	public synchronized void outAudio(String music) {
 		m.set(music);		
 	}
 
 	@Override
-	public void setChar(int x, int y, char c) {
+	public synchronized void setChar(int x, int y, char c) {
 		gc.setCell(x, y, c);	
 	}
 
 	@Override
-	public void setRes(int x, int y, char col) {
+	public synchronized void setRes(int x, int y, char col) {
 		gc.getNew(x, y);
 		gc.clear(col);
 	}
@@ -319,7 +363,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 
 	@Override
-	public void scroll() {
+	public synchronized void scroll() {
 		gc.scroll();
 		setCurrent(gc);//show video out
 	}
