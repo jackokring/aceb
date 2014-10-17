@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferenceChangeListener {
@@ -106,6 +107,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     DisplayTerminal gc;
     TextBox ta;
     WebShow ws;
+    SearchList ls;
     MyDialog xit;
     MyDialog probs;
     MyDialog load;
@@ -142,8 +144,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			enter();
         }
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
-          String query = intent.getStringExtra(SearchManager.QUERY);
-          //TODO: doMySearch(query);
+        	setCurrent(ls);
+        	ls.search(intent.getStringExtra(SearchManager.QUERY));
         }
     }
     
@@ -209,6 +211,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putCharArray("mem", a.save());
         gc.save(b);
         ws.save(b);
+        ls.save(b);
         b.putString("url", urlp);
         b.putBoolean("fetch", fetch);
         b.putBoolean("fetched", fetched);
@@ -226,11 +229,17 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         a.load(b.getCharArray("mem"));
         gc.load(b);
         ws.load(b);
+        ls.load(b);
         urlp = b.getString("urlp");
         fetch = b.getBoolean("fetch");
         fetched = b.getBoolean("fetched");
         output = b.getString("output");
         error = b.getBoolean("error");
+        for(int i = 0; i < frags.length; i++)
+        	if(remove == frags[i].getId()) {
+        		setCurrent(frags[i]);
+        		break;
+        	}
         if(fetch) inURL(urlp);//complete URL fetch
     }
     
@@ -239,11 +248,15 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void finalize() {
     	sp.unregisterOnSharedPreferenceChangeListener(this);
     }
+    
+    protected Fragment[] frags = new Fragment[4];
 
     public Desktop() {
-        gc = new DisplayTerminal(this);
-        ta = new TextBox();
-        ws = new WebShow();
+    	frags[0] = gc = new DisplayTerminal(this);
+    	frags[1] = ta = new TextBox();
+    	frags[2] = ws = new WebShow();
+    	frags[3] = ls = new SearchList();
+    	
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);

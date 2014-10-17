@@ -19,7 +19,6 @@ public class TextBox extends Fragment {
 		
 	EditText e = (EditText) getActivity().findViewById(R.id.input_area);
 
-    //TODO: persist before!!
     public synchronized void load(Bundle b) {
     	setString(b.getString("input"));
     }
