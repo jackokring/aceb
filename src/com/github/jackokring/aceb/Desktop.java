@@ -213,6 +213,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putBoolean("fetch", fetch);
         b.putBoolean("fetched", fetched);
         b.putString("output", output);
+        b.putBoolean("error", error);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -229,6 +230,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         fetch = b.getBoolean("fetch");
         fetched = b.getBoolean("fetched");
         output = b.getString("output");
+        error = b.getBoolean("error");
         if(fetch) inURL(urlp);//complete URL fetch
     }
     
@@ -255,17 +257,17 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         probs = new MyDialog(R.string.probs, R.string.probs_help) {
         	public void cancel() {
-        		throw new RuntimeException();
+        		error = true;
         	}
         };
         load = new MyDialog(R.string.load, R.string.load_help) {
         	public void ok() {
-        		load(null, false);
+        		load(null, true);
         	}
         };
         save = new MyDialog(R.string.save, R.string.save_help) {
         	public void ok() {
-        		save(null, false);
+        		save(null, true);
         	}
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
@@ -301,6 +303,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     boolean fetch = false;
     boolean fetched = false;
     String output = "";
+    boolean error = false;
     Thread u;
     
     @Override
@@ -310,6 +313,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
 	@Override
 	public synchronized char inKey() {
+		if(error) {
+			a.reset(false);
+			error = false;
+		}
 		if(fetched == true) enterOutput();
 		if(!hasKey()) {
 			gc.cursor(true);
@@ -355,14 +362,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 					buf.append((char) ch);
 				}
 			} catch (Exception e) {
-				try {
-					probs.show();
-				} catch(Exception g) {
-					//IO error
-					fetch = false;
-					a.reset(false);
-					return;
-				}
+				probs.show();
+				fetched = false;
+				fetch = false;
 			}
 			buf.append("\n");//chain source
 			output = buf.toString();
