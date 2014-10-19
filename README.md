@@ -26,5 +26,5 @@ For the actual user guide, and not the project documentation wiki see the master
 tree asset file [here](http://www.github.com/jackokring/aceb/tree/master/assets/AceB/index.html)
 . This is the current built documentation in the project.
 
-For licence information excluding the appcompat_v7 see [LICENCE] which is
+For licence information excluding the appcompat_v7 see [[LICENCE]] which is
 quite open source if you want it.
