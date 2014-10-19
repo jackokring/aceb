@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import java.io.File;
+
 import android.app.backup.BackupAgentHelper;
 import android.app.backup.FileBackupHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
@@ -20,9 +22,11 @@ import android.app.backup.SharedPreferencesBackupHelper;
          FileBackupHelper helpf;
          String[] files = getResources().getStringArray(R.array.a);
          for(int i = 0; i < files.length; i++) {
-        	 helpf = new FileBackupHelper(this, files[i]
-        			 + getResources().getString(R.string.extension));
-        	 addHelper(files[i], helpf);
+        	 String name = files[i] + getResources().getString(R.string.extension);
+        	 if((new File(name)).exists()) {
+        		 helpf = new FileBackupHelper(this, name);
+        		 addHelper(files[i], helpf);
+        	 }
          }
      }
  }
