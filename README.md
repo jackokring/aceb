@@ -14,12 +14,17 @@ flexibility. This app itself supports some triggers to allow other
 apps to use this one as a language and evaluation service.
 
 * .ace - a text FORTH file extension (for code to compile)
-* .aceb - a binary format file extension (for snapshots of memory)
+* .aceb - a binary format file extension (for snapshots of memory) 
+* application/com.github.jackokring.aceb - a mimetype (for literal code compile)
 
-Check the Wiki for more information. I've included the extra project which
+Check the wiki for more information. I've included the extra project which
 eclipse made called appcompat_v7 for handling the action bar. Apart from that
 this project is an exact dump of the working project directory, including all
 setup files.
 
-For licence information excluding the appcompat_v7 see [[LICENCE.md]] which is
+For the actual user guide, and not the project documentation wiki see the master
+tree asset file [here](http://www.github.com/jackokring/aceb/tree/master/assets/AceB/index.html)
+. This is the current built documentation in the project.
+
+For licence information excluding the appcompat_v7 see [LICENCE] which is
 quite open source if you want it.
