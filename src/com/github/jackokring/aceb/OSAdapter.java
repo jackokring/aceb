@@ -17,4 +17,10 @@ public interface OSAdapter {
 	
 	public void onBackPressed();//allow exit
 	public void scroll();//scroll display
+	
+	public void setMachine(String simple);
+	public void send(String app, String code);
+	
+	public void setTick(char milli);
+	public char getTicks();
 }

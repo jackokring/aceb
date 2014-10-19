@@ -10,4 +10,5 @@ public interface Machine extends Runnable {
     public void pause(boolean state);
     public void end();
     
+    public String[] search();//return all possible results
 }

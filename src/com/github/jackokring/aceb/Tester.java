@@ -111,5 +111,11 @@ public class Tester implements Machine {
 		while(destroy) Thread.yield();//lock
 		machine = null;//remove circular ref
 	}
+
+	@Override
+	public String[] search() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

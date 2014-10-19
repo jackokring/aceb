@@ -21,5 +21,15 @@ public class Audio implements Runnable {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void setTick(char milli) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public char getTicks() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }

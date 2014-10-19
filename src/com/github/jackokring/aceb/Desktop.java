@@ -26,6 +26,7 @@ import android.app.SearchManager;
 import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferenceChangeListener {
 	
@@ -127,25 +129,24 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     protected void onNewIntent(Intent intent) {
-        if(Intent.ACTION_VIEW.equals(intent.getAction())) {
-        	//a file has been requested to view
+        if(Intent.ACTION_SEND.equals(intent.getAction())) {
+        	//a file has been sent
         	Uri u = intent.getData();//gets the filename
         	String s = u.toString();
         	if(s.substring(s.length() - getExtension().length()).equals(getExtension())) {
         		//have a binary
         		loadIntent(u, true);
-        	} else {
+        	} else if(intent.getType() != null
+	        		&& intent.getType().equals(getResources().getString(R.string.mimecode))) {
+	        	//some direct code has been sent
+	        	s = intent.getStringExtra(Intent.EXTRA_TEXT);
+	        	s += "\n";
+				outKeys(s);
+				enter();
+	        } else {
         		//treat as code
         		loadIntent(u, false);
         	}
-        }
-        if(Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null
-        		&& intent.getType().equals(getResources().getString(R.string.mimecode))) {
-        	//some direct code has been sent
-        	String s = intent.getStringExtra(Intent.EXTRA_TEXT);
-        	s += "\n";
-			outKeys(s);
-			enter();
         }
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
         	setCurrent(ls);
@@ -251,6 +252,12 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     public void finalize() {
     	sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+    
+    protected boolean setCurrent(Fragment a) {
+    	if(a == gc) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    	else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    	return super.setCurrent(a);
     }
     
     protected Fragment[] frags = new Fragment[4];
@@ -453,11 +460,45 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
 		load(".bak", false);
+		enter();//maybe some queued input
 	}
 
 	@Override
 	public synchronized void scroll() {
 		gc.scroll();
 		setCurrent(gc);//show video out
+	}
+
+	@Override
+	public void setMachine(String simple) {
+		String[] mach = getResources().getStringArray(R.array.a);
+		for(int i = 0; i < mach.length; i++) {
+			if(mach[i].equals(a.getClass().getSimpleName())) {
+				Editor e = sp.edit();
+				int[] j = getResources().getIntArray(R.array.a_val);
+				e.putInt("a", j[i]);
+				a.end();//expect async
+				e.commit();
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void send(String app, String code) {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.putExtra(Intent.EXTRA_TEXT, code);
+		intent.setType(getResources().getString(R.string.mimecode) + "." + app);
+		startActivity(intent);
+	}
+
+	@Override
+	public void setTick(char milli) {
+		m.setTick(milli);
+	}
+
+	@Override
+	public char getTicks() {
+		return m.getTicks();
 	}
 }
