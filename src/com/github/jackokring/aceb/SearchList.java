@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -60,8 +59,7 @@ public class SearchList extends Fragment {
         	Machine res;
 			try {
 				res = (Machine) (Class.forName(pack + "." + machines[i]).newInstance());
-				String mach = res.getClass().getSimpleName();
-				map.put(res, BitmapFactory.decodeStream(con.getAssets().open(mach + "/icon.png")));
+				map.put(res, d.getIcon(res));
 			} catch (Exception e) {
 				res = d.a;
 				i = machines.length;//break later

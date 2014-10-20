@@ -28,6 +28,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -79,6 +82,26 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 					full);
 			break;
 		case 4://Assets TODO: hall of fame?
+			/*
+			// Create a new HttpClient and Post Header
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
+
+			try {
+			    // Add your data
+			    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			    nameValuePairs.add(new BasicNameValuePair("id", "12345"));
+			    nameValuePairs.add(new BasicNameValuePair("stringdata", "AndDev is Cool!"));
+			    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			    // Execute HTTP Post Request
+			    HttpResponse response = httpclient.execute(httppost);
+
+			} catch (ClientProtocolException e) {
+			    // TODO Auto-generated catch block
+			} catch (IOException e) {
+			    // TODO Auto-generated catch block
+			} */
 			throw new IOException();
 		}
 		return new FileOutputStream(nf);
@@ -466,6 +489,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
 		a.reset(reset);
+		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
 		load(".bak", false);
 		enter();//maybe some queued input
 	}
@@ -507,5 +531,16 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	@Override
 	public char getTicks() {
 		return m.getTicks();
+	}
+
+	public Bitmap getIcon(Machine res) {
+		try {
+			InputStream i = getAssets().open(res.getClass().getSimpleName() + "/icon.png");
+			Bitmap b = BitmapFactory.decodeStream(i);
+			i.close();
+			return b;
+		} catch (IOException e) {
+			return ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+		}
 	}
 }

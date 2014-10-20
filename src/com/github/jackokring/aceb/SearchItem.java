@@ -2,11 +2,16 @@ package com.github.jackokring.aceb;
 
 public class SearchItem {
 	
-	Machine ma;
+	protected Machine ma;
+	protected String find;
 	
 	//TODO: extend
+	public SearchItem(String name) {
+		find =  name;
+	}
+	
 	public String toString() {
-		return ma.getClass().getSimpleName();
+		return find;
 	}
 	
 	public void setMachine(Machine m) {
