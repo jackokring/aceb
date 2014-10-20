@@ -389,7 +389,7 @@ int string enter 0x7f0b002a
 int string enter_help 0x7f0b002b
 int string extension 0x7f0b000f
 int string fileprovider 0x7f0b0010
-int string github 0x7f0b0036
+int string github 0x7f0b0038
 int string help 0x7f0b0021
 int string help_text_generic 0x7f0b002e
 int string icon_help 0x7f0b0014
@@ -397,13 +397,15 @@ int string load 0x7f0b0024
 int string load_help 0x7f0b0025
 int string mimecode 0x7f0b0011
 int string ok 0x7f0b0020
-int string pref_a 0x7f0b0034
+int string pref_a 0x7f0b0036
+int string pref_can_use 0x7f0b0034
+int string pref_can_use_val 0x7f0b0035
 int string pref_file 0x7f0b0032
 int string pref_hardware 0x7f0b002f
 int string pref_joy 0x7f0b0030
 int string pref_machine 0x7f0b0033
 int string pref_screen 0x7f0b0031
-int string pref_web 0x7f0b0035
+int string pref_web 0x7f0b0037
 int string probs 0x7f0b002c
 int string probs_help 0x7f0b002d
 int string reset 0x7f0b0028

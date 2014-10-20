@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 
-            android:dependency="pref_key_auto_delete"
+            
 	 -->
     <PreferenceCategory 
         android:title="@string/pref_hardware"
@@ -30,9 +30,15 @@
 	<PreferenceCategory 
         android:title="@string/pref_machine"
         android:key="pref_key_machine">
+	    <CheckBoxPreference
+	        android:key="can_use"
+	        android:title="@string/pref_can_use"
+	        android:defaultValue="false"
+	        android:summary="@string/pref_can_use_val"/>
 	    <ListPreference
 	        android:key="a"
 	        android:title="@string/pref_a"
+	        android:dependency="can_use"
 	        android:dialogTitle="@string/pref_a"
 	        android:entries="@array/a"
 	        android:entryValues="@array/a_val"

@@ -1,10 +1,11 @@
 package com.github.jackokring.aceb;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableStringBuilder;
 import android.view.*;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /*
  * To change this template, choose Tools | Templates
@@ -20,11 +21,11 @@ public class TextBox extends Fragment {
 	EditText e = (EditText) getActivity().findViewById(R.id.input_area);
 
     public synchronized void load(Bundle b) {
-    	setString(b.getString("input"));
+    	e = (EditText)b.getParcelable("input");
     }
     
     public synchronized void save(Bundle b) {
-    	b.putString("input", getString(true));
+    	b.putParcelable("input", (Parcelable)e);
     }
 
 	@Override
@@ -33,25 +34,24 @@ public class TextBox extends Fragment {
 		container.addView(e);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
-
-    public synchronized void setString(String s) {
-    	e.setEnabled(false);
-        e.setText(s, TextView.BufferType.EDITABLE);
-        e.setEnabled(true);
-    }
-
-    public synchronized String getString(boolean en) {
-    	e.setEnabled(false);
-    	String s = e.getEditableText().toString();
-        if(en) e.setEnabled(true);
-        return s;
-    }
     
     public synchronized String enter() {
-    	String s = getString(false);
+    	e.setEnabled(false);
+    	SpannableStringBuilder k = (SpannableStringBuilder) e.getText();
+    	String s = k.toString();
     	int i = s.indexOf(" ");
     	if(i < 0) i = s.length()-1;
-    	setString(s.substring(i+1));
-    	return s.substring(0, i+1);
+    	k.delete(0, i);
+    	e.setEnabled(true);
+    	e.invalidate();
+    	return s.substring(0, i);
     }
+
+	public synchronized void out(String s) {
+		e.setEnabled(false);
+    	SpannableStringBuilder k = (SpannableStringBuilder) e.getText();
+    	k.insert(0, s);
+    	e.setEnabled(true);
+    	e.invalidate();
+	}
 }

@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.app.backup.BackupManager;
 import android.content.Intent;
@@ -288,13 +289,28 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     protected Fragment[] frags = new Fragment[4];
+    
+    protected class JavaScript {
+    	
+    	public JavaScript() {
+    		send("");//prevents optimisation of hook
+    	}
+    	
+    	public void send(String s) {
+    		outKeys(s);
+    		enter();
+    		setCurrent(ws);
+    	}
+    }
 
-    public Desktop() {
+    @SuppressLint("SetJavaScriptEnabled")
+	public Desktop() {
     	frags[0] = gc = new DisplayTerminal(this);
     	frags[1] = ta = new TextBox();
     	frags[2] = ws = new WebShow();
     	frags[3] = ls = new SearchList(this);
-    	
+    	ws.e.getSettings().setJavaScriptEnabled(true);
+    	ws.e.addJavascriptInterface(new JavaScript(), "AceB");
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);
@@ -384,7 +400,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outKeys(String key) {
-		ta.setString(key+buf+ta.getString(false));
+		ta.out(key+buf);
         setCurrent(ta);
 	}
 
@@ -473,6 +489,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		prefUpdate();//backup
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
+		if(sp.getBoolean("can_use", false) == false) num = -1;
 		boolean reset = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save
@@ -502,6 +519,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public void setMachine(String simple) {
+		if(sp.getBoolean("can_use", false) == false) return;
 		String[] mach = getResources().getStringArray(R.array.a);
 		for(int i = 0; i < mach.length; i++) {
 			if(mach[i].equals(a.getClass().getSimpleName())) {
