@@ -1,10 +1,16 @@
 package com.github.jackokring.aceb;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,8 +26,14 @@ import android.widget.ListView;
 public class SearchList extends Fragment {
 		
 	ListView e = (ListView) getActivity().findViewById(R.id.list);
+	Context con = getActivity().getApplicationContext();
+	Desktop d;//for getting URL
 
-    //TODO: persist before!!
+    public SearchList(Desktop desktop) {
+		d = desktop;
+	}
+
+	//TODO: persist before!!
     public synchronized void load(Bundle b) {
     	
     }
@@ -30,76 +42,64 @@ public class SearchList extends Fragment {
     	
     }
     
+    protected ArrayList<SearchItem> list = new ArrayList<SearchItem>();
+    
     public void search(String s) {
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
-
-            final ArrayList<String> list = new ArrayList<String>();
-            for (int i = 0; i < values.length; ++i) {
-              list.add(values[i]);
-            }
-            final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-            listview.setAdapter(adapter);
-
-            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-              @Override
-              public void onItemClick(AdapterView<?> parent, final View view,
-                  int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
-                view.animate().setDuration(2000).alpha(0)
-                    .withEndAction(new Runnable() {
-                      @Override
-                      public void run() {
-                        list.remove(item);
-                        adapter.notifyDataSetChanged();
-                        view.setAlpha(1);
-                      }
-                    });
-              }
-
-            });
+    	//TODO: load list
+    	for (int i = 0; i < values.length; ++i) {
+    		list.add(values[i]);
+        }
+        final MyArrayAdapter adapter = new MyArrayAdapter(con,
+            R.layout.item, list);
+        e.setAdapter(adapter);
+        e.setOnItemClickListener(new AdapterView.OnItemClickListener() {	
+		@Override
+		public void onItemClick(AdapterView<?> parent, final View view,
+		    int position, long id) {
+			//TODO: show stuff
+			final SearchItem item = (SearchItem) parent.getItemAtPosition(position);
+		    view.animate().setDuration(2000).alpha(0)
+		    	.withEndAction(new Runnable() {
+		        @Override
+		        public void run() {
+		        	list.remove(item);
+		        	adapter.notifyDataSetChanged();
+		        	view.setAlpha(1);
+		        }
+		    });
+		}
+        });
     }
     
-    private class StableArrayAdapter extends ArrayAdapter<String> {
+    private class MyArrayAdapter extends ArrayAdapter<SearchItem> {
 
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+        HashMap<SearchItem, Integer> mIdMap = new HashMap<SearchItem, Integer>();
+        Context c;
 
-        public StableArrayAdapter(Context context, int textViewResourceId,
-            List<String> objects) {
-          super(context, textViewResourceId, objects);
-          for (int i = 0; i < objects.size(); ++i) {
-            mIdMap.put(objects.get(i), i);
-          }
+        public MyArrayAdapter(Context context, int textViewResourceId,
+            List<SearchItem> objects) {
+        	super(context, textViewResourceId, objects);
+        	for (int i = 0; i < objects.size(); ++i) {
+        		mIdMap.put(objects.get(i), i);
+        	}
+        	c = context;
         }
 
         @Override
         public long getItemId(int position) {
-          String item = getItem(position);
-          return mIdMap.get(item);
+        	SearchItem item = getItem(position);
+        	return mIdMap.get(item);
         }
         
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-          LayoutInflater inflater = (LayoutInflater) context
-              .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-          View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
-          TextView textView = (TextView) rowView.findViewById(R.id.label);
-          ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-          textView.setText(values[position]);
-          // change the icon for Windows and iPhone
-          String s = values[position];
-          if (s.startsWith("iPhone")) {
-            imageView.setImageResource(R.drawable.no);
-          } else {
-            imageView.setImageResource(R.drawable.ok);
-          }
+        public View getView(int position, View v, ViewGroup parent) {
+        	LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        	TextView textView = (TextView) v.findViewById(R.id.label);
+        	ImageView imageView = (ImageView) v.findViewById(R.id.icon);
+        	textView.setText(getItem(position).toString());
+        	// TODO: adapt view v
 
-          return rowView;
+        	return v;
         }
     }
     

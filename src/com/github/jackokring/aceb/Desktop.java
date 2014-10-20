@@ -78,7 +78,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			nf = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
 					full);
 			break;
-		case 4://Assets
+		case 4://Assets TODO: hall of fame?
 			throw new IOException();
 		}
 		return new FileOutputStream(nf);
@@ -201,6 +201,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		} catch (Exception e) {
 			if(err) probs.show();
 		}
+    	prefUpdate();
+    }
+    
+    protected void prefUpdate() {
 		mShareActionProvider.setShareIntent(getDefaultIntent());
 		BackupManager bm = new BackupManager(this);
 		bm.dataChanged();
@@ -266,7 +270,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	frags[0] = gc = new DisplayTerminal(this);
     	frags[1] = ta = new TextBox();
     	frags[2] = ws = new WebShow();
-    	frags[3] = ls = new SearchList();
+    	frags[3] = ls = new SearchList(this);
     	
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
@@ -443,11 +447,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		prefUpdate();//backup
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
+		boolean reset = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save
-		}
+		} else reset = true;
 		OSAdapter t = this;
 		switch(num) {
 		case 2:
@@ -459,6 +465,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			break;
 		}
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
+		a.reset(reset);
 		load(".bak", false);
 		enter();//maybe some queued input
 	}

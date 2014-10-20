@@ -23,7 +23,7 @@ import android.app.backup.SharedPreferencesBackupHelper;
          String[] files = getResources().getStringArray(R.array.a);
          for(int i = 0; i < files.length; i++) {
         	 String name = files[i] + getResources().getString(R.string.extension);
-        	 if((new File(name)).exists()) {
+        	 if((new File(getFilesDir(), name)).exists()) {
         		 helpf = new FileBackupHelper(this, name);
         		 addHelper(files[i], helpf);
         	 }

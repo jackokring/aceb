@@ -113,7 +113,7 @@ public class Tester implements Machine {
 	}
 
 	@Override
-	public String[] search() {
+	public SearchItem[] search() {
 		// TODO Auto-generated method stub
 		return null;
 	}
