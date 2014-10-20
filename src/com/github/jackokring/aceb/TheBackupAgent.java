@@ -20,11 +20,12 @@ import android.app.backup.SharedPreferencesBackupHelper;
                  new SharedPreferencesBackupHelper(this);
          addHelper(MY_PREFS_BACKUP_KEY, helper);
          FileBackupHelper helpf;
-         String[] files = getResources().getStringArray(R.array.a);
+         final String[] files = getResources().getStringArray(R.array.a);
          for(int i = 0; i < files.length; i++) {
         	 String name = files[i] + getResources().getString(R.string.extension);
-        	 if((new File(getFilesDir(), name)).exists()) {
-        		 helpf = new FileBackupHelper(this, name);
+        	 File f = new File(getFilesDir(), name); 
+        	 if(f.exists()) {
+        		 helpf = new FileBackupHelper(this, f.getAbsolutePath());
         		 addHelper(files[i], helpf);
         	 }
          }

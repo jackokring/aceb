@@ -8,6 +8,7 @@
     <string name="mimecode">application/com.github.jackokring.aceb</string>
     <string name="backup_agent_class">TheBackupAgent</string>
     <string name="cloud_key">AEdPqrEAAAAIHzTc-hndbgWY17GnNdnmmpfAoW2xyoM0EtNbYg</string>
+    <string name="icon_help">icon</string>
     
     <string name="action_home">Home</string>
     <string name="action_edit">Edit</string>
