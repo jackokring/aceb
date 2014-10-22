@@ -75,19 +75,16 @@ public class Tester implements Machine {
     }
 
     boolean destroy = false;//botch for file initialisation
-    boolean pause = true;//N.B. MUST BUILD IN PAUSED STATE
     boolean safe = true;
 
     public void run() {
         while(!destroy) {
         	try {
-        		if(pause) Thread.yield();
-        		else next();
+        		next();
         	} catch(Exception e) {
         		//error in system (not in language)
         		alloc();//warm start
         	}
-        	safe = pause;
         }
         safe = true;
     }
@@ -98,12 +95,6 @@ public class Tester implements Machine {
     	if(build) dict();//cold start
     	(ref = new Thread(this)).start();
     }
-
-	@Override
-	public synchronized void pause(boolean state) {
-		pause = state;
-		while(!safe) Thread.yield();
-	}
 
 	@Override
 	public synchronized void end() {

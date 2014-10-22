@@ -307,13 +307,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	}
     	
     	private void installOSBlock() {
-    		a.pause(true);
+    		a.end();
     		js = true;
     	}
     	
     	public synchronized void release() {
     		js = false;
-    		a.pause(false);//the restart always lags so always safe
+    		a.reset(false);//the restart always lags so always safe
     	}
     	
     	public synchronized void machine(String input) {
@@ -564,13 +564,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	public void onPause() {
 		j.pause(true);
-		a.pause(true);
+		a.end();
 		m.pause(true);
 	}
 	
 	public void onResume() {
 		j.pause(false);
-		if(!js) a.pause(false);//javascript serving
+		if(!js) a.reset(false);//javascript serving
 		m.pause(false);
 	}
 
