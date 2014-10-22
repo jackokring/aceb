@@ -10,8 +10,6 @@ package com.github.jackokring.aceb;
  * @author jacko
  */
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 
 import android.annotation.SuppressLint;
@@ -178,12 +178,16 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         }
     }
     
+    //UTF via readers not data input streams
+    
     protected void loadIntent(Uri u, boolean bin) {
     	StringBuilder buf = new StringBuilder();
     	try {
-    		DataInputStream in = new DataInputStream(getContentResolver().openInputStream(u));
-			while(in.available() > 0) {
-				buf.append(in.readChar());
+    		Reader in = new InputStreamReader(getContentResolver().openInputStream(u));
+    		while (true) {
+				int ch = in.read();
+				if (ch < 0) break;
+				buf.append((char) ch);
 			}
 			in.close();
 			if(!bin) {
@@ -202,9 +206,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void load(String ext, boolean err) {
     	StringBuilder buf = new StringBuilder();
     	try {
-    		DataInputStream in = new DataInputStream(getFile(ext));
-			while(in.available() > 0) {
-				buf.append(in.readChar());
+    		Reader in = new InputStreamReader(getFile(ext));
+    		while (true) {
+				int ch = in.read();
+				if (ch < 0) break;
+				buf.append((char) ch);
 			}
 			in.close();
 			char[] ch = new char[buf.length()];
@@ -218,9 +224,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void save(String ext, boolean err) {
     	char[] ch = a.save();
     	try {
-    		DataOutputStream out = new DataOutputStream(putFile(ext));
+    		Writer out = new OutputStreamWriter(putFile(ext));
     		for(int i = 0; i < ch.length; i++)
-    			out.writeChar(ch[i]);
+    			out.write(ch[i]);
 			out.close();
 		} catch (Exception e) {
 			if(err) probs.show();
@@ -288,20 +294,86 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	return super.setCurrent(a);
     }
     
-    protected Fragment[] frags = new Fragment[4];
-    
-    protected class JavaScript {
+    protected class JavaScriptOS implements OSAdapter {
     	
-    	public JavaScript() {
-    		send("");//prevents optimisation of hook
-    	}
+    	OSAdapter proxy;
     	
-    	public void send(String s) {
-    		outKeys(s);
-    		enter();
-    		setCurrent(ws);
+    	public JavaScriptOS(OSAdapter a) {
+    		proxy = a;
     	}
+
+		@Override
+		public char inKey() {
+			return proxy.inKey();
+		}
+
+		@Override
+		public boolean hasKey() {
+			return proxy.hasKey();
+		}
+
+		@Override
+		public void outKeys(String key) {
+			proxy.outKeys(key);
+		}
+
+		@Override
+		public void setChar(char x, char y, char c) {
+			proxy.setChar(x, y, c);
+		}
+
+		@Override
+		public void setRes(char x, char y, char col) {
+			proxy.setRes(x, y, col);
+		}
+
+		@Override
+		public void inURL(String url) {
+			proxy.inURL(url);
+		}
+
+		@Override
+		public void outURL(String url) {
+			proxy.outURL(url);
+		}
+
+		@Override
+		public char inJoy() {
+			return proxy.inJoy();
+		}
+
+		@Override
+		public void outAudio(String music) {
+			proxy.outAudio(music);
+		}
+
+		@Override
+		public void scroll() {
+			proxy.scroll();
+		}
+
+		@Override
+		public void setMachine(String simple) {
+			proxy.setMachine(simple);
+		}
+
+		@Override
+		public void send(String app, String code) {
+			proxy.send(app, code);
+		}
+
+		@Override
+		public void setTick(char milli) {
+			proxy.setTick(milli);
+		}
+
+		@Override
+		public char getTicks() {
+			return proxy.getTicks();
+		}
     }
+    
+    protected Fragment[] frags = new Fragment[4];
 
     @SuppressLint("SetJavaScriptEnabled")
 	public Desktop() {
@@ -310,7 +382,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	frags[2] = ws = new WebShow();
     	frags[3] = ls = new SearchList(this);
     	ws.e.getSettings().setJavaScriptEnabled(true);
-    	ws.e.addJavascriptInterface(new JavaScript(), "AceB");
+    	ws.e.addJavascriptInterface(new JavaScriptOS(this), "OSAdapter");
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);
@@ -473,14 +545,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 
 	@Override
-	public synchronized void setChar(int x, int y, char c) {
+	public synchronized void setChar(char x, char y, char c) {
 		gc.setCell(x, y, c);	
 	}
 
 	@Override
-	public synchronized void setRes(int x, int y, char col) {
-		gc.getNew(x, y);
-		gc.clear(col);
+	public synchronized void setRes(char x, char y, char col) {
+		gc.setRes(x, y, col);
 	}
 
 	@Override

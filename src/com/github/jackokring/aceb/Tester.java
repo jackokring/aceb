@@ -117,5 +117,17 @@ public class Tester implements Machine {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void resX(char x) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resY(char y) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

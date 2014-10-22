@@ -19,9 +19,9 @@ import android.widget.ImageView;
 
 public class DisplayTerminal extends Fragment implements OnSharedPreferenceChangeListener {
 
-	int x;
-	int y;
-	int cx, cy;
+	char x;
+	char y;
+	char cx, cy;
 	char cc;
 	boolean co;
 	
@@ -32,9 +32,11 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	Context con = getActivity().getApplicationContext();
 	ImageView i;
 	SharedPreferences sp;
+	Desktop desk;
 	
 	public DisplayTerminal(Desktop d) {
 		super();
+		desk = d;
 		sp = PreferenceManager.getDefaultSharedPreferences(d);
 		onSharedPreferenceChanged(sp, "pref_screen");
 		sp.registerOnSharedPreferenceChangeListener(this);
@@ -57,10 +59,10 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	int last = 63;//white from inverse
 	
     public synchronized void load(Bundle bu) {
-    	x = bu.getInt("x");
-    	y = bu.getInt("y");
-    	cx = bu.getInt("cx");
-    	cy = bu.getInt("cy");
+    	x = (char)bu.getInt("x");
+    	y = (char)bu.getInt("y");
+    	cx = (char)bu.getInt("cx");
+    	cy = (char)bu.getInt("cy");
     	cc = (char)bu.getInt("cc");
     	co = bu.getBoolean("co");
     	b = bu.getParcelable("b");
@@ -87,7 +89,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
     	bu.putInt("last", last);
     }
 	 
-	public synchronized Bitmap getNew(int xs, int ys) {
+	public synchronized Bitmap getNew(char xs, char ys) {
 		b = Bitmap.createBitmap(xs*8, ys*8, Bitmap.Config.ARGB_8888);
 		x = xs;
 		y = ys;
@@ -139,7 +141,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		invalidate();
 	}
 	 
-	public synchronized void setCell(int px, int py, char ch) {
+	public synchronized void setCell(char px, char py, char ch) {
 		px %= x;
 		py %= y;
 		cx = px;
@@ -181,13 +183,20 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		inv = new ColorMatrixColorFilter(filt);//set it
 		ink.setColorFilter(inv);
 	}
+	
+	public synchronized void setRes(char x, char y, char col) {
+		getNew(x, y);
+		clear(col);
+		desk.a.resX(x);
+		desk.a.resY(y);
+	}
 
 	@Override
 	public synchronized void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		if(sp == sharedPreferences && key.equals("pref_screen")) {
-			x = y = sp.getInt("pref_screen", 32);
-			b = getNew(x, y);
+			x = y = (char)sp.getInt("pref_screen", 32);
+			setRes(x, y, bg);
 		}
 	}
 }
