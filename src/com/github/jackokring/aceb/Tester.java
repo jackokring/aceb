@@ -73,11 +73,17 @@ public class Tester implements Machine {
     public Tester(OSAdapter mach) {
         machine = mach;
     }
+    
+    public boolean getSafe() {
+    	return safe;
+    }
 
-    boolean destroy = false;//botch for file initialization
-    boolean pause = false;
+    boolean destroy;//botch for file initialisation
+    boolean pause = true;//N.B. MUST BUILD IN PAUSED STATE
+    boolean safe = false;
 
     public void run() {
+    	destroy = false;
         while(!destroy) {
         	try {
         		if(pause) Thread.yield();
@@ -86,17 +92,15 @@ public class Tester implements Machine {
         		//error in system (not in language)
         		alloc();//warm start
         	}
+        	safe = pause;
         }
-        destroy = false;//reinit?
+        destroy = false;//ok init
     }
     
     public synchronized void reset(boolean build) {
-    	pause = true;
+    	end();
     	if(build) dict();//cold start
     	alloc();//just the warm start
-    	pause = false;
-    	destroy = true;
-    	while(destroy) Thread.yield();
     	(ref = new Thread(this)).start();
     }
 
@@ -109,7 +113,6 @@ public class Tester implements Machine {
 	public synchronized void end() {
 		destroy = true;
 		while(destroy) Thread.yield();//lock
-		machine = null;//remove circular ref
 	}
 
 	@Override
@@ -129,5 +132,4 @@ public class Tester implements Machine {
 		// TODO Auto-generated method stub
 		
 	}
-	
 }

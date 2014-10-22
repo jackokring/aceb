@@ -256,6 +256,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putBoolean("fetched", fetched);
         b.putString("output", output);
         b.putBoolean("error", error);
+        b.putBoolean("js", js);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -274,6 +275,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         fetched = b.getBoolean("fetched");
         output = b.getString("output");
         error = b.getBoolean("error");
+        js = b.getBoolean("js");
         for(int i = 0; i < frags.length; i++)
         	if(remove == frags[i].getId()) {
         		setCurrent(frags[i]);
@@ -294,6 +296,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	return super.setCurrent(a);
     }
     
+    protected boolean js = false;
+    
     protected class JavaScriptOS implements OSAdapter {
     	
     	OSAdapter proxy;
@@ -301,74 +305,105 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	public JavaScriptOS(OSAdapter a) {
     		proxy = a;
     	}
+    	
+    	private void installOSBlock() {
+    		a.pause(true);
+    		while(!a.getSafe()) Thread.yield();
+    		js = true;
+    	}
+    	
+    	public synchronized void release() {
+    		js = false;
+    		a.pause(false);//the restart always lags so always safe
+    	}
+    	
+    	public synchronized void machine(String input) {
+    		installOSBlock();
+    		proxy.outKeys(input+buf);
+    		enter();
+    		release();
+    	}
 
 		@Override
-		public char inKey() {
+		public synchronized char inKey() {
+			installOSBlock();
 			return proxy.inKey();
 		}
 
 		@Override
-		public boolean hasKey() {
+		public synchronized boolean hasKey() {
+			installOSBlock();
 			return proxy.hasKey();
 		}
 
 		@Override
-		public void outKeys(String key) {
+		public synchronized void outKeys(String key) {
+			installOSBlock();
 			proxy.outKeys(key);
 		}
 
 		@Override
-		public void setChar(char x, char y, char c) {
+		public synchronized void setChar(char x, char y, char c) {
+			installOSBlock();
 			proxy.setChar(x, y, c);
 		}
 
 		@Override
-		public void setRes(char x, char y, char col) {
+		public synchronized void setRes(char x, char y, char col) {
+			installOSBlock();
 			proxy.setRes(x, y, col);
 		}
 
 		@Override
-		public void inURL(String url) {
+		public synchronized void inURL(String url) {
+			installOSBlock();
 			proxy.inURL(url);
 		}
 
 		@Override
-		public void outURL(String url) {
+		public synchronized void outURL(String url) {
+			installOSBlock();
 			proxy.outURL(url);
 		}
 
 		@Override
-		public char inJoy() {
+		public synchronized char inJoy() {
+			installOSBlock();
 			return proxy.inJoy();
 		}
 
 		@Override
-		public void outAudio(String music) {
+		public synchronized void outAudio(String music) {
+			installOSBlock();
 			proxy.outAudio(music);
 		}
 
 		@Override
-		public void scroll() {
+		public synchronized void scroll() {
+			installOSBlock();
 			proxy.scroll();
 		}
 
 		@Override
 		public void setMachine(String simple) {
-			proxy.setMachine(simple);
+			//very difficult to do as async, try machine()
+			throw new RuntimeException(".setMachine() Not Allowed.");
 		}
 
 		@Override
-		public void send(String app, String code) {
+		public synchronized void send(String app, String code) {
 			proxy.send(app, code);
 		}
 
 		@Override
-		public void setTick(char milli) {
+		public synchronized void setTick(char milli) {
+			installOSBlock();
 			proxy.setTick(milli);
 		}
 
 		@Override
-		public char getTicks() {
+		public synchronized char getTicks() {
+			installOSBlock();
 			return proxy.getTicks();
 		}
     }
@@ -473,6 +508,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	@Override
 	public synchronized void outKeys(String key) {
 		ta.out(key+buf);
+		buf = "";
         setCurrent(ta);
 	}
 
@@ -530,7 +566,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	public void onResume() {
 		j.pause(false);
-		a.pause(false);
+		if(!js) a.pause(false);//javascript serving
 		m.pause(false);
 	}
 

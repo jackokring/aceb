@@ -13,4 +13,6 @@ public interface Machine extends Runnable {
     public SearchItem[] search();//return all possible results
     public void resX(char x);//resolution change call backs
     public void resY(char y);
+    
+    public boolean getSafe();//safe to interact with
 }
