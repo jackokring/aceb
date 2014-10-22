@@ -96,7 +96,6 @@ public class Tester implements Machine {
     	end();
     	safe = false;
     	if(build) dict();//cold start
-    	alloc();//just the warm start
     	(ref = new Thread(this)).start();
     }
 
