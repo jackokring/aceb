@@ -308,7 +308,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	
     	private void installOSBlock() {
     		a.pause(true);
-    		while(!a.getSafe()) Thread.yield();
     		js = true;
     	}
     	
@@ -447,7 +446,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
         	public void ok() {
-        		a.reset(true);//rebuild init state
+        		startUp();
         	}
         };
         enter = new MyDialog(R.string.enter, R.string.enter_help) {
@@ -602,10 +601,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
 		if(sp.getBoolean("can_use", false) == false) num = -1;
-		boolean reset = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save
-		} else reset = true;
+		};
 		OSAdapter t = this;
 		switch(num) {
 		case 2:
@@ -616,11 +614,16 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a = new AceB(t);
 			break;
 		}
-		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
-		a.reset(reset);
-		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
+		startUp();
 		load(".bak", false);
 		enter();//maybe some queued input
+	}
+	
+	protected void startUp() {
+		a.end();
+		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
+		a.reset(true);
+		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
 	}
 
 	@Override
