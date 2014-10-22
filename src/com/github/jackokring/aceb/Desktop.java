@@ -436,11 +436,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         load = new MyDialog(R.string.load, R.string.load_help) {
         	public void ok() {
         		load(null, true);
+        		a.reset(false);
         	}
         };
         save = new MyDialog(R.string.save, R.string.save_help) {
         	public void ok() {
         		save(null, true);
+        		a.reset(false);
         	}
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
@@ -601,6 +603,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		if(sp != sharedPreferences || !key.equals("a")) return;
 		int num = sp.getInt("a", 1);
 		if(sp.getBoolean("can_use", false) == false) num = -1;
+		run = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save
 		};
@@ -616,6 +619,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 		startUp(false);
 		load(".bak", false);
+		a.reset(false);
 		enter();//maybe some queued input
 	}
 	
@@ -627,9 +631,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			fetch = false;
 			fetched = false;
 			while(!ta.enter().equals(""));
+			a.reset(clean);
 		}
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
-		a.reset(clean);
 		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
 	}
 

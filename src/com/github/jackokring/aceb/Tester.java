@@ -12,13 +12,11 @@ public class Tester implements Machine {
     public synchronized void load(char[] f) {
     	end();
     	m = f.clone();
-    	reset(false);
     }
     
     public synchronized char[] save() {
     	end();
     	char[] f = m.clone();
-    	reset(false);
     	return f;
     }
 
