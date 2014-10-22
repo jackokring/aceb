@@ -409,6 +409,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     protected Fragment[] frags = new Fragment[4];
+    protected JavaScriptOS jsref;
 
     @SuppressLint("SetJavaScriptEnabled")
 	public Desktop() {
@@ -417,7 +418,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	frags[2] = ws = new WebShow();
     	frags[3] = ls = new SearchList(this);
     	ws.e.getSettings().setJavaScriptEnabled(true);
-    	ws.e.addJavascriptInterface(new JavaScriptOS(this), "OSAdapter");
+    	ws.e.addJavascriptInterface(jsref = new JavaScriptOS(this), "OSAdapter");
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);
@@ -465,6 +466,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
     
     synchronized void enterOutput() {
+    	while(fetch && !fetched) Thread.yield();
+		if(fetched != true) return;
     	fetch = false;
     	fetched = false;
     	outKeys(output);
@@ -491,7 +494,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a.reset(false);
 			error = false;
 		}
-		if(fetched == true) enterOutput();
+		enterOutput();
 		if(!hasKey()) {
 			gc.cursor(true);
 			return 0;//no key
@@ -507,6 +510,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outKeys(String key) {
+		enterOutput();
 		ta.out(key+buf);
 		buf = "";
         setCurrent(ta);
@@ -550,6 +554,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outURL(String url) {
+		jsref.release();//MUST DO FOR IDIOTS
 		ws.e.loadUrl(url);
 		setCurrent(ws);
 	}
