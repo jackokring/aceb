@@ -27,11 +27,15 @@ public abstract class MainActivity extends ActionBarActivity {
 	protected ShareActionProvider mShareActionProvider;
 	
 	protected Machine a;
+	
+	private boolean active = false;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public synchronized void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(viewXML);
+		active = true;
+		if(preDo != null) setCurrent(preDo);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
 
@@ -53,9 +57,14 @@ public abstract class MainActivity extends ActionBarActivity {
 		return true;
 	}
 	
-    int remove = R.id.content;
+    protected int remove = R.id.content;
+    private Fragment preDo = null;
 
-    protected boolean setCurrent(Fragment a) {
+    protected synchronized boolean setCurrent(Fragment a) {
+    	if(!active) {
+    		preDo = a;
+    		return false;
+    	}
     	if(a.getId() == remove) return true;
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().replace(remove, a).commit();
