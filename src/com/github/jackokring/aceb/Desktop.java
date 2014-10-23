@@ -145,6 +145,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	xit.show();
     }
     
+    Intent i;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,44 +182,49 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     //UTF via readers not data input streams
     
+    protected void buffRead(StringBuilder b, Reader in) throws Exception {
+    	while (true) {
+			int ch = in.read();
+			if (ch < 0) break;
+			b.append((char) ch);
+		}
+		in.close();
+    }
+    
+    protected void loadHelp(StringBuilder buf) throws Exception {
+    	int len = a.save().length;
+    	char[] ch = new char[buf.length()];
+		buf.toString().getChars(0, buf.length(), ch, 0);
+		if(ch.length != len) throw new Exception();
+		a.load(ch);
+    }
+    
     protected void loadIntent(Uri u, boolean bin) {
     	StringBuilder buf = new StringBuilder();
     	try {
-    		Reader in = new InputStreamReader(getContentResolver().openInputStream(u));
-    		while (true) {
-				int ch = in.read();
-				if (ch < 0) break;
-				buf.append((char) ch);
-			}
-			in.close();
+			Reader in = new InputStreamReader(getContentResolver().openInputStream(u));
+			buffRead(buf, in);
 			if(!bin) {
 				buf.append("\n");
 				outKeys(buf.toString());
 				enter();
+				return;
 			}
-			char[] ch = new char[buf.length()];
-			buf.toString().getChars(0, buf.length(), ch, 0);
-			a.load(ch);
-		} catch (Exception e) {
-			//nope.
-		}
+			loadHelp(buf);
+    	} catch(Exception e) {
+    		//nope
+    	}
     }    
     
     public void load(String ext, boolean err) {
     	StringBuilder buf = new StringBuilder();
     	try {
     		Reader in = new InputStreamReader(getFile(ext));
-    		while (true) {
-				int ch = in.read();
-				if (ch < 0) break;
-				buf.append((char) ch);
-			}
-			in.close();
-			char[] ch = new char[buf.length()];
-			buf.toString().getChars(0, buf.length(), ch, 0);
-			a.load(ch);
+    		buffRead(buf, in);
+			loadHelp(buf);
 		} catch (Exception e) {
 			if(err) probs.show();
+			else a.reset(true);//an init of sorts
 		}
     }
     
@@ -448,7 +455,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
         	public void ok() {
         		//wind down
-        		startUp(true);
+        		startUp();
+        		a.reset(true);
         	}
         };
         enter = new MyDialog(R.string.enter, R.string.enter_help) {
@@ -492,8 +500,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	@Override
 	public synchronized char inKey() {
 		if(error) {
-			a.reset(false);
 			error = false;
+			throw new RuntimeException("IOfail error");
 		}
 		enterOutput();
 		if(!hasKey()) {
@@ -617,22 +625,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a = new AceB(t);
 			break;
 		}
-		startUp(false);
+		startUp();
 		load(".bak", false);
 		a.reset(false);
 		enter();//maybe some queued input
 	}
 	
-	protected synchronized void startUp(boolean clean) {
+	protected synchronized void startUp() {
 		a.end();
-		outURL("file:///android_asset/reset.html");
-		if(clean) {
-			buf = "";
-			fetch = false;
-			fetched = false;
-			while(!ta.enter().equals(""));
-			a.reset(clean);
-		}
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
 		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
 	}

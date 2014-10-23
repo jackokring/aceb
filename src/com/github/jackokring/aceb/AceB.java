@@ -583,7 +583,6 @@ public class AceB extends Tester {
         hide();//hide minor words
         dp = 0;
         findCompile("QUIT");//entry vector
-        alloc();//allocate and fill specials etc
     }
 
     final char screen = (char)-1;//DisplayTerminal structure pointer

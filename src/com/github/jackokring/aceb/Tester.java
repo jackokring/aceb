@@ -3,24 +3,34 @@ package com.github.jackokring.aceb;
 public class Tester implements Machine {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
-    char[] m = new char[65536]; //memory
+    char[] m = new char[65536 + 4]; //memory + save state
 
     protected void next() {
         //TODO: all the tests
     }
     
-    public synchronized void load(char[] f) {
+    final public synchronized void load(char[] f) {
     	end();
     	m = f.clone();
+    	postLoad();
     }
     
-    public synchronized char[] save() {
+    protected void postLoad() {
+    	
+    }
+    
+    final public synchronized char[] save() {
     	end();
+    	preSave();
     	char[] f = m.clone();
     	return f;
     }
+    
+    protected void preSave() {
+    	
+    }
 
-    public String asString(int s) {
+    final public String asString(char s) {
         String i = "";
         for(int j = 1; j <= m[s]; j++) {
             i+=(char)m[s+j];
@@ -28,7 +38,7 @@ public class Tester implements Machine {
         return(i);
     }
 
-    public String[] split(String s) {
+    final public String[] split(String s) {
         int i = 0, j = 0;
         String old = "\n\t";//replace newline and tab
         for(i = 0;i < old.length();i++)
@@ -62,40 +72,54 @@ public class Tester implements Machine {
     protected void alloc() { 
         
     }
+    
+    final protected void dictHandle() {
+    	dict();
+    	allocHandle(new Exception("ok"));
+    }
+    
+    final protected void allocHandle(Exception e) {
+    	alloc();
+    	//consume input
+    	do {
+    		machine.inKey();
+    	} while(machine.hasKey());//flush
+    	machine.outKeys(e.getMessage());
+    }
 
     /* APPLICATION INTERFACE */
 
     OSAdapter machine;
     Thread ref;
 
-    public Tester(OSAdapter mach) {
+    protected Tester(OSAdapter mach) {
         machine = mach;
     }
 
     boolean destroy = false;//botch for file initialisation
     boolean safe = true;
 
-    public void run() {
+    final public void run() {
         while(!destroy) {
         	try {
         		next();
         	} catch(Exception e) {
         		//error in system (not in language)
-        		alloc();//warm start
+        		allocHandle(e);//warm start
         	}
         }
         safe = true;
     }
     
-    public synchronized void reset(boolean build) {
+    final public synchronized void reset(boolean build) {
     	end();
     	safe = false;
-    	if(build) dict();//cold start
+    	if(build) dictHandle();//cold start
     	(ref = new Thread(this)).start();
     }
 
 	@Override
-	public synchronized void end() {
+	final public synchronized void end() {
 		if(destroy == true) return;
 		destroy = true;
 		while(!safe) Thread.yield();//lock
