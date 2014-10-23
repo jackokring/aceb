@@ -305,7 +305,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     protected boolean pause = false;
     
     protected void lock() {
-    	if(!js || pause) a.restart();
+    	if(!js || /* ! */ !pause) a.restart();
     }
     
     protected class JavaScriptOS implements OSAdapter {
