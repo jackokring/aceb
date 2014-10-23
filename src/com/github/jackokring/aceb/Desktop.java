@@ -145,8 +145,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	xit.show();
     }
     
-    Intent i;
-    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +222,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			loadHelp(buf);
 		} catch (Exception e) {
 			if(err) probs.show();
-			else a.reset(true);//an init of sorts
+			else a.reset();//an init of sorts
 		}
     }
     
@@ -304,6 +302,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     protected boolean js = false;
+    protected boolean pause = false;
+    
+    protected void lock() {
+    	if(!js || pause) a.restart();
+    }
     
     protected class JavaScriptOS implements OSAdapter {
     	
@@ -313,14 +316,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     		proxy = a;
     	}
     	
-    	private void installOSBlock() {
+    	private synchronized void installOSBlock() {
     		a.end();
     		js = true;
     	}
     	
     	public synchronized void release() {
     		js = false;
-    		a.reset(false);//the restart always lags so always safe
+    		lock();
     	}
     	
     	public synchronized void machine(String input) {
@@ -443,20 +446,24 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         load = new MyDialog(R.string.load, R.string.load_help) {
         	public void ok() {
         		load(null, true);
-        		a.reset(false);
+        		lock();
         	}
         };
         save = new MyDialog(R.string.save, R.string.save_help) {
         	public void ok() {
         		save(null, true);
-        		a.reset(false);
+        		lock();
         	}
         };
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
         	public void ok() {
         		//wind down
-        		startUp();
-        		a.reset(true);
+        		synchronized(jsref) {
+        			startUp();
+        			jsref.release();//MUST DO FOR IDIOTS
+        			a.reset();
+        			lock();
+        		}
         	}
         };
         enter = new MyDialog(R.string.enter, R.string.enter_help) {
@@ -479,7 +486,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		if(fetched != true) return;
     	fetch = false;
     	fetched = false;
-    	outKeys(output);
+    	outKeys(output+buf);
+    	buf = "";
     	enter();
     }
 
@@ -519,8 +527,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outKeys(String key) {
-		enterOutput();
-		ta.out(key+buf);
+		enterOutput();//anything to put there
+		run = false;//stop to view
+		ta.out(key+buf);//the buffer might or might not be empty
 		buf = "";
         setCurrent(ta);
 	}
@@ -563,7 +572,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outURL(String url) {
-		jsref.release();//MUST DO FOR IDIOTS
+		jsref.release();//MUST DO FOR IDIOTS as js may stop running
 		ws.e.loadUrl(url);
 		setCurrent(ws);
 	}
@@ -573,14 +582,16 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	Thread sound = new Thread(m);
 	
 	public void onPause() {
+		pause = true;
 		j.pause(true);
 		a.end();
 		m.pause(true);
 	}
 	
 	public void onResume() {
+		pause = false;
 		j.pause(false);
-		if(!js) a.reset(false);//javascript serving
+		lock();//javascript serving
 		m.pause(false);
 	}
 
@@ -627,7 +638,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 		startUp();
 		load(".bak", false);
-		a.reset(false);
+		lock();
 		enter();//maybe some queued input
 	}
 	

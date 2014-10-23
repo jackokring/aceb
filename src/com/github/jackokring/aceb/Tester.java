@@ -111,13 +111,19 @@ public class Tester implements Machine {
         safe = true;
     }
     
-    final public synchronized void reset(boolean build) {
+    final public synchronized void restart() {
     	end();
     	safe = false;
-    	if(build) dictHandle();//cold start
     	(ref = new Thread(this)).start();
     }
 
+    final public synchronized void reset() {
+    	end();//just in case
+    	safe = false;
+    	dictHandle();//cold start
+    	safe = true;
+    }
+    
 	@Override
 	final public synchronized void end() {
 		if(destroy == true) return;
