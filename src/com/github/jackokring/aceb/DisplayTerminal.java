@@ -42,9 +42,10 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		sp.registerOnSharedPreferenceChangeListener(this);
 	}
 	
+	/* done in desktop
 	public void finalize() {
 		sp.unregisterOnSharedPreferenceChangeListener(this);
-	}
+	} */
 	
 	Paint p = new Paint(bg);
 	Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DITHER_FLAG);

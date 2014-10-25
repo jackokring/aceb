@@ -148,6 +148,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        register();
         onNewIntent(getIntent());
 
     }
@@ -291,10 +292,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     SharedPreferences sp;
     
-    public void finalize() {
-    	sp.unregisterOnSharedPreferenceChangeListener(this);
-    }
-    
     protected boolean setCurrent(Fragment a) {
     	if(a == gc) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     	else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -419,6 +416,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     protected Fragment[] frags = new Fragment[4];
     protected JavaScriptOS jsref;
+    
+    protected void unregister() {
+    	sp.unregisterOnSharedPreferenceChangeListener(this);
+		sp.unregisterOnSharedPreferenceChangeListener(gc);
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
 	public Desktop() {
@@ -428,13 +430,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	frags[3] = ls = new SearchList(this);
     	ws.e.getSettings().setJavaScriptEnabled(true);
     	ws.e.addJavascriptInterface(jsref = new JavaScriptOS(this), "OSAdapter");
-        sp = PreferenceManager.getDefaultSharedPreferences(this);
-        onSharedPreferenceChanged(sp, "a");
-        sp.registerOnSharedPreferenceChangeListener(this);
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
         		save(".bak", false);
+        		unregister();
         		finish();
         	}
         };
@@ -471,10 +471,16 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         		enter();
         	}
         };
+        
+    }
+    
+    protected void register() {
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        onSharedPreferenceChanged(sp, "a");
+        sp.registerOnSharedPreferenceChangeListener(this);
         sound.start();
     }
 
-    
     synchronized void enter() {
 		run = true;
 		buf = ta.enter();
