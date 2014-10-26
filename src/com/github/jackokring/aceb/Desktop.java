@@ -471,14 +471,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	public void ok() {
         		enter();
         	}
-        };
-        
+        };   
     }
     
     protected void register() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);
+		sp.registerOnSharedPreferenceChangeListener(gc);
         sound.start();
     }
 

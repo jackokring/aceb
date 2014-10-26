@@ -39,7 +39,6 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 		desk = d;
 		sp = PreferenceManager.getDefaultSharedPreferences(d);
 		onSharedPreferenceChanged(sp, "pref_screen");
-		sp.registerOnSharedPreferenceChangeListener(this);
 	}
 	
 	/* done in desktop
