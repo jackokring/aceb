@@ -142,11 +142,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     MyDialog enter;
     
     public void onBackPressed() {
-    	if(intentHandle) {
-    		intentHandle = false;
-    		load(".bak", true);
-    		lock();
-    	} else xit.show();
+    	xit.show();
     }
     
     @Override
@@ -165,6 +161,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	String s = u.toString();
         	if(s.substring(s.length() - getExtension().length()).equals(getExtension())) {
         		//have a binary
+        		save(".bak",false);//save
         		intentHandle = true;
         		loadIntent(u, true);
         	} else if(intent.getType() != null
@@ -446,9 +443,15 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
-        		save(".bak", false);
-        		unregister();
-        		finish();
+        		if(intentHandle) {//exit a playable intent
+            		intentHandle = false;
+            		load(".bak", false);
+            		lock();
+            	} else {
+            		save(".bak", false);
+            		unregister();
+            		finish();
+            	}
         	}
         };
         probs = new MyDialog(R.string.probs, R.string.probs_help) {
