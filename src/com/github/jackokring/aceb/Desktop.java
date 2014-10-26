@@ -150,7 +150,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         super.onCreate(savedInstanceState);
         register();
         onNewIntent(getIntent());
-
     }
     
     protected void onNewIntent(Intent intent) {
@@ -248,6 +247,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     public void onSaveInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
+    	unregister();
         super.onRestoreInstanceState(b);
         b.putInt("remove", remove);
         b.putString("buf", buf);
@@ -288,6 +288,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         		break;
         	}
         if(fetch) inURL(urlp);//complete URL fetch
+        register();
     }
     
     SharedPreferences sp;
