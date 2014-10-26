@@ -430,6 +430,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     protected void unregister() {
     	sp.unregisterOnSharedPreferenceChangeListener(this);
 		sp.unregisterOnSharedPreferenceChangeListener(gc);
+		sp.unregisterOnSharedPreferenceChangeListener(m);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -494,6 +495,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         onSharedPreferenceChanged(sp, "a");
         sp.registerOnSharedPreferenceChangeListener(this);
 		sp.registerOnSharedPreferenceChangeListener(gc);
+		sp.registerOnSharedPreferenceChangeListener(m);
         sound.start();
     }
 
@@ -635,14 +637,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	Audio m = new Audio(this);
 	Thread sound = new Thread(m);
 	
-	public void onPause() {
+	public synchronized void onPause() {
 		pause = true;
 		j.pause(true);
 		a.end();
 		m.pause(true);
 	}
 	
-	public void onResume() {
+	public synchronized void onResume() {
 		pause = false;
 		j.pause(false);
 		lock();//javascript serving

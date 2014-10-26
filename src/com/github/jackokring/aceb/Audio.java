@@ -1,6 +1,9 @@
 package com.github.jackokring.aceb;
 
-public class Audio implements Runnable {
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+
+public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 
 	public Audio(Desktop desktop) {
 		// TODO Auto-generated constructor stub
@@ -30,6 +33,13 @@ public class Audio implements Runnable {
 	public char getTicks() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
