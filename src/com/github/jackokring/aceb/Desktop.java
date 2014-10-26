@@ -275,6 +275,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void onRestoreInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
+        register();//build
         remove = b.getInt("remove");
         buf = b.getString("buf");
         run = b.getBoolean("run");
@@ -296,8 +297,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         		setCurrent(frags[i]);
         		break;
         	}
-        if(fetch) inURL(urlp);//complete URL fetch
-        register();
     }
     
     SharedPreferences sp;
@@ -638,6 +637,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	Thread sound = new Thread(m);
 	
 	public synchronized void onPause() {
+		super.onPause();
 		pause = true;
 		j.pause(true);
 		a.end();
@@ -649,6 +649,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		j.pause(false);
 		lock();//javascript serving
 		m.pause(false);
+		if(fetch) inURL(urlp);//complete URL fetch
+		super.onResume();
 	}
 
 	@Override
