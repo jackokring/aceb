@@ -54,4 +54,12 @@ public class TextBox extends Fragment {
     	e.setEnabled(true);
     	e.invalidate();
 	}
+	
+	public synchronized void postfix(String s) {
+		e.setEnabled(false);
+    	SpannableStringBuilder k = (SpannableStringBuilder) e.getText();
+    	k.insert(k.length(), s);//place at end
+    	e.setEnabled(true);
+    	e.invalidate();
+	}
 }

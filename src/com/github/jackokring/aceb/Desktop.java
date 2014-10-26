@@ -165,8 +165,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	        	//some direct code has been sent
 	        	s = intent.getStringExtra(Intent.EXTRA_TEXT);
 	        	s += "\n";
-				outKeys(s);
-				enter();
+				outKeysAppend(s);
 	        } else {
         		//treat as code
         		loadIntent(u, false);
@@ -204,11 +203,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			buffRead(buf, in);
 			if(!bin) {
 				buf.append("\n");
-				outKeys(buf.toString());
-				enter();
+				outKeysAppend(buf.toString());
 				return;
 			}
 			loadHelp(buf);
+			lock();
     	} catch(Exception e) {
     		//nope
     	}
@@ -263,6 +262,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putString("output", output);
         b.putBoolean("error", error);
         b.putBoolean("js", js);
+        b.putString("intent", i);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -282,6 +282,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         output = b.getString("output");
         error = b.getBoolean("error");
         js = b.getBoolean("js");
+        i = b.getString("intent");
         for(int i = 0; i < frags.length; i++)
         	if(remove == frags[i].getId()) {
         		setCurrent(frags[i]);
@@ -489,6 +490,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
     
     synchronized void enterOutput() {
+    	if(!i.equals("")) {
+    		ta.postfix(i);
+    		i = "";//postfix
+    	}
     	while(fetch && !fetched) Thread.yield();
 		if(fetched != true) return;
     	fetch = false;
@@ -539,6 +544,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		ta.out(key+buf);//the buffer might or might not be empty
 		buf = "";
         setCurrent(ta);
+	}
+	
+	String i = "";
+	
+	protected synchronized void outKeysAppend(String s) {
+		//for an async intent do. Must append not prefix.
+		i += "\n" + s;
+		enter();
 	}
 
 	@Override
