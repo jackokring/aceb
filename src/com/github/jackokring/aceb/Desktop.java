@@ -525,6 +525,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     String output = "";
     String error = "";
     Thread u;
+    UrlGetter ug;
     
     @Override
     public synchronized boolean hasKey() {//call after inKey() to check valid
@@ -574,16 +575,22 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void inURL(String url) {
-		u = new Thread(new UrlGetter(url));
+		u = new Thread(ug = new UrlGetter(url, this));
 		u.start();
 	}
 	
 	protected class UrlGetter implements Runnable {
 		
-		public UrlGetter(String url) {
+		Desktop d;
+		
+		public UrlGetter(String url, Desktop desk) {
+			if(desk.pause) return;//don't make if just on edge
 			urlp = url;
-			fetched = false;
-			fetch = true;
+			d = desk;//sync lock ... pause in particular
+			synchronized(d) {
+				fetched = false;
+				fetch = true;
+			}
 		}
 		
 		public void run() {
@@ -595,16 +602,25 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 					int ch = r.read();
 					if (ch < 0) break;
 					buf.append((char) ch);
+					if(d.pause) {
+						r.close();
+						return;
+					}
 				}
+				r.close();
 			} catch (Exception e) {
+				synchronized(d) {
+					fetched = false;
+					fetch = false;
+				}
 				probs.show();
-				fetched = false;
-				fetch = false;
 			}
 			buf.append("\n");//chain source
-			output = buf.toString();
-			fetched = true;
-			fetch = false;
+			synchronized(d) {
+				output = buf.toString();
+				fetched = true;
+				fetch = false;
+			}
 		}
 	}
 
