@@ -275,6 +275,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void onRestoreInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
+        pause = true;//prevent machine race
         register();//build
         remove = b.getInt("remove");
         buf = b.getString("buf");
