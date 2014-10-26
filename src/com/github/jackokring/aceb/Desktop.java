@@ -266,7 +266,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putBoolean("fetch", fetch);
         b.putBoolean("fetched", fetched);
         b.putString("output", output);
-        b.putBoolean("error", error);
+        b.putString("error", error);
         b.putBoolean("js", js);
         b.putString("intent", i);
         b.putBoolean("ih", intentHandle);
@@ -287,7 +287,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         fetch = b.getBoolean("fetch");
         fetched = b.getBoolean("fetched");
         output = b.getString("output");
-        error = b.getBoolean("error");
+        error = b.getString("error");
         js = b.getBoolean("js");
         i = b.getString("intent");
         intentHandle = b.getBoolean("ih");
@@ -456,7 +456,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         probs = new MyDialog(R.string.probs, R.string.probs_help) {
         	public void cancel() {
-        		error = true;
+        		error = "IOfail error";
         	}
         };
         load = new MyDialog(R.string.load, R.string.load_help) {
@@ -523,7 +523,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     boolean fetch = false;
     boolean fetched = false;
     String output = "";
-    boolean error = false;
+    String error = "";
     Thread u;
     
     @Override
@@ -533,9 +533,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
 	@Override
 	public synchronized char inKey() {
-		if(error) {
-			error = false;
-			throw new RuntimeException("IOfail error");
+		if(!error.equals("")) {
+			String t = error;
+			error = "";
+			fetch = false;
+			fetched = false;
+			enter();//set up for flush
+			throw new RuntimeException(t);//report
 		}
 		enterOutput();
 		if(!hasKey()) {
