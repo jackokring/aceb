@@ -142,7 +142,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     MyDialog enter;
     
     public void onBackPressed() {
-    	xit.show();
+    	if(intentHandle) {
+    		intentHandle = false;
+    		load(".bak", true);
+    		lock();
+    	} else xit.show();
     }
     
     @Override
@@ -152,6 +156,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         onNewIntent(getIntent());
     }
     
+    boolean intentHandle = false;
+    
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEND.equals(intent.getAction())) {
         	//a file has been sent
@@ -159,6 +165,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	String s = u.toString();
         	if(s.substring(s.length() - getExtension().length()).equals(getExtension())) {
         		//have a binary
+        		intentHandle = true;
         		loadIntent(u, true);
         	} else if(intent.getType() != null
 	        		&& intent.getType().equals(getResources().getString(R.string.mimecode))) {
@@ -215,6 +222,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     public void load(String ext, boolean err) {
     	StringBuilder buf = new StringBuilder();
+    	if(intentHandle) ext += ".i";
     	try {
     		Reader in = new InputStreamReader(getFile(ext));
     		buffRead(buf, in);
@@ -227,6 +235,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     public void save(String ext, boolean err) {
     	char[] ch = a.save();
+    	if(intentHandle) ext += ".i";
     	try {
     		Writer out = new OutputStreamWriter(putFile(ext));
     		for(int i = 0; i < ch.length; i++)
@@ -235,7 +244,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		} catch (Exception e) {
 			if(err) probs.show();
 		}
-    	prefUpdate();
+    	if(!intentHandle) prefUpdate();//slight efficiency
     }
     
     protected void prefUpdate() {
@@ -263,6 +272,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putBoolean("error", error);
         b.putBoolean("js", js);
         b.putString("intent", i);
+        b.putBoolean("ih", intentHandle);
     }
     
     public void onRestoreInstanceState(Bundle b) {
@@ -283,6 +293,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         error = b.getBoolean("error");
         js = b.getBoolean("js");
         i = b.getString("intent");
+        intentHandle = b.getBoolean("ih");
         for(int i = 0; i < frags.length; i++)
         	if(remove == frags[i].getId()) {
         		setCurrent(frags[i]);
@@ -676,7 +687,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public void setMachine(String simple) {
-		if(sp.getBoolean("can_use", false) == false) return;
+		//prevent automated machine change on intent binary loading
+		if(intentHandle || sp.getBoolean("can_use", false) == false) return;
 		String[] mach = getResources().getStringArray(R.array.a);
 		for(int i = 0; i < mach.length; i++) {
 			if(mach[i].equals(a.getClass().getSimpleName())) {
