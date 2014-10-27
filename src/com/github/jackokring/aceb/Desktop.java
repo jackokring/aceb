@@ -150,6 +150,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         super.onCreate(savedInstanceState);
         register();
         onNewIntent(getIntent());
+        bogusResume();
     }
     
     boolean intentHandle = false;
@@ -275,7 +276,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     public void onRestoreInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
-        pause = true;//prevent machine race
+        //pause = true;//prevent machine race
         register();//build
         remove = b.getInt("remove");
         buf = b.getString("buf");
@@ -309,7 +310,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     }
     
     protected boolean js = false;
-    protected boolean pause = false;
+    protected boolean pause = true;
     
     protected void lock() {
     	if(!js || /* ! */ !pause) a.restart();
@@ -496,7 +497,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         sp.registerOnSharedPreferenceChangeListener(this);
 		sp.registerOnSharedPreferenceChangeListener(gc);
 		sp.registerOnSharedPreferenceChangeListener(m);
-        sound.start();
     }
 
     synchronized void enter() {
@@ -635,7 +635,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	Joy j = new Joy(this);
 	Audio m = new Audio(this);
-	Thread sound = new Thread(m);
 	
 	public synchronized void onPause() {
 		super.onPause();
@@ -647,11 +646,15 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	public synchronized void onResume() {
 		pause = false;
+		super.onResume();
+		bogusResume();
+	}
+	
+	protected void bogusResume() {//start and restart and go and run et al.
 		j.pause(false);
 		lock();//javascript serving
 		m.pause(false);
-		if(fetch) inURL(urlp);//complete URL fetch
-		super.onResume();
+		if(fetch) inURL(urlp);//complete URL fetch	
 	}
 
 	@Override

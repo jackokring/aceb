@@ -2,8 +2,12 @@ package com.github.jackokring.aceb;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.media.SoundPool;
 
 public class Audio implements Runnable, OnSharedPreferenceChangeListener {
+	
+	Thread sound = new Thread(this);
+	SoundPool pool;
 
 	public Audio(Desktop desktop) {
 		// TODO Auto-generated constructor stub
@@ -17,7 +21,14 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 
 	public void pause(boolean b) {
 		// TODO Auto-generated method stub
-		
+		if(b) {
+			
+		} else {
+			if(pool == null) {
+				
+				sound.start();
+			}
+		}
 	}
 
 	public void set(String s) {
