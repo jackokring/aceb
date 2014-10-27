@@ -2,6 +2,7 @@ package com.github.jackokring.aceb;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.media.AudioManager;
 import android.media.SoundPool;
 
 public class Audio implements Runnable, OnSharedPreferenceChangeListener {
@@ -9,7 +10,22 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	Thread sound = new Thread(this);
 	SoundPool pool;
 	int ticks;
+	final int second = 26;//number of repeats about
 	Desktop desk;
+	String[] file = {
+		"a27_5",
+		"a110",
+		"a440",
+		"a1760",
+		"a7040",
+		"boing",
+		"explode",
+		"hyper",
+		"zap"
+	};
+	int[] id = new int[file.length];
+	float[] tune = new float[128];//a 0.5 to 2 tuning value, and length multiplier
+	byte[] use = new byte[128];//an index into id
 
 	public Audio(Desktop desktop) {
 		desk = desktop;
@@ -26,13 +42,20 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	}
 
 	public void pause(boolean b) {
-		// TODO Auto-generated method stub
 		if(b) {
 			pause = true;
-			pool.autoPause();
+			if(pool != null) pool.autoPause();
 		} else {
 			if(pool == null) {
-				pool = new SoundPool(x, x, x);
+				pool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+				if(pool == null) return;
+				for(int i = 0; i < file.length; i++) {
+					try {
+						id[i] = pool.load(desk.getResources().getAssets().openFd(file[i] + ".wav"), 1);
+					} catch (Exception e) {
+						
+					}
+				}
 			}
 			pause = false;
 			sound.start();
