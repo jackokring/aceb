@@ -36,6 +36,8 @@ public final class R {
         public static final int joy_gain_val=0x7f0d0001;
         public static final int screen_size=0x7f0d0002;
         public static final int screen_size_val=0x7f0d0003;
+        public static final int ticks=0x7f0d0008;
+        public static final int ticks_val=0x7f0d0009;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -1304,7 +1306,7 @@ containing a value of this type.
         public static final int enter_help=0x7f0b002b;
         public static final int extension=0x7f0b000f;
         public static final int fileprovider=0x7f0b0010;
-        public static final int github=0x7f0b0038;
+        public static final int github=0x7f0b0039;
         public static final int help=0x7f0b0021;
         public static final int help_text_generic=0x7f0b002e;
         public static final int icon_help=0x7f0b0014;
@@ -1312,15 +1314,16 @@ containing a value of this type.
         public static final int load_help=0x7f0b0025;
         public static final int mimecode=0x7f0b0011;
         public static final int ok=0x7f0b0020;
-        public static final int pref_a=0x7f0b0036;
-        public static final int pref_can_use=0x7f0b0034;
-        public static final int pref_can_use_val=0x7f0b0035;
+        public static final int pref_a=0x7f0b0037;
+        public static final int pref_can_use=0x7f0b0035;
+        public static final int pref_can_use_val=0x7f0b0036;
         public static final int pref_file=0x7f0b0032;
         public static final int pref_hardware=0x7f0b002f;
         public static final int pref_joy=0x7f0b0030;
-        public static final int pref_machine=0x7f0b0033;
+        public static final int pref_machine=0x7f0b0034;
         public static final int pref_screen=0x7f0b0031;
-        public static final int pref_web=0x7f0b0037;
+        public static final int pref_ticks=0x7f0b0033;
+        public static final int pref_web=0x7f0b0038;
         public static final int probs=0x7f0b002c;
         public static final int probs_help=0x7f0b002d;
         public static final int reset=0x7f0b0028;

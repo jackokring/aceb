@@ -301,7 +301,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	}
     }
     
-    SharedPreferences sp;
+    public SharedPreferences sp;
     
     protected boolean setCurrent(Fragment a) {
     	if(a == gc) getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -494,6 +494,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     protected void register() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         onSharedPreferenceChanged(sp, "a");
+        gc.onSharedPreferenceChanged(sp, "pref_screen");
+        m.onSharedPreferenceChanged(sp, "pref_ticks");
         sp.registerOnSharedPreferenceChangeListener(this);
 		sp.registerOnSharedPreferenceChangeListener(gc);
 		sp.registerOnSharedPreferenceChangeListener(m);
@@ -681,9 +683,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		prefUpdate();//backup
-		if(sp != sharedPreferences || !key.equals("a")) return;
-		int num = sp.getInt("a", 1);
-		if(sp.getBoolean("can_use", false) == false) num = -1;
+		if(!key.equals("a")) return;
+		int num = sharedPreferences.getInt("a", 1);
+		if(sharedPreferences.getBoolean("can_use", false) == false) num = -1;
 		run = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save

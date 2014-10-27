@@ -26,6 +26,13 @@
 	        android:entries="@array/file"
 	        android:entryValues="@array/file_val"
 	        android:defaultValue="1" />
+	    <ListPreference
+	        android:key="pref_ticks"
+	        android:title="@string/pref_ticks"
+	        android:dialogTitle="@string/pref_ticks"
+	        android:entries="@array/ticks"
+	        android:entryValues="@array/ticks_val"
+	        android:defaultValue="50" />
 	</PreferenceCategory>
 	<PreferenceCategory 
         android:title="@string/pref_machine"

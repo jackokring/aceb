@@ -5,7 +5,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,16 +28,12 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	Canvas c;
 	Bitmap f;
 	char bg = 0x0ff0;
-	Context con = getActivity().getApplicationContext();
 	ImageView i;
-	SharedPreferences sp;
 	Desktop desk;
 	
 	public DisplayTerminal(Desktop d) {
 		super();
 		desk = d;
-		sp = PreferenceManager.getDefaultSharedPreferences(d);
-		onSharedPreferenceChanged(sp, "pref_screen");
 	}
 	
 	/* done in desktop
@@ -104,7 +99,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		i = (ImageView) getActivity().findViewById(R.id.font);
-		f = ((BitmapDrawable)con.getResources().getDrawable(R.drawable.font)).getBitmap();
+		f = ((BitmapDrawable)desk.getResources().getDrawable(R.drawable.font)).getBitmap();
 		container.addView(i);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
@@ -194,8 +189,8 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	@Override
 	public synchronized void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		if(sp == sharedPreferences && key.equals("pref_screen")) {
-			x = y = (char)sp.getInt("pref_screen", 32);
+		if(key.equals("pref_screen")) {
+			x = y = (char)sharedPreferences.getInt("pref_screen", 32);
 			setRes(x, y, bg);
 		}
 	}

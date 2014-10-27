@@ -50,6 +50,7 @@
     <string name="pref_joy">Tilt Joystick Gain</string>
     <string name="pref_screen">Default Screen Size</string>
     <string name="pref_file">Load and Save location</string>
+    <string name="pref_ticks">Number of Sychronizations per Second</string>
     
     <string name="pref_machine">Machine Type</string>
     <string name="pref_can_use">Use Other Machines</string>
