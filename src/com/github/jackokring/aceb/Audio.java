@@ -1,11 +1,40 @@
 package com.github.jackokring.aceb;
 
 import java.util.Random;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
 import android.media.SoundPool;
+
+/* This class represents some interesting coding. The ticks per second sets the tempo at
+ * about 1/8th that value used for animation. Many notes can be played, and they are
+ * prioritised last submitted. There are four special sounds and 4 control notes plus
+ * a ten octave range (0 to 119). You must include control notes to not play all at once.
+ * Setting the highest bit in a note clears any older notes when a note is played.
+ * 
+ * The 8 bits above the lower 7 bits (the note) are the split into length (low 4) and
+ * volume (high 4). 0 is short(0.5)/low and 11 is long(2)/high. Random jiggle can be
+ * applied by using:
+ * 12: White modulation.
+ * 13: Pink modulation.
+ * 14: Brown modulation.
+ * 15: Black modulation.
+ * 
+ * Control notes use the whole 8 bit length/volume bit field for an integer for the
+ * control, described by the control note.
+ * 
+ * Special notes:
+ * Zap: 120.
+ * Hyper: 121.
+ * Boing: 122.
+ * Explode: 123.
+ * 
+ * Control notes: 
+ * Hold: 124 - Keep the last note in stream playing and wait. (music ticks)
+ * Wait: 125 - Wait to play rest of stream. (music ticks)
+ * Begin: 126 - Mark the beginning of a repeat. (count of repeats to do)
+ * Repeat: 127 - Loop back a number of repeats. (from how many beginnings back in stream)
+ */
 
 public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	
@@ -59,6 +88,8 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						}
 					}
 					if(tr != null) tr = tr.link;
+					/* boredom reduction circuitry
+					 * handle with care !! */ 
 					int f = r.nextInt();//24 bit
 					byte c = -12;
 					for(int i = 0; i < 23; i++) {// 0 mean binomial mix
@@ -71,7 +102,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 					use[127] = (byte)(use[127] + use[126]);//black
 					use[124] *= 11;//normalize
 					for(int i = 0; i < 4; i++) {
-						tune[120 + i] = (float)(use[124 + i] * (2.9 / 512) + 1.25);//musically nice
+						tune[120 + i] = tune[use[124 + i] * (12 / 128) + 12];//musically nice
 					}
 				}
 				desk.a.playCount((char)current);
@@ -181,7 +212,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			tr.reps = l;//set up a looping object
 			break;
 		case 127://end loop back many
-			int how = len | (vol << 4);
+			int how = (len | (vol << 4)) - 1;
 			Looper m = tr.reps;
 			for(int i = 0; i < how; i++) {
 				if(m.link == null) break;
