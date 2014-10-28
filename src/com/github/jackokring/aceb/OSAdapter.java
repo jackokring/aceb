@@ -13,7 +13,7 @@ public interface OSAdapter {
 	public void outURL(String url);//open a web view for media and such
 	
 	public char inJoy();//get the joystick
-	public void outAudio(String music);//play audio
+	public void outAudio(char x, char y, String music);//play audio
 	
 	public void scroll();//scroll display
 	

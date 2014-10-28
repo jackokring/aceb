@@ -139,8 +139,11 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		pool = null;
 	}
 
-	public synchronized void set(String s) {
-		Tracker t = new Tracker(head, s);
+	public synchronized void set(float x, float y, String s) {
+		float fade = (float)(y / 2 + 0.5);
+		float l = (1 - x) * fade;
+		float r = x * fade;
+		Tracker t = new Tracker(head, s, l, r);
 		head = t;//queue up
 	}
 	
@@ -153,13 +156,15 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			if(note < 0) tr.link = null;//cut current tracker list (flush older)
 			return;
 		}
+		float le = tr.le;
+		float ri = tr.ri;
 		if(note < 0) tr.link = null;//cut current tracker list (flush older)
 		if(++current > maxChannel) return;
 		float volume = tune[107 + vol] / 2;//bound
 		float length = Math.min(tune[107 + len] * tune[note] * nLen, 1);
 		if(note > 119) length = 1;//single shot four builtins
 		tr.loops = ((int)length);
-		tr.streamID = pool.play(id[use[note]], volume, volume, 0, tr.loops - 1, tune[note]);
+		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, tr.loops - 1, tune[note]);
 	}
 	
 	protected class Looper {
@@ -182,11 +187,14 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		int waiting = -1;
 		int streamID;
 		int loops;
+		float le, ri;
 		
-		public Tracker(Tracker l, String p) {
+		public Tracker(Tracker l, String p, float left, float right) {
 			link = l;
 			play = p;
 			at = 0;
+			le = left;
+			ri = right;
 		}
 	}
 	

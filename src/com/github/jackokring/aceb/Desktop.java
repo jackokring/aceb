@@ -148,6 +148,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolshit = true;//don't spare the load11
         register();
         onNewIntent(getIntent());
         bogusResume();
@@ -390,9 +391,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 
 		@Override
-		public synchronized void outAudio(String music) {
+		public synchronized void outAudio(char x, char y, String music) {
 			installOSBlock();
-			proxy.outAudio(music);
+			proxy.outAudio(x, y, music);
 		}
 
 		@Override
@@ -666,8 +667,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 
 	@Override
-	public synchronized void outAudio(String music) {
-		m.set(music);		
+	public synchronized void outAudio(char x1, char y1, String music) {
+		m.set((float)x1/x, (float)y1/y, music);		
 	}
 
 	@Override
@@ -679,6 +680,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public synchronized void setRes(char x, char y, char col) {
 		gc.setRes(x, y, col);
 	}
+	
+	private boolean boolshit = false;
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -702,7 +705,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			break;
 		}
 		startUp();
-		load(".bak", false);
+		if(boolshit) load(".bak", false);
 		lock();
 		enter();//maybe some queued input
 	}
@@ -711,6 +714,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		a.end();
 		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
 		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
+		a.resX(x);
+		a.resY(y);//delayed?
 	}
 
 	@Override
@@ -763,5 +768,17 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		} catch (IOException e) {
 			return ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
 		}
+	}
+	
+	char x, y;
+	
+	public void resX(char i) {
+		x = i;
+		if(a != null) a.resX(i);
+	}
+	
+	public void resY(char i) {
+		y = i;
+		if(a != null) a.resY(i);
 	}
 }

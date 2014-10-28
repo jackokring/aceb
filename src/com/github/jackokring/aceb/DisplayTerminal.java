@@ -182,8 +182,8 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	public synchronized void setRes(char x, char y, char col) {
 		getNew(x, y);
 		clear(col);
-		desk.a.resX(x);
-		desk.a.resY(y);
+		desk.resX(x);
+		desk.resY(y);
 	}
 
 	@Override
