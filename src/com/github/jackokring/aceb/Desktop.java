@@ -272,12 +272,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         b.putBoolean("js", js);
         b.putString("intent", i);
         b.putBoolean("ih", intentHandle);
+        b.putInt("old", old);
     }
     
     public void onRestoreInstanceState(Bundle b) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(b);
         //pause = true;//prevent machine race
+        old = b.getInt("old");//must get before restore to check if need url
         register();//build
         remove = b.getInt("remove");
         buf = b.getString("buf");
@@ -479,7 +481,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	public void ok() {
         		//wind down
         		synchronized(jsref) {
-        			startUp();
+        			startUp(false);//treat as new machine
         			jsref.release();//MUST DO FOR IDIOTS
         			a.reset();
         			lock();
@@ -682,6 +684,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 	
 	private boolean boolshit = false;
+	private int old;
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -689,7 +692,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		prefUpdate();//backup
 		if(!key.equals("a")) return;
 		int num = sharedPreferences.getInt("a", 1);
-		if(sharedPreferences.getBoolean("can_use", false) == false) num = -1;
+		if(old == 0) old = num;//no old
+		if(sharedPreferences.getBoolean("can_use", false) == false && old != num) num = old;
 		run = false;
 		if(a != null) {// not first run
 			save(".bak", false);//save
@@ -704,15 +708,19 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			a = new AceB(t);
 			break;
 		}
-		startUp();
+		if(num == old) startUp(true);
+		else startUp(false);
+		old = num;
 		if(boolshit) load(".bak", false);
 		lock();
 		enter();//maybe some queued input
 	}
 	
-	protected synchronized void startUp() {
+	protected synchronized void startUp(boolean same) {
 		a.end();
-		outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
+		/* botch to keep page via save */
+		if(!same) outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
+		else setCurrent(gc);
 		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
 		a.resX(x);
 		a.resY(y);//delayed?
