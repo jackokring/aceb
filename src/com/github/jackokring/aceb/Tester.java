@@ -148,4 +148,10 @@ public class Tester implements Machine {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void playCount(char c) {
+		// TODO Auto-generated method stub
+		
+	}
 }
