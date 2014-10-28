@@ -59,20 +59,25 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						}
 					}
 					if(tr != null) tr = tr.link;
-					float f = (float)round(r.nextGaussian() / 3 + 1.25);
-					tune[120] = f;//white
-					tune[121] = (float)round(tune[121] + 0.1 * f);//pink
-					tune[122] = (float)round(tune[121] + 0.1 * tune[121]);//brown
-					tune[123] = (float)round(tune[121] + 0.1 * tune[122]);//black
+					int f = r.nextInt();//24 bit
+					byte c = -12;
+					for(int i = 0; i < 23; i++) {// 0 mean binomial mix
+						if((f & 1) == 0) c++;
+						f >>= 1;
+					}
+					use[124] = c;//white
+					use[125] = (byte)(use[125] + use[124]);//pink 
+					use[126] = (byte)(use[126] + use[125]);//brown
+					use[127] = (byte)(use[127] + use[126]);//black
+					use[124] *= 11;//normalize
+					for(int i = 0; i < 4; i++) {
+						tune[120 + i] = (float)(use[124 + i] * (2.9 / 512) + 1.25);//musically nice
+					}
 				}
 				desk.a.playCount((char)current);
 			}
 			Thread.yield();//wait about
 		}
-	}
-	
-	private double round(double f) {
-		return Math.max(2, Math.min(0.5, f));
 	}
 
 	public void pause(boolean b) {
@@ -203,15 +208,11 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			}
 		}
 		//four special notes
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < 8; i++) {
 			tune[i + 120] = 1;
 			use[i + 120] = (byte)(i + 6);
 		}
 		//last four are meta notes 124, 125, 126, 127
-		for(int i = 0; i < 4; i++) {
-			tune[i + 124] = 1;
-			use[i + 124] = (byte)(-i - 1);
-		}
 	}
 	
 	public synchronized void setTick(char num) {
