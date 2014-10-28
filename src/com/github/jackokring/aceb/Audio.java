@@ -46,6 +46,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	int current;
 	long lastMilli;
 	Random r = new Random();
+	boolean dump = true;
 	
 	Desktop desk;
 	String[] file = {
@@ -116,6 +117,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			pause = true;
 			if(pool != null) pool.autoPause();
 		} else {
+			desk.a.playCount((char)-1);//initializing
 			if(pool == null) {
 				pool = new SoundPool(maxChannel, AudioManager.STREAM_MUSIC, 0);
 				if(pool == null) return;
@@ -130,6 +132,8 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			genTable();
 			pause = false;
 			sound.start();
+			dump = false;
+			desk.a.playCount((char)current);//running
 			pool.autoResume();
 		}
 	}
@@ -140,6 +144,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	}
 
 	public synchronized void set(float x, float y, String s) {
+		if(dump) return;//initialization dump
 		float fade = (float)(y / 2 + 0.5);
 		float l = (1 - x) * fade;
 		float r = x * fade;
