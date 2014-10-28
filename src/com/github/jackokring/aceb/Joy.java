@@ -1,9 +1,7 @@
 package com.github.jackokring.aceb;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.hardware.*;
-import android.preference.PreferenceManager;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,21 +12,23 @@ public class Joy implements SensorEventListener, OnClickListener {
 	Sensor mSensor;
 	int rotation;
 	boolean fire = false;
-	SharedPreferences sp;
+	Desktop d;
 
 	public Joy(Desktop desktop) {
+		d = desktop;
 		mSensorManager = (SensorManager) desktop.getSystemService(Context.SENSOR_SERVICE);
 		mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		pause(false);
 		rotation = desktop.getWindowManager().getDefaultDisplay().getRotation();//on reconstruction
-		desktop.findViewById(R.id.font).setOnClickListener(this);
-		sp = PreferenceManager.getDefaultSharedPreferences(desktop);
+		d.findViewById(R.id.font).setOnClickListener(this);
 	}
 
 	public void pause(boolean b) {
 		if(mSensor == null) return;
-		if(b) mSensorManager.unregisterListener(this);
-		else mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+		if(b) {
+			mSensorManager.unregisterListener(this);
+		} else {
+			mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+		}
 	}
 	
 	char[] mask = {
@@ -42,7 +42,7 @@ public class Joy implements SensorEventListener, OnClickListener {
 	};
 
 	public char get() {
-		int g = sp.getInt("pref_joy", 1);
+		int g = d.sp.getInt("pref_joy", 1);
 		char value = 0;
 		grav[0] = g * grav[0];
 		grav[1] = g * grav[1];

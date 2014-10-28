@@ -1,5 +1,7 @@
 package com.github.jackokring.aceb;
 
+import java.util.Random;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
@@ -14,6 +16,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	final int maxChannel = 8;
 	int current;
 	long lastMilli;
+	Random r = new Random();
 	
 	Desktop desk;
 	String[] file = {
@@ -45,7 +48,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 				current = 0;
 				while(tr != null) {
 					while(tr != null && tr.at < tr.play.length()) {
-						play((short)tr.play.charAt(tr.at));//short for negation
+						play((short)tr.play.charAt(tr.at++));//short for negation
 					}
 					if(tr != null && tr.at >= tr.play.length()) {
 						Tracker h = head;
@@ -56,10 +59,20 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						}
 					}
 					if(tr != null) tr = tr.link;
+					float f = (float)round(r.nextGaussian() / 3 + 1.25);
+					tune[120] = f;//white
+					tune[121] = (float)round(tune[121] + 0.1 * f);//pink
+					tune[122] = (float)round(tune[121] + 0.1 * tune[121]);//brown
+					tune[123] = (float)round(tune[121] + 0.1 * tune[122]);//black
 				}
+				desk.a.playCount((char)current);
 			}
 			Thread.yield();//wait about
 		}
+	}
+	
+	private double round(double f) {
+		return Math.max(2, Math.min(0.5, f));
 	}
 
 	public void pause(boolean b) {
@@ -84,6 +97,11 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			pool.autoResume();
 		}
 	}
+	
+	public synchronized void clean() {
+		pool.release();
+		pool = null;
+	}
 
 	public synchronized void set(String s) {
 		Tracker t = new Tracker(head, s);
@@ -91,24 +109,43 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	}
 	
 	private void play(int note) {
-		int len = (note >> 7) & 15;
-		int vol = (note >> 11) & 15;
-		if(note < 0) tr.link = null;//cut current tracker list (flush older)
+		int len = (note >> 7) & 15;//octave plus 4 random
+		int vol = (note >> 11) & 15;//same
 		note &= 127;
 		if(note > 123) {
 			special(note, len, vol);
+			if(note < 0) tr.link = null;//cut current tracker list (flush older)
 			return;
 		}
-		if(current++ > maxChannel) return;
+		if(note < 0) tr.link = null;//cut current tracker list (flush older)
+		if(++current > maxChannel) return;
 		float volume = tune[107 + vol] / 2;//bound
 		float length = Math.min(tune[107 + len] * tune[note] * nLen, 1);
-		pool.play(id[use[note]], volume, volume, 0, ((int)length) - 1, tune[note]);
+		if(note > 119) length = 1;//single shot four builtins
+		tr.loops = ((int)length);
+		tr.streamID = pool.play(id[use[note]], volume, volume, 0, tr.loops - 1, tune[note]);
+	}
+	
+	protected class Looper {
+		int where;
+		Looper link;
+		int count;
+		
+		public Looper(Looper a, int at, int c) {
+			link = a;
+			where = at;
+			count = c;
+		}
 	}
 	
 	protected class Tracker {
 		Tracker link;
 		String play;
 		int at;
+		Looper reps;
+		int waiting = -1;
+		int streamID;
+		int loops;
 		
 		public Tracker(Tracker l, String p) {
 			link = l;
@@ -121,7 +158,39 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	Tracker head;
 	
 	private void special(int note, int len, int vol) {
-		//TODO
+		//tr is valid
+		switch(note) {
+		case 124://hold note (no break)
+			current++;//prevent fill
+			pool.setLoop(tr.streamID, tr.loops * tr.waiting);//maybe???
+		case 125://wait mticks
+			if(tr.waiting == -1) {
+				tr.waiting = len | (vol << 4);//init wait
+			}
+			if(--tr.waiting == -1) break;//waited
+			tr.at--;//keep doing till
+			tr = tr.link;//try older
+			break;
+		case 126://begin count
+			Looper l = new Looper(tr.reps, tr.at, len | (vol << 4));
+			tr.reps = l;//set up a looping object
+			break;
+		case 127://end loop back many
+			int how = len | (vol << 4);
+			Looper m = tr.reps;
+			for(int i = 0; i < how; i++) {
+				if(m.link == null) break;
+				m = m.link;
+			}
+			if(m.count-- == 0) {
+				m.count = (tr.play.charAt(m.where) >> 7) & 255;//restore for looping
+				break;//done
+			}
+			tr.at = m.where;//loop back
+			break;
+		default:
+			break;
+		}
 	}
 	
 	private void genTable() {

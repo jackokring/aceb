@@ -33,10 +33,10 @@
     <string name="load_help">You can load a memory image which was saved. You don\'t have to do this to restore the AceB state as it persists. It is to allow you to experiment, and then load up the single saved state.</string>
     
     <string name="save">Save a memory image of AceB?</string>
-    <string name="save_help">You can save a memory image to load later. You don\'t need to save before exiting AceB as the memory is persistent. The image you save via this dialog is backed up in the cloud.</string>
+    <string name="save_help">You can save a memory image to load later. You don\'t need to save before exiting AceB as the memory is persistent. The image you save via this dialog can be backed up in the cloud.</string>
     
     <string name="reset">Reset AceB?</string>
-    <string name="reset_help">You can reset AceB to the default dictionary. This helps in recovering from crashes. you may be tempted to save then load to recover, but if the dictionary is not in a consistent state, you may have loaded a non working system, and overwritten your backup.</string>
+    <string name="reset_help">You can reset AceB to the default. This helps in recovering from crashes. You may be tempted to save then load to recover, but THIS WILL NOT WORK.</string>
     
     <string name="enter">Enter the source into AceB?</string>
     <string name="enter_help">You can enter the source in the editor, as though typed in at once, into AceB. This allows you to decide your commit point.</string>
@@ -44,7 +44,7 @@
     <string name="probs">There was an unexpected problem with input or output. Ignore it?</string>
     <string name="probs_help">You can use Cancel to stop the program, or OK to simulate the end of input or success of output.</string>
     
-    <string name="help_text_generic">Help can be displayed by pressing the help button in a dialog, and the OK and Cancel buttons will still function.</string>
+    <string name="help_text_generic">Help can be displayed by pressing the help button in a dialog, and the OK and Cancel buttons will still function as before.</string>
 
     <string name="pref_hardware">Hardware Settings</string>
     <string name="pref_joy">Tilt Joystick Gain</string>

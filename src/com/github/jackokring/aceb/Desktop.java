@@ -432,6 +432,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	sp.unregisterOnSharedPreferenceChangeListener(this);
 		sp.unregisterOnSharedPreferenceChangeListener(gc);
 		sp.unregisterOnSharedPreferenceChangeListener(m);
+		m.clean();
     }
 
     @SuppressLint("SetJavaScriptEnabled")

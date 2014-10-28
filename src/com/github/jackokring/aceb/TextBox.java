@@ -40,11 +40,11 @@ public class TextBox extends Fragment {
     	SpannableStringBuilder k = (SpannableStringBuilder) e.getText();
     	String s = k.toString();
     	int i = s.indexOf(" ");
-    	if(i < 0) i = s.length()-1;
+    	if(i < 0) i = s.length();
     	k.delete(0, i);
     	e.setEnabled(true);
     	e.invalidate();
-    	return s.substring(0, i);
+    	return s.substring(0, i + 1);
     }
 
 	public synchronized void out(String s) {
