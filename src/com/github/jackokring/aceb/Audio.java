@@ -221,7 +221,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			tr = tr.link;//try older
 			break;
 		case 126://begin count
-			Looper l = new Looper(tr.reps, tr.at, len | (vol << 4));
+			Looper l = new Looper(tr.reps, tr.at - 1, len | (vol << 4));//loop back to as ++ before
 			tr.reps = l;//set up a looping object
 			break;
 		case 127://end loop back many
