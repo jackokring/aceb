@@ -236,6 +236,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 				break;//done
 			}
 			tr.at = m.where;//loop back
+			tr.reps = m.link;//have to unwind stack of loopers
 			break;
 		default:
 			break;

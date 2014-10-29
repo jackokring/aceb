@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -45,6 +47,15 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	//default ones
 	protected int viewXML = R.layout.activity_desktop;
 	protected int menuXML = R.menu.desktop;
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		if (newConfig.orientation != getResources().getConfiguration().orientation) {
+			if(PreferenceManager.getDefaultSharedPreferences(this).getInt("orient", 3) < 3) return;
+			//maintain orientation
+		}
+		super.onConfigurationChanged(newConfig);//send on
+	}
 	
 	protected InputStream getFile(String ext) throws IOException {
 		File nf;
@@ -503,6 +514,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         sp.registerOnSharedPreferenceChangeListener(this);
 		sp.registerOnSharedPreferenceChangeListener(gc);
 		sp.registerOnSharedPreferenceChangeListener(m);
+		int orient = sp.getInt("orient", 3);//normal
+		if(orient == 1) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		if(orient == 2) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     synchronized void enter() {

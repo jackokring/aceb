@@ -1,7 +1,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 
-            
-	 -->
+        <PreferenceCategory 
+        android:title="@string/pref_hardware"
+        android:key="pref_key_system">
+	    <ListPreference
+	        android:key="pref_orient"
+	        android:title="@string/pref_orient"
+	        android:dialogTitle="@string/pref_orient"
+	        android:entries="@array/orient"
+	        android:entryValues="@array/orient_val"
+	        android:defaultValue="3" />
+	    <ListPreference
+	        android:key="pref_file"
+	        android:title="@string/pref_file"
+	        android:dialogTitle="@string/pref_file"
+	        android:entries="@array/file"
+	        android:entryValues="@array/file_val"
+	        android:defaultValue="1" />
+	</PreferenceCategory>
     <PreferenceCategory 
         android:title="@string/pref_hardware"
         android:key="pref_key_hardware">
@@ -18,13 +33,6 @@
 	        android:dialogTitle="@string/pref_joy"
 	        android:entries="@array/joy_gain"
 	        android:entryValues="@array/joy_gain_val"
-	        android:defaultValue="1" />
-	    <ListPreference
-	        android:key="pref_file"
-	        android:title="@string/pref_file"
-	        android:dialogTitle="@string/pref_file"
-	        android:entries="@array/file"
-	        android:entryValues="@array/file_val"
 	        android:defaultValue="1" />
 	    <ListPreference
 	        android:key="pref_ticks"
