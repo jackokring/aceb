@@ -306,10 +306,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		long diff = now - lastMilli;
 		long many = (diff / (ticks * pll));
 		boolean lost = false;
-		if(many > 32) {
-			lastMilli += ticks * pll * 32;//sync later
-			return false;//garbage 
-		}
+		many &= 8;
 		long o = many;
 		while(many > 1) {
 			if((many & 1) != 0) lost = true;
