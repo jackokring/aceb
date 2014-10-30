@@ -11,10 +11,12 @@ import android.media.SoundPool;
  * prioritised last submitted. There are four special sounds and 4 control notes plus
  * a ten octave range (0 to 119). You must include control notes to not play all at once.
  * Setting the highest bit in a note clears any older notes when a note is played.
+ * The special notes can be looped by using the hold control note if you want such.
  * 
  * The 8 bits above the lower 7 bits (the note) are the split into length (low 4) and
  * volume (high 4). 0 is short(0.5)/low and 11 is long(2)/high. Random jiggle can be
  * applied by using:
+ * 
  * 12: White modulation.
  * 13: Pink modulation.
  * 14: Brown modulation.
@@ -23,17 +25,28 @@ import android.media.SoundPool;
  * Control notes use the whole 8 bit length/volume bit field for an integer for the
  * control, described by the control note.
  * 
- * Special notes:
+ * Special notes (with modulation applied to frequency):
+ * 
  * Zap: 120.
  * Hyper: 121.
  * Boing: 122.
  * Explode: 123.
  * 
  * Control notes: 
+ * 
  * Hold: 124 - Keep the last note in stream playing and wait. (music ticks)
  * Wait: 125 - Wait to play rest of stream. (music ticks)
  * Begin: 126 - Mark the beginning of a repeat. (count of repeats to do)
  * Repeat: 127 - Loop back a number of repeats. (from how many beginnings back in stream)
+ * 
+ * The code contains some logic to reduce resources if the audio output is flooded with
+ * requests to perform miracles. Input devices don't need this kind of handling, but
+ * audio output does. The first stage performs a fading, and removes looping, while the
+ * second stage is a plain killing of old sound. A machine must check to see if anything is
+ * playing, and perhaps reissue some background atmospheric music or such.
+ * 
+ * For an audio device, this is most logical as it prevents sound insanity. Audio Spock!
+ * This gives a durability to the code too.
  */
 
 public class Audio implements Runnable, OnSharedPreferenceChangeListener {
@@ -55,10 +68,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		"a440",
 		"a1760",
 		"a7040",
-		"zap",//wh
-		"hyper",//pi
-		"boing",//br
-		"explode"//bl
+		"zap",//white noise
+		"hyper",//pink noise
+		"boing",//brown noise
+		"explode"//black noise
 	};
 	int[] id = new int[file.length];
 	float[] tune = new float[128];//a 0.5 to 2 tuning value, and length multiplier
@@ -144,7 +157,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	}
 
 	public synchronized void set(float x, float y, String s) {
-		if(dump) return;//initialization dump
+		if(dump) return;//initialisation dump
 		float fade = (float)(y / 2 + 0.5);
 		float l = (1 - x) * fade;
 		float r = x * fade;
@@ -155,6 +168,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	private void play(int note) {
 		int len = (note >> 7) & 15;//octave plus 4 random
 		int vol = (note >> 11) & 15;//same
+		boolean flush = (note < 0);
 		note &= 127;
 		if(note > 123) {
 			special(note, len, vol);
@@ -163,11 +177,19 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		}
 		float le = tr.le;
 		float ri = tr.ri;
-		if(note < 0) tr.link = null;//cut current tracker list (flush older)
-		if(++current > maxChannel) return;
+		current++;//notes playing
+		//sensibility actions
+		if(flush || current > 3 * maxChannel) tr.link = null;//cut current tracker list (flush older)
+		if(current > 2 * maxChannel) {
+			//fade
+			tr.reps = null;//don't loop
+			if((tr.le *= 0.98) < 0.05 && (tr.ri *= 0.98) < 0.05) tr.at = tr.play.length();//kill
+		}
+		if(current > maxChannel) return;
+		//play note
 		float volume = tune[107 + vol] / 2;//bound
 		float length = Math.min(tune[107 + len] * tune[note] * nLen, 1);
-		if(note > 119) length = 1;//single shot four builtins
+		if(note > 119) length = 1;//single shot four built-ins
 		tr.loops = ((int)length);
 		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, tr.loops - 1, tune[note]);
 	}
@@ -233,7 +255,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 				m = m.link;
 			}
 			if(m == null) break;
-			if(m.count-- == 0) {
+			if(m.count-- <= 0) {//avoid annoying infinity loop and allow funny nestings
 				m.count = (tr.play.charAt(m.where) >> 7) & 255;//restore for looping
 				break;//done
 			}
