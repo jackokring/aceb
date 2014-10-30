@@ -22,4 +22,6 @@ public interface OSAdapter {
 	
 	public void setTick(char milli);
 	public char getTicks();
+	
+	public void notify(String s);//send notification to self
 }

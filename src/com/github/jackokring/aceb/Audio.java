@@ -110,11 +110,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						if((f & 1) == 0) c++;
 						f >>= 1;
 					}
-					use[124] = c;//white
-					use[125] = (byte)(use[125] + use[124]);//pink 
-					use[126] = (byte)(use[126] + use[125]);//brown
-					use[127] = (byte)(use[127] + use[126]);//black
-					use[124] *= 11;//normalize
+					use[124] = (byte)(c * 11);//white
+					use[125] = (byte)(use[125] + use[124] >>> 4);//pink 
+					use[126] = (byte)(use[126] + use[125] >>> 4);//brown
+					use[127] = (byte)(use[127] + use[126] >>> 4);//black
 					for(int i = 0; i < 4; i++) {
 						tune[120 + i] = tune[use[124 + i] * (12 / 128) + 12];//musically nice
 					}

@@ -23,8 +23,11 @@ import java.io.Writer;
 import java.net.URL;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.backup.BackupManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -39,6 +42,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -437,6 +441,12 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 			installOSBlock();
 			return proxy.getTicks();
 		}
+
+		@Override
+		public void notify(String s) {
+			installOSBlock();
+			proxy.notify(s);
+		}
     }
     
     protected Fragment[] frags = new Fragment[4];
@@ -736,6 +746,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		if(!same) outURL("file:///android_asset/" + super.getMemFile() + "/index.html");//intro
 		else setCurrent(gc);
 		getSupportActionBar().setIcon(new BitmapDrawable(getResources(), getIcon(a)));
+		setTitle(getTitle(a));
 		a.resX(x);
 		a.resY(y);//delayed?
 	}
@@ -792,6 +803,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 	}
 	
+	public String getTitle(Machine res) {
+		return res.getClass().getSimpleName();
+	}
+	
 	char x, y;
 	
 	public void resX(char i) {
@@ -802,5 +817,35 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public void resY(char i) {
 		y = i;
 		if(a != null) a.resY(i);
+	}
+	
+	@Override
+	public void notify(String code) {
+		// Instantiate a Builder object.
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+		builder.setContentTitle(getTitle(a))
+	    .setContentText(code)
+	    .setSmallIcon(R.drawable.ic_launcher);
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.putExtra(Intent.EXTRA_TEXT, code);
+		intent.setType(getResources().getString(R.string.mimecode));//to self
+		// Creates the PendingIntent
+		PendingIntent notifyIntent =
+		        PendingIntent.getActivity(
+		        this,
+		        0,
+		        intent,
+		        PendingIntent.FLAG_ONE_SHOT
+		);
+
+		// Puts the PendingIntent into the notification builder
+		builder.setContentIntent(notifyIntent);
+		// Notifications are issued by sending them to the
+		// NotificationManager system service.
+		NotificationManager mNotificationManager =
+		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// Builds an anonymous Notification object from the builder, and
+		// passes it to the NotificationManager
+		mNotificationManager.notify(0, builder.build());
 	}
 }
