@@ -298,10 +298,33 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		return (char)many;
 	}
 	
+	private int pll = 8;
+	private int rock = 0;
+	
 	private synchronized boolean getMTicks() { //get music ticks
 		long now = System.currentTimeMillis();
 		long diff = now - lastMilli;
-		long many = (diff / ticks * 8);
+		long many = (diff / (ticks * pll));
+		boolean lost = false;
+		if(many > 32) {
+			lastMilli += ticks * pll * 32;//sync later
+			return false;//garbage 
+		}
+		long o = many;
+		while(many > 1) {
+			if((many & 1) != 0) lost = true;
+			many >>= 1;
+			pll <<= 1;
+			nLen <<= 1;
+		}
+		if(((rock += many * pll) & (pll << 1)) == 0 && o < 2) {
+			//regain sync
+			if(pll > 8) {
+				pll >>= 1;
+				nLen >>= 1;
+			}
+		}
+		if(lost) return false;//lower sync 
 		return many > 0;
 	}
 
