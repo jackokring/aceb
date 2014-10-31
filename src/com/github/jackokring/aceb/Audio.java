@@ -312,7 +312,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	private byte[] smooth = {
 			//len_mul is copy of sync_over
 			//pll, skip
-			1, 0,//0
+			16, 1,//16
 			1, 0,//1
 			2, 3,//3
 			4, 2,//4
