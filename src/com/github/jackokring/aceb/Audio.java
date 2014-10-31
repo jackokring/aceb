@@ -335,11 +335,13 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		long diff = now - lastMilli2;
 		long many = (diff / (ticks * 8 * pllIndex));
 		lastMilli2 = now - (diff - many * ticks * 8 * pllIndex);
+		//obvious twerk
+		if(many < 1) return false; 
 		many &= 15;
 		boolean play = true;
 		syncRel += (pllIndex - 1) * many;//beats out
 		if(!stress) {
-			if(many < 2 && (syncRel & 15) == 0) pllIndex = 1;//ok
+			if(many == 1 && (syncRel & 15) == 0) pllIndex = 1;//ok
 		} else {
 			if(many > 1) {
 				play = many == 1;
