@@ -187,7 +187,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		if(current > maxChannel) return;
 		//play note
 		float volume = tune[107 + vol] / 2;//bound
-		float length = Math.min(tune[107 + len] * tune[note] * nLen, 1);
+		float length = Math.min(tune[107 + len] * tune[note] * nLen * lenMul, 1);
 		if(note > 119) length = 1;//single shot four built-ins
 		tr.loops = ((int)length);
 		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, tr.loops - 1, tune[note]);
@@ -232,7 +232,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		switch(note) {
 		case 124://hold note (no break)
 			current++;//prevent fill
-			pool.setLoop(tr.streamID, tr.loops * tr.waiting);//maybe???
+			pool.setLoop(tr.streamID, tr.loops * tr.waiting * lenMul);//maybe???
 		case 125://wait mticks
 			if(tr.waiting == -1) {
 				tr.waiting = len | (vol << 4);//init wait
@@ -289,40 +289,63 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		ticks = 1000 / num;
 		nLen = ticks / 50;
 	}
+	
+	private boolean stress = false;  
 
 	public synchronized char getTicks() {
 		long now = System.currentTimeMillis();
 		long diff = now - lastMilli;
 		long many = (diff / ticks);
 		lastMilli = now - (diff - many * ticks);
+		stress = (many > 1);
 		return (char)many;
 	}
 	
-	private int pll = 8;
-	private int rock = 0;
+	private int pllIndex = 0;
+	private int lenMul = 1;
+	private long lastMilli2;
+	private int syncRel = 0;
+	
+	private byte[] smooth = {
+			//len_mul is copy of sync_over
+			//sync over, pll, skip, play
+			1, 0, 0,//0
+			1, 0, 1,//1
+			2, 2, 0,//3
+			4, 3, 0,//4
+			4, 2, 0,//5
+			8, 0, 1,//6
+			8, 2, 0,//7
+			8, 3, 0,//8
+			8, 2, 0,//9
+			16, 0, 1,//10
+			16, 2, 0,//11
+			16, 3, 0,//12
+			16, 2, 0,//13
+			16, 0, 1,//14
+			16, 2, 0,//15
+			16, 3, 0//16
+	};
 	
 	private synchronized boolean getMTicks() { //get music ticks
 		long now = System.currentTimeMillis();
-		long diff = now - lastMilli;
-		long many = (diff / (ticks * pll));
-		boolean lost = false;
-		many &= 8;
-		long o = many;
-		while(many > 1) {
-			if((many & 1) != 0) lost = true;
-			many >>= 1;
-			pll <<= 1;
-			nLen <<= 1;
-		}
-		if(((rock += many * pll) & (pll << 1)) == 0 && o < 2) {
-			//regain sync
-			if(pll > 8) {
-				pll >>= 1;
-				nLen >>= 1;
+		long diff = now - lastMilli2;
+		long many = (diff / (ticks * 8 * pllIndex));
+		lastMilli2 = now - (diff - many * ticks * 8 * pllIndex);
+		many &= 15;
+		boolean play = true;
+		syncRel += (pllIndex - 1) * many;//beats out
+		if(!stress) {
+			if(many < 2 && (syncRel & 15) == 0) pllIndex = 1;//ok
+		} else {
+			if(many > 1) {
+				play = smooth[(int)many * 3 + 2] == 1;
+				lastMilli2 += smooth[(int)many * 3 + 1] * ticks * 8 * pllIndex;
+				pllIndex = smooth[(int)many * 3];//PLL
 			}
 		}
-		if(lost) return false;//lower sync 
-		return many > 0;
+		//return synced play
+		return play;
 	}
 
 	@Override
