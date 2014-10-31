@@ -118,7 +118,8 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						tune[120 + i] = tune[use[124 + i] * (12 / 128) + 12];//musically nice
 					}
 				}
-				desk.playCount((char)current);
+				if(stress) desk.playCount((char)-1);
+				else desk.playCount((char)current);//running
 			}
 			Thread.yield();//wait about
 		}
@@ -129,7 +130,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			pause = true;
 			if(pool != null) pool.autoPause();
 		} else {
-			desk.a.playCount((char)-1);//initializing
+			desk.playCount((char)-1);//initializing
 			if(pool == null) {
 				pool = new SoundPool(maxChannel, AudioManager.STREAM_MUSIC, 0);
 				if(pool == null) return;
@@ -145,7 +146,6 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			pause = false;
 			sound.start();
 			dump = false;
-			desk.a.playCount((char)current);//running
 			pool.autoResume();
 		}
 	}
@@ -308,23 +308,23 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	
 	private byte[] smooth = {
 			//len_mul is copy of sync_over
-			//sync over, pll, skip, play
-			1, 0, 0,//0
-			1, 0, 1,//1
-			2, 2, 0,//3
-			4, 3, 0,//4
-			4, 2, 0,//5
-			8, 0, 1,//6
-			8, 2, 0,//7
-			8, 3, 0,//8
-			8, 2, 0,//9
-			16, 0, 1,//10
-			16, 2, 0,//11
-			16, 3, 0,//12
-			16, 2, 0,//13
-			16, 0, 1,//14
-			16, 2, 0,//15
-			16, 3, 0//16
+			//pll, skip
+			1, 0,//0
+			1, 0,//1
+			2, 3,//3
+			4, 2,//4
+			4, 1,//5
+			8, 4,//6
+			8, 3,//7
+			8, 2,//8
+			8, 1,//9
+			16, 8,//10
+			16, 7,//11
+			16, 6,//12
+			16, 5,//13
+			16, 4,//14
+			16, 3,//15
+			16, 2,//16
 	};
 	
 	private synchronized boolean getMTicks() { //get music ticks
@@ -339,9 +339,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			if(many < 2 && (syncRel & 15) == 0) pllIndex = 1;//ok
 		} else {
 			if(many > 1) {
-				play = smooth[(int)many * 3 + 2] == 1;
-				lastMilli2 += smooth[(int)many * 3 + 1] * ticks * 8 * pllIndex;
-				pllIndex = smooth[(int)many * 3];//PLL
+				play = many == 1;
+				lastMilli2 += smooth[(int)many * 2 + 1] * ticks * 8 * pllIndex;
+				pllIndex = smooth[(int)many * 2];//PLL
+				syncRel -= pllIndex - 1;//the adversive resheduled note before the sync
 			}
 		}
 		//return synced play
