@@ -187,7 +187,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		if(current > maxChannel) return;
 		//play note
 		float volume = tune[107 + vol] / 2;//bound
-		float length = Math.min(tune[107 + len] * tune[note] * nLen * lenMul, 1);
+		float length = Math.min(tune[107 + len] * tune[note] * nLen * lenMul(), 1);
 		if(note > 119) length = 1;//single shot four built-ins
 		tr.loops = ((int)length);
 		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, tr.loops - 1, tune[note]);
@@ -227,12 +227,16 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	Tracker tr;
 	Tracker head;
 	
+	private int lenMul() {
+		return (int)Math.sqrt(pllIndex); 
+	}
+	
 	private void special(int note, int len, int vol) {
 		//tr is valid
 		switch(note) {
 		case 124://hold note (no break)
 			current++;//prevent fill
-			pool.setLoop(tr.streamID, tr.loops * tr.waiting * lenMul);//maybe???
+			pool.setLoop(tr.streamID, tr.loops * tr.waiting * lenMul());//maybe???
 		case 125://wait mticks
 			if(tr.waiting == -1) {
 				tr.waiting = len | (vol << 4);//init wait
@@ -302,7 +306,6 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	}
 	
 	private int pllIndex = 0;
-	private int lenMul = 1;
 	private long lastMilli2;
 	private int syncRel = 0;
 	
@@ -341,7 +344,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			if(many > 1) {
 				play = many == 1;
 				lastMilli2 += smooth[(int)many * 2 + 1] * ticks * 8 * pllIndex;
-				pllIndex = smooth[(int)many * 2];//PLL
+				pllIndex *= smooth[(int)many * 2];//PLL
 				syncRel -= pllIndex - 1;//the adversive resheduled note before the sync
 			}
 		}
