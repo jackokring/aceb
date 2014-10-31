@@ -3,7 +3,7 @@ package com.github.jackokring.aceb;
 public class Tester implements Machine {
 
     /* THE MACHINE STRUCTURES AND PRIMARY CODE */
-    char[] m = new char[65536 + 4]; //memory + save state
+    public /* to OS */ char[] m = new char[65536 + 4]; //memory + save state
 
     protected void next() {
         //TODO: all the tests

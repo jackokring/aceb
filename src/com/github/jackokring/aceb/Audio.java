@@ -118,7 +118,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						tune[120 + i] = tune[use[124 + i] * (12 / 128) + 12];//musically nice
 					}
 				}
-				desk.a.playCount((char)current);
+				desk.playCount((char)current);
 			}
 			Thread.yield();//wait about
 		}
@@ -155,7 +155,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		pool = null;
 	}
 
-	public synchronized void set(float x, float y, String s) {
+	public synchronized void set(float x, float y, S s) {
 		if(dump) return;//initialisation dump
 		float fade = (float)(y / 2 + 0.5);
 		float l = (1 - x) * fade;
@@ -207,7 +207,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	
 	protected class Tracker {
 		Tracker link;
-		String play;
+		S play;
 		int at;
 		Looper reps;
 		int waiting = -1;
@@ -215,7 +215,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		int loops;
 		float le, ri;
 		
-		public Tracker(Tracker l, String p, float left, float right) {
+		public Tracker(Tracker l, S p, float left, float right) {
 			link = l;
 			play = p;
 			at = 0;

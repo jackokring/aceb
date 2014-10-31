@@ -61,11 +61,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		super.onConfigurationChanged(newConfig);//send on
 	}
 	
-	protected InputStream getFile(String ext) throws IOException {
+	protected InputStream getFile(String ext, boolean old) throws IOException {
 		File nf;
 		String full = getMemFile();
 		if(ext != null) full += ext;
-		switch(sp.getInt("pref_file", 1)) {
+		int test = oldStore;
+		if(!old) test =	sp.getInt("pref_file", 1);
+		switch(test) {
 		default:case 1://internal
 			nf = new File(getFilesDir(), full);
 			break;
@@ -82,11 +84,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		return new FileInputStream(nf);
 	}
 	
-	protected OutputStream putFile(String ext) throws IOException {
+	protected OutputStream putFile(String ext, boolean old) throws IOException {
 		File nf;
 		String full = getMemFile();
 		if(ext != null) full += ext;
-		switch(sp.getInt("pref_file", 1)) {
+		int test = oldStore;
+		if(!old) test =	sp.getInt("pref_file", 1);
+		switch(test) {
 		default:case 1://internal
 			nf = new File(getFilesDir(), full);
 			break;
@@ -178,7 +182,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	String s = u.toString();
         	if(s.substring(s.length() - getExtension().length()).equals(getExtension())) {
         		//have a binary
-        		save(".bak",false);//save
+        		save(".bak", false, false);//save
         		intentHandle = true;
         		loadIntent(u, true);
         	} else if(intent.getType() != null
@@ -234,11 +238,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     	}
     }    
     
-    public void load(String ext, boolean err) {
+    public void load(String ext, boolean err, boolean old) {
     	StringBuilder buf = new StringBuilder();
     	if(intentHandle) ext += ".i";
     	try {
-    		Reader in = new InputStreamReader(getFile(ext));
+    		Reader in = new InputStreamReader(getFile(ext, old));
     		buffRead(buf, in);
 			loadHelp(buf);
 		} catch (Exception e) {
@@ -247,11 +251,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
     }
     
-    public void save(String ext, boolean err) {
+    public void save(String ext, boolean err, boolean old) {
     	char[] ch = a.save();
     	if(intentHandle) ext += ".i";
     	try {
-    		Writer out = new OutputStreamWriter(putFile(ext));
+    		Writer out = new OutputStreamWriter(putFile(ext, old));
     		for(int i = 0; i < ch.length; i++)
     			out.write(ch[i]);
 			out.close();
@@ -271,6 +275,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         // Always call the superclass so it can restore the view hierarchy
     	unregister();
         super.onRestoreInstanceState(b);
+        b.putInt("older", oldStore);
         b.putInt("remove", remove);
         b.putString("buf", buf);
         b.putBoolean("run", run);
@@ -297,6 +302,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         old = b.getInt("old");//must get before restore to check if need url
         register();//build
         remove = b.getInt("remove");
+        oldStore = b.getInt("older");
         buf = b.getString("buf");
         run = b.getBoolean("run");
         ta.load(b);
@@ -336,7 +342,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     protected class JavaScriptOS implements OSAdapter {
     	
-    	OSAdapter proxy;
+    	private OSAdapter proxy;
+    	public int xpos, ypos, playing;
     	
     	public JavaScriptOS(OSAdapter a) {
     		proxy = a;
@@ -408,7 +415,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		}
 
 		@Override
-		public synchronized void outAudio(char x, char y, String music) {
+		public synchronized void outAudio(char x, char y, S music) {
 			installOSBlock();
 			proxy.outAudio(x, y, music);
 		}
@@ -472,10 +479,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         	public void ok() {
         		if(intentHandle) {//exit a playable intent
             		intentHandle = false;
-            		load(".bak", false);
+            		load(".bak", false, false);
             		lock();
             	} else {
-            		save(".bak", false);
+            		save(".bak", false, false);
             		unregister();
             		finish();
             	}
@@ -488,13 +495,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         };
         load = new MyDialog(R.string.load, R.string.load_help) {
         	public void ok() {
-        		load(null, true);
+        		load(null, true, false);
         		lock();
         	}
         };
         save = new MyDialog(R.string.save, R.string.save_help) {
         	public void ok() {
-        		save(null, true);
+        		save(null, true, false);
         		lock();
         	}
         };
@@ -693,7 +700,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	}
 
 	@Override
-	public synchronized void outAudio(char x1, char y1, String music) {
+	public synchronized void outAudio(char x1, char y1, S music) {
 		m.set((float)x1/x, (float)y1/y, music);		
 	}
 
@@ -709,18 +716,26 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	private boolean boolshit = false;
 	private int old;
+	private int oldStore = 1;
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		prefUpdate();//backup
+		if(key.equals("pref_file")) {
+			save(".bak", false, true);
+			oldStore = sharedPreferences.getInt("pref_file", 1);
+			load(".bak", false, false);
+			lock();
+			return;
+		}
 		if(!key.equals("a")) return;
 		int num = sharedPreferences.getInt("a", 1);
 		if(old == 0) old = num;//no old
 		if(sharedPreferences.getBoolean("can_use", false) == false && old != num) num = old;
 		run = false;
 		if(a != null) {// not first run
-			save(".bak", false);//save
+			save(".bak", false, false);//save
 		};
 		OSAdapter t = this;
 		switch(num) {
@@ -735,7 +750,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		if(num == old) startUp(true);
 		else startUp(false);
 		old = num;
-		if(boolshit) load(".bak", false);
+		if(boolshit) load(".bak", false, false);
 		lock();
 		enter();//maybe some queued input
 	}
@@ -812,11 +827,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public void resX(char i) {
 		x = i;
 		if(a != null) a.resX(i);
+		if(jsref != null) jsref.xpos = i;
 	}
 	
 	public void resY(char i) {
 		y = i;
 		if(a != null) a.resY(i);
+		if(jsref != null) jsref.ypos = i;
 	}
 	
 	@Override
@@ -847,5 +864,10 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		// Builds an anonymous Notification object from the builder, and
 		// passes it to the NotificationManager
 		mNotificationManager.notify(0, builder.build());
+	}
+
+	public void playCount(char current) {
+		if(a != null) a.playCount(current);
+		if(jsref != null) jsref.playing = current;
 	}
 }
