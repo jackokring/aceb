@@ -263,7 +263,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 				note2 &= 127;
 				float volume = tune[107 + vol2] / 2;//bound
 				float length = Math.min(tune[107 + len2] * tune[note2] * nLen * pllIndex, 1);
-				if(note2 > 119) length = 1;//single shot four built-ins
+				if(note2 > 119 || tr.drums) length = 1;//single shot four built-ins
 				tr.loops = ((int)length) - 1;
 				pool.setRate(tr.streamID, tune[note2]);//freq mod
 				pool.setVolume(tr.streamID, volume * tr.le, volume * tr.ri);//volume mod
@@ -342,6 +342,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		long many = (diff / ticks);
 		lastMilli = now - (diff - many * ticks);
 		stress = (many > 1);
+		if(master) {
+			many = (char)(-many);
+			master = false;//kick back audio sync for matching
+		}
 		return (char)many;
 	}
 	
@@ -370,13 +374,17 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			16, 2,//16
 	};
 	
+	private boolean master;
+	
 	private synchronized boolean getMTicks() { //get music ticks
 		long now = System.currentTimeMillis();
 		long diff = now - lastMilli2;
 		long many = (diff / (ticks * 8 * pllIndex));
 		lastMilli2 = now - (diff - many * ticks * 8 * pllIndex);
 		//obvious twerk
-		if(many < 1) return false; 
+		master = false;
+		if(many < 1) return false;
+		master = true;
 		many &= 15;
 		boolean play = true;
 		syncRel += (pllIndex - 1) * many;//beats out
