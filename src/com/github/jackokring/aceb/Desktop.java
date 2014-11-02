@@ -61,6 +61,12 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
 		super.onConfigurationChanged(newConfig);//send on
 	}
 	
+	protected String getMemFile() {
+		String full = super.getMemFile();
+		if(intentHandle) full = "i-" + full;
+		return full;//modified name
+	}
+	
 	protected InputStream getFile(String ext, boolean old) throws IOException {
 		File nf;
 		String full = getMemFile();
@@ -217,7 +223,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
     	int len = a.save().length;
     	char[] ch = new char[buf.length()];
 		buf.toString().getChars(0, buf.length(), ch, 0);
-		if(ch.length != len) throw new Exception();
+		if(ch.length != len) throw new Exception("Sized error");//not a machine error, a sys error
 		a.load(ch);
     }
     
@@ -240,7 +246,6 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
     
     public void load(String ext, boolean err, boolean old) {
     	StringBuilder buf = new StringBuilder();
-    	if(intentHandle) ext += ".i";
     	try {
     		Reader in = new InputStreamReader(getFile(ext, old));
     		buffRead(buf, in);
@@ -253,7 +258,6 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
     
     public void save(String ext, boolean err, boolean old) {
     	char[] ch = a.save();
-    	if(intentHandle) ext += ".i";
     	try {
     		Writer out = new OutputStreamWriter(putFile(ext, old));
     		for(int i = 0; i < ch.length; i++)
@@ -262,7 +266,6 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
 		} catch (Exception e) {
 			if(err) probs.show();
 		}
-    	if(!intentHandle) prefUpdate();//slight efficiency
     }
     
     protected void prefUpdate() {
