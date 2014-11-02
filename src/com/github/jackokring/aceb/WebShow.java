@@ -157,6 +157,7 @@ public class WebShow extends Fragment {
     	e.getSettings().setJavaScriptEnabled(true);
     	e.addJavascriptInterface(jsref = new JavaScriptOS(os), "OSAdapter");
     	e.addJavascriptInterface(new S(""), "AudioBuffer");
+    	e.addJavascriptInterface(new LFO("", ""), "LFO");
     }
 
 	@Override
