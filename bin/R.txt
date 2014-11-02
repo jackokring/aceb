@@ -417,6 +417,7 @@ int string probs 0x7f0b002c
 int string probs_help 0x7f0b002d
 int string reset 0x7f0b0028
 int string reset_help 0x7f0b0029
+int string rsa_key 0x7f0b003c
 int string save 0x7f0b0026
 int string save_help 0x7f0b0027
 int string search_hint 0x7f0b001d

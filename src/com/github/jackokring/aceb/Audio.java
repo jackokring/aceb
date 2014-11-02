@@ -90,8 +90,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 				tr = head;//reset for play
 				current = 0;
 				while(tr != null) {
-					while(tr != null && tr.at < tr.play.length()) {
-						play((short)tr.play.charAt(tr.at++));//short for negation
+					synchronized(tr.play) {//lock a playing instance from changes
+						while(tr != null && tr.at < tr.play.length()) {
+							play((short)tr.play.charAt(tr.at++));//short for negation
+						}
 					}
 					if(tr != null && tr.at >= tr.play.length()) {
 						Tracker h = head;
@@ -187,10 +189,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		if(current > maxChannel) return;
 		//play note
 		float volume = tune[107 + vol] / 2;//bound
-		float length = Math.min(tune[107 + len] * tune[note] * nLen * lenMul(), 1);
+		float length = Math.min(tune[107 + len] * tune[note] * nLen * pllIndex, 1);
 		if(note > 119) length = 1;//single shot four built-ins
-		tr.loops = ((int)length);
-		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, tr.loops - 1, tune[note]);
+		tr.loops = ((int)length) - 1;
+		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, (int)(tr.loops * lenMul()), tune[note]);
 	}
 	
 	protected class Looper {
@@ -237,7 +239,20 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		switch(note) {
 		case 124://hold note (no break)
 			current++;//prevent fill
-			pool.setLoop(tr.streamID, (int)(tr.loops * tr.waiting * lenMul()));//maybe???
+			if(tr.at > 0) {
+				//allow LFO stylee
+				int note2 = tr.at - 1;
+				int len2 = (note2 >> 7) & 15;//octave plus 4 random
+				int vol2 = (note2 >> 11) & 15;//same
+				note2 &= 127;
+				float volume = tune[107 + vol2] / 2;//bound
+				float length = Math.min(tune[107 + len2] * tune[note2] * nLen * pllIndex, 1);
+				if(note2 > 119) length = 1;//single shot four built-ins
+				tr.loops = ((int)length) - 1;
+				pool.setRate(tr.streamID, tune[note2]);//freq mod
+				pool.setVolume(tr.streamID, volume * tr.le, volume * tr.ri);//volume mod
+			}
+			pool.setLoop(tr.streamID, (int)(tr.loops * tr.waiting * lenMul()));//!!
 		case 125://wait mticks
 			if(tr.waiting == -1) {
 				tr.waiting = len | (vol << 4);//init wait

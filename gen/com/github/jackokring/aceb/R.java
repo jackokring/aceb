@@ -1332,6 +1332,7 @@ containing a value of this type.
         public static final int probs_help=0x7f0b002d;
         public static final int reset=0x7f0b0028;
         public static final int reset_help=0x7f0b0029;
+        public static final int rsa_key=0x7f0b003c;
         public static final int save=0x7f0b0026;
         public static final int save_help=0x7f0b0027;
         public static final int search_hint=0x7f0b001d;

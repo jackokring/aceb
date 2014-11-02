@@ -44,4 +44,9 @@ public class S {
 	public synchronized char charAt(int i) {
 		return back[start + i];
 	}
+	
+	public synchronized void putAt(char c, int i) {
+		if(i >= len || i < 0) throw new RuntimeException("Audio error");
+		back[start + i] = c;
+	}
 }

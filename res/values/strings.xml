@@ -62,4 +62,6 @@
     
     <string name="pref_web">Visit Websites</string>
     <string name="github">Visit the Github Site</string>
+    
+    <string name="rsa_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAri6ou//wMFvEgfOlOE+KCfopq3TFAW7SZHBnT5tgDZsLM/GI+gNsSwgho6ZnKRcQw6VGElwJcXqNsZJaDU5GtOf18faKNHO3jfMoDz/gWfuABVBKrA0dKpX6kSIl2ZFCAQnUQdN2XOofNFhTcGklzaLxs5FvsA0lu+Y7cSdC9E6KkfZqkwAncWGB/BEqsRERzSctea1NCGyovCAZkWsoSmxUFvofbJvqmTh0K6Fh9zx8YitOCs/pR0UOghUwVdIL/zp+Vhd62LezTcvch7w9cha3ONkhbLD0gzqZdUn+DLfuJiMR2Up5g07fFbLmgd3UKcNRvdc5vils028WFaH61wIDAQAB</string>
 </resources>

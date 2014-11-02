@@ -145,6 +145,10 @@ public class WebShow extends Fragment {
 			installOSBlock();
 			proxy.notify(s);
 		}
+		
+		public void outAudio(char x, char y, String music) {
+			outAudio(x, y, new S(music));//for convenience
+		}
     }
     
     public WebShow(Desktop os) {
