@@ -6,9 +6,10 @@
 	<META NAME="GENERATOR" CONTENT="LibreOffice 3.5  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
 	<META NAME="CHANGEDBY" CONTENT="Simon Jackson">
-	<META NAME="CHANGED" CONTENT="20141030;13500800">
+	<META NAME="CHANGED" CONTENT="20141102;11573600">
 	<META NAME="" CONTENT="">
 	<META NAME="viewport" CONTENT="width=device-width, initial-scale=1, user-scalable=no">
+	<META NAME="CHANGEDBY" CONTENT="Simon Jackson">
 	<STYLE TYPE="text/css">
 	<!--
 		P { margin-bottom: 0.53cm; font-variant: normal; color: #777777; font-family: "Lato", "Helvetica Neue", "Helvetica", "Arial", sans-serif; font-size: 10pt; font-style: normal; font-weight: normal; line-height: 150% }
@@ -29,18 +30,15 @@ Welcome</FONT></H1>
 <UL>
 	<UL>
 		<UL>
-			<LI><H3 CLASS="western"><A HREF="https://github.com/jackokring/aceb/zipball/master"><FONT COLOR="#000000"><FONT FACE="FreeMono, monospace">Download</FONT></FONT><FONT FACE="FreeMono, monospace">
-			</FONT><STRONG><FONT FACE="FreeMono, monospace">ZIP File</FONT></STRONG></A><FONT FACE="FreeMono, monospace">
-			</FONT>
-			</H3>
-			<LI><H3 CLASS="western"><A HREF="https://github.com/jackokring/aceb/tarball/master"><FONT COLOR="#000000"><FONT FACE="FreeMono, monospace">Download</FONT></FONT><FONT FACE="FreeMono, monospace">
-			</FONT><STRONG><FONT FACE="FreeMono, monospace">TAR Ball</FONT></STRONG></A><FONT FACE="FreeMono, monospace">
-			</FONT>
-			</H3>
+			<LI><H3 CLASS="western"><A HREF="https://github.com/jackokring/aceb/zipball/master"><FONT COLOR="#000000"><FONT FACE="FreeMono, monospace">Download</FONT></FONT>
+			<STRONG><FONT FACE="FreeMono, monospace">ZIP File</FONT></STRONG></A>
+						</H3>
+			<LI><H3 CLASS="western"><A HREF="https://github.com/jackokring/aceb/tarball/master"><FONT COLOR="#000000"><FONT FACE="FreeMono, monospace">Download</FONT></FONT>
+			<STRONG><FONT FACE="FreeMono, monospace">TAR Ball</FONT></STRONG></A>
+						</H3>
 			<LI><H3 CLASS="western"><A HREF="https://github.com/jackokring/aceb"><FONT COLOR="#000000"><FONT FACE="FreeMono, monospace">View
-			On</FONT></FONT><FONT FACE="FreeMono, monospace"> </FONT><STRONG><FONT FACE="FreeMono, monospace">GitHub</FONT></STRONG></A><FONT FACE="FreeMono, monospace">
-			</FONT>
-			</H3>
+			On</FONT></FONT> <STRONG><FONT FACE="FreeMono, monospace">GitHub</FONT></STRONG></A>
+						</H3>
 		</UL>
 	</UL>
 </UL>
@@ -58,21 +56,29 @@ framework for interacting with droid. A simple <B>OSAdapter</B> is
 created between the coding of the demonstration and various machines.
 A <B>WebView</B> is used, and so JavaScript can use the <B>OSAdapter
 </B>object to call on droid functions. There is also a method
-<B>release()</B> which must be called after using any method except
-<B>machine()</B> <SPAN STYLE="font-weight: normal">which itself send
-a text command to the other possibility.</SPAN></FONT></P>
+<B>release()</B> which must be called after using any method via
+JavaScript, except <B>machine()</B> <SPAN STYLE="font-weight: normal">which
+itself sends a text command to the </SPAN><B>Machine</B><SPAN STYLE="font-weight: normal">
+possibility. There is also an </SPAN><B>AudioBuffer</B><SPAN STYLE="font-weight: normal">
+exported to Javascript, so </SPAN><B>AudioBuffer.fromString</B><SPAN STYLE="font-weight: normal">
+can be used. The JavaScript interface </SPAN><B>OSAdapter </B><SPAN STYLE="font-weight: normal">also
+has property variables </SPAN><B>xpos</B><SPAN STYLE="font-weight: normal">,
+</SPAN><B>ypos</B><SPAN STYLE="font-weight: normal"> and </SPAN><B>playing</B><SPAN STYLE="font-weight: normal">
+to keep the JavaScript updated with the simple OS state. </SPAN></FONT>
+</P>
 <P><FONT FACE="FreeMono, monospace"><SPAN STYLE="font-weight: normal">There
 is also a </SPAN><B>Machine</B> <SPAN STYLE="font-weight: normal">interface
 describing a simple 16-bit architecture, with the same, excepting
 </SPAN><B>machine()</B> <SPAN STYLE="font-weight: normal">but
 including </SPAN><B>setMachine()</B><SPAN STYLE="font-weight: normal">,
-Java interface. This class extension of </SPAN><B>Tester</B> <SPAN STYLE="font-weight: normal">is
-</SPAN><B>AceB</B><SPAN STYLE="font-weight: normal">. There may be
-other extensions added. The flexibility comes from the </SPAN><B>WebView</B>
-<SPAN STYLE="font-weight: normal">launch first, but other components
-of the simple OS in the </SPAN><B>OSAdapter</B> <SPAN STYLE="font-weight: normal">interface
-exist. There is an </SPAN><B>EditView</B> <SPAN STYLE="font-weight: normal">for
-entry, and presentation before entry, of text. There is also a
+Java interface. There is a class extension of </SPAN><B>Tester</B>
+called<SPAN STYLE="font-weight: normal"> </SPAN><B>AceB</B><SPAN STYLE="font-weight: normal">.
+There may be other extensions added. The flexibility comes from the
+</SPAN><B>WebView</B> <SPAN STYLE="font-weight: normal">launch first,
+but other components of the simple OS in the </SPAN><B>OSAdapter</B>
+<SPAN STYLE="font-weight: normal">interface exist. There is an
+</SPAN><B>EditView</B> <SPAN STYLE="font-weight: normal">for entry,
+and presentation before entry, of text. There is also a
 </SPAN><B>DisplayTerminal</B> <SPAN STYLE="font-weight: normal">with
 a similar idea to the J2ME </SPAN><B>GameCanvas</B> <SPAN STYLE="font-weight: normal">but
 nothing beyond simple essentials. There is also </SPAN><B>Audio</B>
@@ -103,7 +109,8 @@ available, and some settings to help with sensible defaults.</SPAN></FONT></P>
 <P><FONT FACE="FreeMono, monospace"><SPAN STYLE="font-weight: normal">Eventually
 there may be a Hall of Fame feature, where good examples of shared
 </SPAN><B>Machine</B> <SPAN STYLE="font-weight: normal">instances are
-bundled with the .apk file, or on the market. Hope you get to enjoy.</SPAN></FONT></P>
+bundled with the </SPAN><B>.apk</B><SPAN STYLE="font-weight: normal">
+file, or on the market. Hope you get to enjoy.</SPAN></FONT></P>
 <H3 CLASS="western"><FONT FACE="FreeMono, monospace">Cheers to GitHub</FONT></H3>
 <P><FONT FACE="FreeMono, monospace">In 2007, Chris Wanstrath
 (<A HREF="https://github.com/defunkt">@defunkt</A>), PJ Hyett
