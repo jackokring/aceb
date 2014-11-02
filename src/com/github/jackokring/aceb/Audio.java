@@ -71,11 +71,21 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		"zap",//white noise
 		"hyper",//pink noise
 		"boing",//brown noise
-		"explode"//black noise
+		"explode",//black noise
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
+		"",
 	};
 	int[] id = new int[file.length];
 	float[] tune = new float[128];//a 0.5 to 2 tuning value, and length multiplier
 	byte[] use = new byte[128];//an index into id
+	byte[] drm = new byte[128];//an index into id
 
 	public Audio(Desktop desktop) {
 		desk = desktop;
@@ -157,12 +167,12 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		pool = null;
 	}
 
-	public synchronized void set(float x, float y, S s) {
+	public synchronized void set(float x, float y, S s, boolean drums) {
 		if(dump) return;//initialisation dump
 		float fade = (float)(y / 2 + 0.5);
 		float l = (1 - x) * fade;
 		float r = x * fade;
-		Tracker t = new Tracker(head, s, l, r);
+		Tracker t = new Tracker(head, s, l, r, drums);
 		head = t;//queue up
 	}
 	
@@ -173,7 +183,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		note &= 127;
 		if(note > 123) {
 			special(note, len, vol);
-			if(note < 0) tr.link = null;//cut current tracker list (flush older)
+			if(flush) tr.link = null;//cut current tracker list (flush older)
 			return;
 		}
 		float le = tr.le;
@@ -190,9 +200,13 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		//play note
 		float volume = tune[107 + vol] / 2;//bound
 		float length = Math.min(tune[107 + len] * tune[note] * nLen * pllIndex, 1);
-		if(note > 119) length = 1;//single shot four built-ins
+		if(note > 119 || tr.drums) length = 1;//single shot four built-ins
 		tr.loops = ((int)length) - 1;
-		tr.streamID = pool.play(id[use[note]], volume * le, volume * ri, 0, (int)(tr.loops * lenMul()), tune[note]);
+		int used = id[use[note]];
+		if(tr.drums) {
+			used = id[drm[note]];
+		}
+		tr.streamID = pool.play(used, volume * le, volume * ri, 0, (int)(tr.loops * lenMul()), tune[note]);
 	}
 	
 	protected class Looper {
@@ -216,13 +230,15 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		int streamID;
 		int loops;
 		float le, ri;
+		boolean drums;
 		
-		public Tracker(Tracker l, S p, float left, float right) {
+		public Tracker(Tracker l, S p, float left, float right, boolean dr) {
 			link = l;
 			play = p;
 			at = 0;
 			le = left;
 			ri = right;
+			drums = dr;
 		}
 	}
 	
@@ -295,12 +311,14 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			for(int j = 0; j < 5; j++) {
 				tune[i + j * 24] = freq;
 				use[i + j * 24] = (byte)j;
+				drm[i + j * 24] = (byte)(j + 9);
 			}
 		}
 		//four special notes
 		for(int i = 0; i < 8; i++) {
 			tune[i + 120] = 1;
 			use[i + 120] = (byte)(i + 6);
+			drm[i + 120] = (byte)(i + 15);
 		}
 		//last four are meta notes 124, 125, 126, 127
 		//gen inverse root

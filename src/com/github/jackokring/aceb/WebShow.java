@@ -106,9 +106,9 @@ public class WebShow extends Fragment {
 		}
 
 		@Override
-		public synchronized void outAudio(char x, char y, S music) {
+		public synchronized void outAudio(char x, char y, S music, boolean drums) {
 			installOSBlock();
-			proxy.outAudio(x, y, music);
+			proxy.outAudio(x, y, music, drums);
 		}
 
 		@Override
@@ -146,8 +146,8 @@ public class WebShow extends Fragment {
 			proxy.notify(s);
 		}
 		
-		public void outAudio(char x, char y, String music) {
-			outAudio(x, y, new S(music));//for convenience
+		public void outAudio(char x, char y, String music, boolean drums) {
+			outAudio(x, y, new S(music), drums);//for convenience
 		}
     }
     

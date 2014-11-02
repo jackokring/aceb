@@ -585,7 +585,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
 	}
 
 	@Override
-	public synchronized void outAudio(char x1, char y1, S music) {
+	public synchronized void outAudio(char x1, char y1, S music, boolean drums) {
 		float xx, yy;
 		xx = x1/x;
 		yy = y1/y;
@@ -593,7 +593,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
 		if(xx > x) xx = x;
 		if(yy < 0) yy = 0;
 		if(yy > y) yy = y;
-		m.set((float)xx, (float)yy, music);		
+		m.set((float)xx, (float)yy, music, drums);		
 	}
 
 	@Override
