@@ -3,6 +3,9 @@
 
     <string name="app_name">AceB FORTH</string>
     <string name="setting_name">AceB Settings</string>
+    <string name="buyer_name">AceB Addons</string>
+    <string name="buy">Buy something to extend AceB and donate to the programming</string>
+    
     <string name="extension">.aceb</string>
     <string name="fileprovider">com.github.jackokring.aceb.fileprovider</string>
     <string name="mimecode">application/com.github.jackokring.aceb</string>
@@ -49,6 +52,7 @@
     <string name="pref_system">System Settings</string>
     <string name="pref_orient">Orientation</string>
     <string name="pref_file">Load and Save location</string>
+    <string name="pref_buy">Buy Addons</string>
     
     <string name="pref_hardware">Hardware Settings</string>
     <string name="pref_joy">Tilt Joystick Gain</string>

@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-        <PreferenceCategory 
-        android:title="@string/pref_hardware"
+	<PreferenceCategory 
+        android:title="@string/pref_system"
         android:key="pref_key_system">
 	    <ListPreference
 	        android:key="pref_orient"
@@ -16,6 +16,12 @@
 	        android:entries="@array/file"
 	        android:entryValues="@array/file_val"
 	        android:defaultValue="1" />
+	    <Preference
+ 			android:title="@string/pref_buy"
+ 			android:key="pref_key_addons"
+ 			android:summary="@string/buy">
+			<intent android:action=".Buyer"/>
+		</Preference>
 	</PreferenceCategory>
     <PreferenceCategory 
         android:title="@string/pref_hardware"

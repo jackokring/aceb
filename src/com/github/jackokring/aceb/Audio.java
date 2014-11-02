@@ -94,15 +94,15 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 						while(tr != null && tr.at < tr.play.length()) {
 							play((short)tr.play.charAt(tr.at++));//short for negation
 						}
-					}
-					if(tr != null && tr.at >= tr.play.length()) {
-						Tracker h = head;
-						if(h == tr) head = tr.link;
-						else {
-							while(h.link != tr) h = h.link;
-							h.link = h.link.link;//cut
+						if(tr != null && tr.at >= tr.play.length()) {
+							Tracker h = head;
+							if(h == tr) head = tr.link;
+							else {
+								while(h.link != tr) h = h.link;
+								h.link = h.link.link;//cut
+							}
 						}
-					}
+					}//extend lock to allow zero length change
 					if(tr != null) tr = tr.link;
 					/* boredom reduction circuitry
 					 * handle with care !! */ 

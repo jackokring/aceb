@@ -46,7 +46,7 @@ import android.support.v4.app.NotificationCompat;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
-public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferenceChangeListener {
+public class Desktop extends MainActivity implements Utils, OnSharedPreferenceChangeListener {
 	
 	//default ones
 	protected int viewXML = R.layout.activity_desktop;
@@ -583,7 +583,14 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outAudio(char x1, char y1, S music) {
-		m.set((float)x1/x, (float)y1/y, music);		
+		float xx, yy;
+		xx = x1/x;
+		yy = y1/y;
+		if(xx < 0) xx = 0;
+		if(xx > x) xx = x;
+		if(yy < 0) yy = 0;
+		if(yy > y) yy = y;
+		m.set((float)xx, (float)yy, music);		
 	}
 
 	@Override

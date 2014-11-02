@@ -85,6 +85,8 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
     }
 	 
 	public synchronized Bitmap getNew(char xs, char ys) {
+		if(xs < 16) xs = 16;
+		if(ys < 16) ys = 16;//smallest
 		b = Bitmap.createBitmap(xs*8, ys*8, Bitmap.Config.ARGB_8888);
 		x = xs;
 		y = ys;
