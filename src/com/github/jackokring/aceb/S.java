@@ -7,9 +7,11 @@ public class S {
 	char start;
 	
 	public S(Tester m, char i) {
-		back = m.m;
-		len = back[i];
-		start = i++;
+		synchronized(m) {
+			back = m.m;
+			len = back[i];
+			start = i++;
+		}
 	}
 	
 	@Override

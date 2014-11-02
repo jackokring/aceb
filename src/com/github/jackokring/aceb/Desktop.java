@@ -302,7 +302,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         old = b.getInt("old");//must get before restore to check if need url
         register();//build
         remove = b.getInt("remove");
-        oldStore = b.getInt("older");
+        oldStore = b.getInt("older");//overwrite if had an older in store
         buf = b.getString("buf");
         run = b.getBoolean("run");
         ta.load(b);
@@ -336,128 +336,11 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     protected boolean js = false;
     protected boolean pause = true;
     
-    protected void lock() {
+    void lock() {
     	if(!js || /* ! */ !pause) a.restart();
-    }
-    
-    protected class JavaScriptOS implements OSAdapter {
-    	
-    	private OSAdapter proxy;
-    	public int xpos, ypos, playing;
-    	
-    	public JavaScriptOS(OSAdapter a) {
-    		proxy = a;
-    	}
-    	
-    	private synchronized void installOSBlock() {
-    		a.end();
-    		js = true;
-    	}
-    	
-    	public synchronized void release() {
-    		js = false;
-    		lock();
-    	}
-    	
-    	public synchronized void machine(String input) {
-    		installOSBlock();
-    		proxy.outKeys(input+buf);
-    		enter();
-    		release();
-    	}
-
-		@Override
-		public synchronized char inKey() {
-			installOSBlock();
-			return proxy.inKey();
-		}
-
-		@Override
-		public synchronized boolean hasKey() {
-			installOSBlock();
-			return proxy.hasKey();
-		}
-
-		@Override
-		public synchronized void outKeys(String key) {
-			installOSBlock();
-			proxy.outKeys(key);
-		}
-
-		@Override
-		public synchronized void setChar(char x, char y, char c) {
-			installOSBlock();
-			proxy.setChar(x, y, c);
-		}
-
-		@Override
-		public synchronized void setRes(char x, char y, char col) {
-			installOSBlock();
-			proxy.setRes(x, y, col);
-		}
-
-		@Override
-		public synchronized void inURL(String url) {
-			installOSBlock();
-			proxy.inURL(url);
-		}
-
-		@Override
-		public synchronized void outURL(String url) {
-			installOSBlock();
-			proxy.outURL(url);
-		}
-
-		@Override
-		public synchronized char inJoy() {
-			installOSBlock();
-			return proxy.inJoy();
-		}
-
-		@Override
-		public synchronized void outAudio(char x, char y, S music) {
-			installOSBlock();
-			proxy.outAudio(x, y, music);
-		}
-
-		@Override
-		public synchronized void scroll() {
-			installOSBlock();
-			proxy.scroll();
-		}
-
-		@Override
-		public void setMachine(String simple) {
-			//very difficult to do as async, try machine()
-			throw new RuntimeException(".setMachine() Not Allowed.");
-		}
-
-		@Override
-		public synchronized void send(String app, String code) {
-			proxy.send(app, code);
-		}
-
-		@Override
-		public synchronized void setTick(char milli) {
-			installOSBlock();
-			proxy.setTick(milli);
-		}
-
-		@Override
-		public synchronized char getTicks() {
-			installOSBlock();
-			return proxy.getTicks();
-		}
-
-		@Override
-		public void notify(String s) {
-			installOSBlock();
-			proxy.notify(s);
-		}
-    }
+    }    
     
     protected Fragment[] frags = new Fragment[4];
-    protected JavaScriptOS jsref;
     
     protected void unregister() {
     	sp.unregisterOnSharedPreferenceChangeListener(this);
@@ -470,10 +353,8 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public Desktop() {
     	frags[0] = gc = new DisplayTerminal(this);
     	frags[1] = ta = new TextBox();
-    	frags[2] = ws = new WebShow();
+    	frags[2] = ws = new WebShow(this);
     	frags[3] = ls = new SearchList(this);
-    	ws.e.getSettings().setJavaScriptEnabled(true);
-    	ws.e.addJavascriptInterface(jsref = new JavaScriptOS(this), "OSAdapter");
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
@@ -508,9 +389,9 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
         reset = new MyDialog(R.string.reset, R.string.reset_help) {
         	public void ok() {
         		//wind down
-        		synchronized(jsref) {
+        		synchronized(ws.jsref) {
         			startUp(false);//treat as new machine
-        			jsref.release();//MUST DO FOR IDIOTS
+        			ws.jsref.release();//MUST DO FOR IDIOTS
         			a.reset();
         			lock();
         		}
@@ -525,6 +406,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
     
     protected void register() {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
+        oldStore = sp.getInt("pref_file", 1);
         onSharedPreferenceChanged(sp, "a");
         gc.onSharedPreferenceChanged(sp, "pref_screen");
         m.onSharedPreferenceChanged(sp, "pref_ticks");
@@ -665,7 +547,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	@Override
 	public synchronized void outURL(String url) {
-		jsref.release();//MUST DO FOR IDIOTS as js may stop running
+		ws.jsref.release();//MUST DO FOR IDIOTS as js may stop running
 		ws.e.loadUrl(url);
 		setCurrent(ws);
 	}
@@ -716,7 +598,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	
 	private boolean boolshit = false;
 	private int old;
-	private int oldStore = 1;
+	private int oldStore;
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -764,6 +646,7 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 		setTitle(getTitle(a));
 		a.resX(x);
 		a.resY(y);//delayed?
+		a.playCount((char)-1);
 	}
 
 	@Override
@@ -827,13 +710,13 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 	public void resX(char i) {
 		x = i;
 		if(a != null) a.resX(i);
-		if(jsref != null) jsref.xpos = i;
+		if(ws != null && ws.jsref != null) ws.jsref.xpos = i;
 	}
 	
 	public void resY(char i) {
 		y = i;
 		if(a != null) a.resY(i);
-		if(jsref != null) jsref.ypos = i;
+		if(ws != null && ws.jsref != null) ws.jsref.ypos = i;
 	}
 	
 	@Override
@@ -868,6 +751,6 @@ public class Desktop extends MainActivity implements OSAdapter, OnSharedPreferen
 
 	public void playCount(char current) {
 		if(a != null) a.playCount(current);
-		if(jsref != null) jsref.playing = current;
+		if(ws != null && ws.jsref != null) ws.jsref.playing = current;
 	}
 }

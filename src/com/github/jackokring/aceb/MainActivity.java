@@ -26,7 +26,7 @@ public abstract class MainActivity extends ActionBarActivity {
 
 	protected ShareActionProvider mShareActionProvider;
 	
-	protected Machine a;
+	Machine a;
 	
 	private boolean active = false;
 
