@@ -227,8 +227,9 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 	Tracker tr;
 	Tracker head;
 	
-	private int lenMul() {
-		return (int)Math.sqrt(pllIndex); 
+	private float lenMul() {//to stop drony notes
+		if(pllIndex > 255) return 16;
+		return pllIndex * irt[pllIndex]; 
 	}
 	
 	private void special(int note, int len, int vol) {
@@ -236,7 +237,7 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		switch(note) {
 		case 124://hold note (no break)
 			current++;//prevent fill
-			pool.setLoop(tr.streamID, tr.loops * tr.waiting * lenMul());//maybe???
+			pool.setLoop(tr.streamID, (int)(tr.loops * tr.waiting * lenMul()));//maybe???
 		case 125://wait mticks
 			if(tr.waiting == -1) {
 				tr.waiting = len | (vol << 4);//init wait
@@ -270,6 +271,8 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		}
 	}
 	
+	public float[] irt = new float[256];
+	
 	private void genTable() {
 		for(int i = 0; i < 24; i++) {//2 octaves
 			float freq = (float)Math.pow(2, ((float)(i - 12))/12);
@@ -285,6 +288,10 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 			use[i + 120] = (byte)(i + 6);
 		}
 		//last four are meta notes 124, 125, 126, 127
+		//gen inverse root
+		for(int i = 0; i < 256; i++) {
+			irt[i] = (float)(1 / Math.sqrt(i));
+		}
 	}
 	
 	public synchronized void setTick(char num) {

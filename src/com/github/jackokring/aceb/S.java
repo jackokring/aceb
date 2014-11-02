@@ -6,7 +6,7 @@ public class S {
 	char len;
 	char start;
 	
-	public S(Tester m, char i) {
+	S(Tester m, char i) {
 		synchronized(m) {
 			back = m.m;
 			len = back[i];
@@ -14,8 +14,22 @@ public class S {
 		}
 	}
 	
+	public S(String s) {
+		fromString(s);
+	}
+	
+	public synchronized void fromString(String s) {
+		char len2 = (char)s.length();
+		len = 0;
+		back = new char[len2];
+		start = 0;
+		for(int i = 0; i < len2; i++)
+			back[i] = s.charAt(i);
+		len = len2;
+	}
+	
 	@Override
-	public String toString() {
+	public synchronized String toString() {
 		StringBuilder s = new StringBuilder();
 		for(int i = 0; i < len; i++) {
 			s.append(back[start + i]);
@@ -23,11 +37,11 @@ public class S {
 		return s.toString();
 	}
 
-	public int length() {
+	public synchronized int length() {
 		return len;
 	}
 
-	public char charAt(int i) {
+	public synchronized char charAt(int i) {
 		return back[start + i];
 	}
 }

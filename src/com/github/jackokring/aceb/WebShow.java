@@ -2,6 +2,7 @@ package com.github.jackokring.aceb;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.webkit.WebView;
@@ -20,13 +21,14 @@ public class WebShow extends Fragment {
 		
 	protected WebView e = (WebView) getActivity().findViewById(R.id.web);
 	JavaScriptOS jsref;
+	Desktop d;
 	
     public void load(Bundle b) {
-    	setString(b.getString("web"));
+    	e = b.getParcelable("web");
     }
     
     public void save(Bundle b) {
-    	b.putString("web", getString());
+    	b.putParcelable("web", (Parcelable)e);
     }
 	
     protected class JavaScriptOS implements OSAdapter {
@@ -146,9 +148,11 @@ public class WebShow extends Fragment {
     }
     
     public WebShow(Desktop os) {
+    	d = os;
     	//enable js
     	e.getSettings().setJavaScriptEnabled(true);
     	e.addJavascriptInterface(jsref = new JavaScriptOS(os), "OSAdapter");
+    	e.addJavascriptInterface(new S(""), "AudioBuffer");
     }
 
 	@Override
