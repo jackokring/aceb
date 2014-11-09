@@ -72,15 +72,15 @@ public class Audio implements Runnable, OnSharedPreferenceChangeListener {
 		"hyper",//pink noise
 		"boing",//brown noise
 		"explode",//black noise
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
-		"",
+		"Kick",
+		"Eight08",
+		"Snare",
+		"Horn",
+		"HiHat",
+		"Shaker",
+		"Clap2",
+		"Clap1",
+		"Ting"
 	};
 	int[] id = new int[file.length];
 	float[] tune = new float[128];//a 0.5 to 2 tuning value, and length multiplier
