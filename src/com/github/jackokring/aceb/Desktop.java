@@ -22,7 +22,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
@@ -180,6 +179,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
     }
     
     boolean intentHandle = false;
+    int preSearch = 0;
     
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEND.equals(intent.getAction())) {
@@ -203,6 +203,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         	}
         }
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        	if(remove != ls.getId()) preSearch = remove;
         	setCurrent(ls);
         	ls.search(intent.getStringExtra(SearchManager.QUERY));
         }
@@ -287,6 +288,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         gc.save(b);
         ws.save(b);
         ls.save(b);
+        b.putInt("presearch", preSearch);
         b.putString("url", urlp);
         b.putBoolean("fetch", fetch);
         b.putBoolean("fetched", fetched);
@@ -313,6 +315,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         gc.load(b);
         ws.load(b);
         ls.load(b);
+        preSearch = b.getInt("presearch");
         urlp = b.getString("urlp");
         fetch = b.getBoolean("fetch");
         fetched = b.getBoolean("fetched");
@@ -321,11 +324,15 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         js = b.getBoolean("js");
         i = b.getString("intent");
         intentHandle = b.getBoolean("ih");
-        for(int i = 0; i < frags.length; i++)
-        	if(remove == frags[i].getId()) {
-        		setCurrent(frags[i]);
-        		break;
-        	}
+        which(remove);
+    }
+    
+    private void which(int match) {
+    	for(int i = 0; i < frags.length; i++)
+	    	if(match == frags[i].getId()) {
+	    		setCurrent(frags[i]);
+	    		break;
+	    	}
     }
     
     public SharedPreferences sp;
@@ -352,7 +359,6 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
 		m.clean();
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
 	public Desktop() {
     	frags[0] = gc = new DisplayTerminal(this);
     	frags[1] = ta = new TextBox();
@@ -361,7 +367,10 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
-        		if(intentHandle) {//exit a playable intent
+        		if(remove == ls.getId()) {
+        			//searchView
+        			which(preSearch);
+        		} else if(intentHandle) {//exit a playable intent
             		intentHandle = false;
             		load(".bak", false, false);
             		lock();

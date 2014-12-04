@@ -154,4 +154,10 @@ public class Tester implements Machine {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public SearchItem[] buyer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

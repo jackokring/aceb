@@ -1,16 +1,18 @@
 package com.github.jackokring.aceb;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.android.vending.*;
-import com.github.jackokring.aceb.SearchList.MyArrayAdapter;
-
 import android.app.*;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,10 +53,20 @@ public class Buyer extends Activity {
 		});
 	}
 	
-protected ArrayList<SearchItem> list;
+	protected ArrayList<SearchItem> list;
+	
+	public Bitmap getIcon(Machine res) {
+		try {
+			InputStream i = getAssets().open(res.getClass().getSimpleName() + "/icon.png");
+			Bitmap b = BitmapFactory.decodeStream(i);
+			i.close();
+			return b;
+		} catch (IOException e) {
+			return ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+		}
+	}
     
-    public void search(String s) {
-    	search = s;
+    public void list() {
     	HashMap<Machine,Bitmap> map = new HashMap<Machine,Bitmap>(); 
     	list = new ArrayList<SearchItem>();
     	final String pack = this.getClass().getPackage().getName();
@@ -63,30 +75,32 @@ protected ArrayList<SearchItem> list;
         	Machine res;
 			try {
 				res = (Machine) (Class.forName(pack + "." + machines[i]).newInstance());
-				map.put(res, d.getIcon(res));
+				map.put(res, getIcon(res));
 			} catch (Exception e) {
-				res = d.a;
 				i = machines.length;//break later
 			}
-        	SearchItem[] values = res.search();
+        	SearchItem[] values = res.buyer();
         	for (int j = 0; j < values.length; ++i) {
-        		int k = values[i].toString().indexOf(s);
-        		if(k < 0 || k >= values[i].toString().length()) continue; 
+        		/* CHECK NOT BOUGHT */
+        		
+        		/* OR CONSUME */
+        		
     			list.add(values[i]);
     			values[i].setMachine(res);
         	}
         }
         final MyArrayAdapter adapter = new MyArrayAdapter(con,
             R.layout.buy_item, list, map);
-        e.setAdapter(adapter);
-        e.setOnItemClickListener(new AdapterView.OnItemClickListener() {	
+        	e.setAdapter(adapter);
+        	e.setOnItemClickListener(new AdapterView.OnItemClickListener() {	
 			@Override
 			public void onItemClick(AdapterView<?> parent, final View view,
 			    int position, long id) {
 				SearchItem si = (SearchItem)parent.getAdapter().getItem(position);
 				String file = Uri.encode(si.toString());
 				String mach = si.getMachine().getClass().getSimpleName();
-				d.outURL("file:///android_asset/" + mach + "/search/" + file + ".html");
+				/* BUY!!!! */
+				//TODO:
 			}
         });
     }
@@ -109,13 +123,6 @@ protected ArrayList<SearchItem> list;
         	return v;
         }
     }
-    
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-		Bundle savedInstanceState) {
-		container.addView(e);
-		return super.onCreateView(inflater, container, savedInstanceState);
-	}
 	
 	//TODO: ....
 	mHelper.launchPurchaseFlow(this, SKU_GAS, 10001,   

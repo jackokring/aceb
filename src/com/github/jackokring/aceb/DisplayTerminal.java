@@ -28,7 +28,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	Canvas c;
 	Bitmap f;
 	char bg = 0x0ff0;
-	ImageView i;
+	ImageView i = (ImageView) getActivity().findViewById(R.id.font);
 	Desktop desk;
 	
 	public DisplayTerminal(Desktop d) {
@@ -68,6 +68,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
     	inv = new ColorMatrixColorFilter(filt);//set it
 		ink.setColorFilter(inv);
 		p = new Paint(bg);
+		i.setImageBitmap(b);
 		invalidate();
     }
     
@@ -100,14 +101,13 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
-		i = (ImageView) getActivity().findViewById(R.id.font);
 		f = ((BitmapDrawable)desk.getResources().getDrawable(R.drawable.font)).getBitmap();
 		container.addView(i);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	public synchronized void invalidate() {
-		i.setImageBitmap(b);
+		//i.setImageBitmap(b);
 		i.invalidate();
 	}
 	 
@@ -167,6 +167,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 			c.drawBitmap(b, new Rect(0, i * 8, x * 8 - 1, i * 8 + 7), r, null);
 		}
 		c.drawRect(new Rect(0, y * 8, x * 8 - 1, y * 8 + 7), pt);
+		invalidate();
 	}
 	
 	public synchronized void setInk(int i) {
@@ -183,6 +184,7 @@ public class DisplayTerminal extends Fragment implements OnSharedPreferenceChang
 	
 	public synchronized void setRes(char x, char y, char col) {
 		getNew(x, y);
+		i.setImageBitmap(b);
 		clear(col);
 		desk.resX(x);
 		desk.resY(y);

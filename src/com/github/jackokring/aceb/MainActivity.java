@@ -38,6 +38,8 @@ public abstract class MainActivity extends ActionBarActivity {
 		if(preDo != null) setCurrent(preDo);
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 	}
+	
+	protected SearchView searchView;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,7 +53,7 @@ public abstract class MainActivity extends ActionBarActivity {
 		mShareActionProvider.setShareIntent(getDefaultIntent());
 		MenuItem searchItem = menu.findItem(R.id.action_search);
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	    SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+	    searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 	    searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
 		return true;
