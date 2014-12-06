@@ -166,7 +166,10 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
     MyDialog enter;
     
     public void onBackPressed() {
-    	xit.show();
+    	if(remove == ls.getId()) {
+			//searchView
+			which(preSearch);
+		} else xit.show();
     }
     
     @Override
@@ -367,10 +370,7 @@ public class Desktop extends MainActivity implements Utils, OnSharedPreferenceCh
         //Dialogs do not persist, as it is easy to get them again
         xit = new MyDialog(R.string.xit, R.string.xit_help) {
         	public void ok() {
-        		if(remove == ls.getId()) {
-        			//searchView
-        			which(preSearch);
-        		} else if(intentHandle) {//exit a playable intent
+        		if(intentHandle) {//exit a playable intent
             		intentHandle = false;
             		load(".bak", false, false);
             		lock();

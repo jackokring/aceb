@@ -29,8 +29,8 @@
     <string name="ok">OK</string>
     <string name="help">Help</string>
 
-    <string name="xit">BYE, BYE! Thanks for using AceB FORTH.</string>
-    <string name="xit_help">You can exit from here by selecting OK or Cancel to continue working in AceB.</string>
+    <string name="xit">Thanks for using AceB FORTH.</string>
+    <string name="xit_help">You can exit an instance from here by selecting OK or Cancel to continue working in AceB. If you launched an ace image file, you will return to ace as was before launching the ace image.</string>
     
     <string name="load">Load up AceB with a memory image?</string>
     <string name="load_help">You can load a memory image which was saved. You don\'t have to do this to restore the AceB state as it persists. It is to allow you to experiment, and then load up the single saved state.</string>
