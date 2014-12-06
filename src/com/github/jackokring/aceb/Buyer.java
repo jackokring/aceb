@@ -65,14 +65,26 @@ public class Buyer extends Activity {
 			return ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
 		}
 	}
+	
+	private Inventory stuff;
     
     public void list() {
     	HashMap<Machine,Bitmap> map = new HashMap<Machine,Bitmap>(); 
     	list = new ArrayList<SearchItem>();
     	final String pack = this.getClass().getPackage().getName();
     	final String[] machines = getResources().getStringArray(R.array.a);
+    	mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener() {
+    		   public void onQueryInventoryFinished(IabResult result,
+    		      Inventory inventory) {
+    		      if (result.isFailure()) {
+    		        //TODO: handle error here
+    		      } else {
+    		        stuff = inventory;        
+    		      }
+    		   }
+    		});
         for(int i = 0; i < machines.length; i++) {
-        	Machine res;
+        	Machine res = null;
 			try {
 				res = (Machine) (Class.forName(pack + "." + machines[i]).newInstance());
 				map.put(res, getIcon(res));
@@ -84,7 +96,16 @@ public class Buyer extends Activity {
         		/* CHECK NOT BOUGHT */
         		
         		/* OR CONSUME */
-        		
+        		if(values[j].notOwned) mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+        						   public void onConsumeFinished(Purchase purchase, IabResult result) {
+        						      if (result.isSuccess()) {
+        						         // provision the in-app purchase to the user
+        						         // (for example, credit 50 gold coins to player's character)
+        						      } else {
+        						         // handle error
+        						      }
+        						   }
+        						});
     			list.add(values[i]);
     			values[i].setMachine(res);
         	}
@@ -101,6 +122,17 @@ public class Buyer extends Activity {
 				String mach = si.getMachine().getClass().getSimpleName();
 				/* BUY!!!! */
 				//TODO:
+				mHelper.launchPurchaseFlow(this, SKU_GAS, 10001,   
+						new IabHelper.OnIabPurchaseFinishedListener() {
+						   public void onIabPurchaseFinished(IabResult result, Purchase purchase) 
+						   {
+						      if (result.isFailure() || !purchase.getSku().equals(SKU_GAS)) {
+						         Log.d(TAG, "Error purchasing: " + result);
+						         return;
+						      }      
+						      //TODO: purchase
+						   }
+						}, "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
 			}
         });
     }
@@ -123,62 +155,7 @@ public class Buyer extends Activity {
         	return v;
         }
     }
-	
-	//TODO: ....
-	mHelper.launchPurchaseFlow(this, SKU_GAS, 10001,   
-			   mPurchaseFinishedListener, "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
-	
-	mHelper.queryInventoryAsync(mGotInventoryListener);
-	
-	mHelper.consumeAsync(inventory.getPurchase(SKU_GAS), 
-			   mConsumeFinishedListener);
-	
-	IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener 
-	   = new IabHelper.OnIabPurchaseFinishedListener() {
-	   public void onIabPurchaseFinished(IabResult result, Purchase purchase) 
-	   {
-	      if (result.isFailure()) {
-	         Log.d(TAG, "Error purchasing: " + result);
-	         return;
-	      }      
-	      else if (purchase.getSku().equals(SKU_GAS)) {
-	         // consume the gas and update the UI
-	      }
-	      else if (purchase.getSku().equals(SKU_PREMIUM)) {
-	         // give user access to premium content and update the UI
-	      }
-	   }
-	};
-	
-	IabHelper.QueryInventoryFinishedListener mGotInventoryListener 
-	   = new IabHelper.QueryInventoryFinishedListener() {
-	   public void onQueryInventoryFinished(IabResult result,
-	      Inventory inventory) {
-
-	      if (result.isFailure()) {
-	        // handle error here
-	      }
-	      else {
-	        // does the user have the premium upgrade?
-	        mIsPremium = inventory.hasPurchase(SKU_PREMIUM);        
-	        // update UI accordingly
-	      }
-	   }
-	};
-	
-	IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
-			   new IabHelper.OnConsumeFinishedListener() {
-			   public void onConsumeFinished(Purchase purchase, IabResult result) {
-			      if (result.isSuccess()) {
-			         // provision the in-app purchase to the user
-			         // (for example, credit 50 gold coins to player's character)
-			      }
-			      else {
-			         // handle error
-			      }
-			   }
-			};
-	
+    
 	@Override
 	public void onDestroy() {
 	   super.onDestroy();
