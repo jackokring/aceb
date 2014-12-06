@@ -11,7 +11,7 @@ public interface Machine extends Runnable {
     public void reset();
     
     public SearchItem[] search();//return all possible results
-    public SearchItem[] buyer();//return all byable things
+    public BoughtItem[] buyer();//return all byable things
     public void resX(char x);//resolution change call backs
     public void resY(char y);
     public void playCount(char c);//audio channel count callback

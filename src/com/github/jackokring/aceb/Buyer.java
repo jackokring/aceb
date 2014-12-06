@@ -53,7 +53,7 @@ public class Buyer extends Activity {
 		});
 	}
 	
-	protected ArrayList<SearchItem> list;
+	protected ArrayList<BoughtItem> list;
 	
 	public Bitmap getIcon(Machine res) {
 		try {
@@ -70,7 +70,7 @@ public class Buyer extends Activity {
     
     public void list() {
     	HashMap<Machine,Bitmap> map = new HashMap<Machine,Bitmap>(); 
-    	list = new ArrayList<SearchItem>();
+    	list = new ArrayList<BoughtItem>();
     	final String pack = this.getClass().getPackage().getName();
     	final String[] machines = getResources().getStringArray(R.array.a);
     	mHelper.queryInventoryAsync(new IabHelper.QueryInventoryFinishedListener() {
@@ -91,7 +91,7 @@ public class Buyer extends Activity {
 			} catch (Exception e) {
 				i = machines.length;//break later
 			}
-        	SearchItem[] values = res.buyer();
+        	BoughtItem[] values = res.buyer();
         	for (int j = 0; j < values.length; ++i) {
         		/* CHECK NOT BOUGHT */
         		
@@ -137,11 +137,11 @@ public class Buyer extends Activity {
         });
     }
     
-    private class MyArrayAdapter extends ArrayAdapter<SearchItem> {
+    private class MyArrayAdapter extends ArrayAdapter<BoughtItem> {
         HashMap<Machine,Bitmap> m;
 
         public MyArrayAdapter(Context context, int textViewResourceId,
-            List<SearchItem> objects, HashMap<Machine,Bitmap> map) {
+            List<BoughtItem> objects, HashMap<Machine,Bitmap> map) {
         	super(context, textViewResourceId, objects);
         	m = map;
         }

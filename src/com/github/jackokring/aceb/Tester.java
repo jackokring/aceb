@@ -156,7 +156,7 @@ public class Tester implements Machine {
 	}
 
 	@Override
-	public SearchItem[] buyer() {
+	public BoughtItem[] buyer() {
 		// TODO Auto-generated method stub
 		return null;
 	}
