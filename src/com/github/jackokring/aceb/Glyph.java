@@ -1,0 +1,56 @@
+package com.github.jackokring.aceb;
+
+public class Glyph {
+	
+	static int font[] = {
+		0xc315ef68,//A
+		0x0cdb7510,//B
+		0xff2139de,//C
+		0xf015bdc0,//D
+		0xf20cef76,//E
+		0xff20cf76,//F
+		0xf2139de8,//G
+		0x0cf2ef68,//H
+		0x02f1dfce,//I
+		0xffff2ed9,//J
+		0xff0cf26e,//K
+		0xfffff0ce,//L
+		0xfc02ef17,//M
+		0xffffc0e2,//N
+		0xf139db51,//O
+		0xffc01576,//P
+		0x0c820fae,//Q
+		0xfc01576e,//R
+		0xff513bd9,//S
+		0xfff02f1d,//T
+		0xffff0ce2,//U
+		0xfffff0d2,//V
+		0xf0ce2f7d,//W
+		0xfff0ef2c,//X
+		0xff07df27,//Y
+		0xffff02ce,//Z
+		0xfff02ec0,//0
+		0xfffff42e,//1
+		0xff0286ce,//2
+		0xf02ecf68,//3
+		0xff068f2e,//4
+		0xff2068ec,//5
+		0xff68ec02,//6
+		0xfffff02e,//7
+		0xf68ec028,//8
+		0xff8602ec,//9
+		0xfff9adc9,//.
+		0xffffffff,//' '
+		0xffffffac,//,
+		0xffffff13,//'
+		0xffff9d12,//sqrt
+		0xfff13f24,//"
+		0xfff68f4a,//+
+		0xffffff68,//-
+		0xfff3bf59,//*
+		0xffffff59,///
+		0xffff24ae,//(
+		0xffff04ae //)
+	};
+
+}
