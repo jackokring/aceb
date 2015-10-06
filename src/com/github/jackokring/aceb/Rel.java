@@ -35,7 +35,7 @@ public class Rel {
 		}
 		rr = (float)Math.sqrt(rr);
 		//collide? 
-		tmp2 = 1 - g * m / rr;
+		tmp2 = 1 - 2 * g * m / rr;
 		//calculate g dilate
 		return (float)Math.sqrt(tmp2);//total dilation;
 	}	
